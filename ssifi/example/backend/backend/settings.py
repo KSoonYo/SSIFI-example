@@ -60,14 +60,14 @@ MIDDLEWARE = [
 CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000', 'http://localhost:3000']
 CORS_ALLOW_CREDENTIALS = True
 
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-    ]
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': [
+#         'rest_framework.renderers.JSONRenderer',
+#     ],
+#     'DEFAULT_PARSER_CLASSES': [
+#         'rest_framework.parsers.JSONParser',
+#     ]
+# }
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -140,14 +140,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'static',
 ]
 
 # STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
