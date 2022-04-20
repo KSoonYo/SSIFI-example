@@ -1,10 +1,10 @@
-import ChatMode from './components/ChatMode'
 import './App.css'
+import Intro from './pages/Intro.js'
 
 function App() {
   return (
     <div>
-      <ChatMode />
+      <Intro />
     </div>
   )
 }
