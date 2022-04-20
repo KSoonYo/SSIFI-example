@@ -1,11 +1,14 @@
 import './App.css'
-import Intro from './pages/Intro.js'
+import { Route, Routes } from 'react-router-dom'
+import Main from './pages/Main'
+import Intro from './pages/Intro'
 
 function App() {
   return (
-    <div>
-      <Intro />
-    </div>
+    <Routes>
+      <Route path="/" element={<Intro />} />
+      <Route path="/main" element={<Main />} />
+    </Routes>
   )
 }
 
