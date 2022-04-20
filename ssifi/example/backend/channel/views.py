@@ -1,6 +1,9 @@
 from django.http.response import JsonResponse
 from rest_framework.decorators import api_view
 from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+import os
+import playsound
 
 
 @api_view(['POST'])
@@ -12,6 +15,12 @@ def stt(request):
 
     file = request.FILES['speech']
     filename = fs.save('input.wav', file)
+
+    # TODO: AI stt 모델에 음성파일을 넘겨주고 text를 return 받는 로직
+    result = str(file)
+    playsound.playsound(os.path.join(settings.MEDIA_ROOT, filename))
+
+    os.remove(os.path.join(settings.MEDIA_ROOT, filename))
     
-    response = {'message': '출력 확인'}
+    response = {'message': result}
     return JsonResponse(response)
