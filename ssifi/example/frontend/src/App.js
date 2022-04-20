@@ -1,11 +1,14 @@
-import ChatMode from './components/ChatMode'
 import './App.css'
+import { Route, Routes } from 'react-router-dom'
+import Main from './pages/Main'
+import Intro from './pages/Intro'
 
 function App() {
   return (
-    <div>
-      <ChatMode />
-    </div>
+    <Routes>
+      <Route path="/" element={<Intro />} />
+      <Route path="/main" element={<Main />} />
+    </Routes>
   )
 }
 
