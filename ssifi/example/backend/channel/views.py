@@ -37,5 +37,16 @@ def tts(request):
     '''
     사용자가 입력한 텍스트를 기준으로 문장을 생성하여 생성된 문장의 텍스트와 음성 URL을 반환
     '''
-    response = {'message': '출력 확인', 'url': '출력 확인'}
+    user_message = request.POST['message']
+    ai_model = request.POST['persona']
+
+    # TODO: koGPT 모델에 텍스트와 사용모델을 넘겨주고 생성된 문장을 받는 로직
+    message = f'[{user_message}]로 [{ai_model}]이(가) 답변한 결과'
+
+    # TODO: 생성된 message를 (+모델명?) 넘겨주고 음성 파일을 생성하는 로직
+    base_url = 'http://localhost:8000'
+    file_name = '띠링.wav'
+    url = base_url + settings.STATIC_URL + file_name
+
+    response = {'message': message, 'url': url}
     return JsonResponse(response)
