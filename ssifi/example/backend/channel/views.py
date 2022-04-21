@@ -30,3 +30,12 @@ def stt(request):
     
     response = {'message': result}
     return JsonResponse(response)
+
+
+@api_view(['POST'])
+def tts(request):
+    '''
+    사용자가 입력한 텍스트를 기준으로 문장을 생성하여 생성된 문장의 텍스트와 음성 URL을 반환
+    '''
+    response = {'message': '출력 확인', 'url': '출력 확인'}
+    return JsonResponse(response)

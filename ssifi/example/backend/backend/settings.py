@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'channel',
 
     'rest_framework',
-    'drf_yasg',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     'corsheaders',
 ]
 
