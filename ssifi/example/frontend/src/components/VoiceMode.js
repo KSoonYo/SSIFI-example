@@ -1,25 +1,44 @@
-import { Box, Typography, Modal } from '@mui/material'
+import { Box, Typography, Modal, Button } from '@mui/material'
 import React, { useState } from 'react'
-import '../style/SoundWave.css'
+import { useReactMediaRecorder } from 'react-media-recorder'
+
 import IconButton from '@mui/material/IconButton'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
 import SendIcon from '@mui/icons-material/Send'
+import SoundWave from './SoundWave'
 
 const VoiceMode = () => {
+  const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ audio: true })
+
   const [record, setRecord] = useState(false)
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  const fileSetting = () => {
+    const sound = new File([mediaBlobUrl], 'soundBlob', {
+      lastModified: new Date().getTime(),
+      type: 'audio/wav',
+    })
+    console.log(sound)
+
+    const formData = new FormData()
+    formData.append('audioFile', sound)
+    console.log(formData)
+    // postRequest()
+  }
 
   return (
     <div>
       <Box>
         <img src="assets/ssifi.png" alt="씨피" width="100%" style={{ objectFit: 'cover' }} />
       </Box>
-      <Box style={soundWave}>{!record ? onWave('stroke2') : onWave('stroke')}</Box>
+      <Box style={soundWave}>
+        <SoundWave type={!record ? 'wait' : 'listening'} />
+      </Box>
       <Box sx={messageBox}>
-        <Typography>입력중</Typography>
+        <Typography>{status === 'idle' ? '대기중' : '녹음중'}</Typography>
         <IconButton onClick={() => setRecord(!record)}>
           <SendIcon />
         </IconButton>
@@ -29,6 +48,9 @@ const VoiceMode = () => {
           <ExpandLessRoundedIcon />
         </IconButton>
       </Box>
+      <Button onClick={startRecording}>녹음하기</Button>
+      <Button onClick={stopRecording}>중지하기</Button>
+      <Button onClick={fileSetting}>보내기</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -42,9 +64,6 @@ const VoiceMode = () => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             채팅 리스트
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            채팅표시
-          </Typography>
         </Box>
       </Modal>
     </div>
@@ -52,20 +71,6 @@ const VoiceMode = () => {
 }
 
 export default VoiceMode
-
-function onWave(type) {
-  return (
-    <div className="loader">
-      <span className={type} />
-      <span className={type} />
-      <span className={type} />
-      <span className={type} />
-      <span className={type} />
-      <span className={type} />
-      <span className={type} />
-    </div>
-  )
-}
 
 // style
 const soundWave = {
@@ -88,11 +93,12 @@ const messageBox = {
 
 const modalStyle = {
   position: 'absolute',
-  top: '70%',
-  left: '50%',
+  top: '73vh',
+  left: '50vw',
   height: '50vh',
   transform: 'translate(-50%, -50%)',
-  width: '100%',
+  width: '90vw',
+  margin: '0 auto',
   bgcolor: 'background.paper',
   border: '2px solid #000',
   borderRadius: '50px',
