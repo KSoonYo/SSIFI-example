@@ -24,7 +24,7 @@ def stt(request):
     if file_extension.lower() != 'wav':
         return JsonResponse({'detail': '파일 형식이 잘못되었습니다.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    savename = fs.save('input.wav', file)
+    savename = fs.save('stt/input.wav', file)
 
     # TODO: AI stt 모델에 음성파일을 넘겨주고 text를 return 받는 로직
     result = str(file)
@@ -63,7 +63,7 @@ def tts(request):
     # TODO: 생성된 message를 (+모델명?) 넘겨주고 음성 파일을 생성하는 로직
     base_url = 'http://localhost:8000'
     file_name = '띠링.wav'
-    url = base_url + settings.STATIC_URL + file_name
+    url = base_url + settings.MEDIA_URL + 'tts/' + file_name
 
     response = {'message': message, 'url': url}
     return JsonResponse(response)
