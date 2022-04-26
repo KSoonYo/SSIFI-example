@@ -44,16 +44,16 @@ def tts(request):
     if not request.POST.get('message'):
         return JsonResponse({'detail': 'message를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
     
-    if not request.POST.get('persona'):
-        return JsonResponse({'detail': 'persona를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+    if not request.POST.get('mode'):
+        return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if type(request.POST['message']) != str:
         return JsonResponse({'detail': 'message는 문자열만 허용됩니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # TODO: persona 입력 문자열이 지정된 것인지 확인하는 로직
+    # TODO: mode 입력 문자열이 지정된 것인지 확인하는 로직
 
     user_message = request.POST['message']
-    ai_model = request.POST['persona']
+    ai_model = request.POST['mode']
 
     # TODO: koGPT 모델에 텍스트와 사용모델을 넘겨주고 생성된 문장을 받는 로직
     message = f'[{user_message}]로 [{ai_model}]이(가) 답변한 결과'
