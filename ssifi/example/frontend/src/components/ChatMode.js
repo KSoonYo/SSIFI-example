@@ -1,16 +1,30 @@
 import React, { useState } from 'react'
+import { postRequest } from '../api/requests.js'
 import ChatList from './ChatList.js'
 
 const ChatMode = () => {
   const [chatList, setChatList] = useState([])
   const [chatContent, setChatContent] = useState('')
+  const [chatAnswer, setChatAnswer] = useState('')
 
-  const handleAddChat = function () {
+  const handleAddChat = async function () {
+    try {
+      const context = await postRequest('', { mode: 'test', message: chatContent })
+      setChatAnswer(context.data.message)
+    } catch {
+      console.log('error')
+      return null
+    }
+
     setChatList(prev => [
       ...prev,
       {
         id: 'me',
         chat: chatContent,
+      },
+      {
+        id: 'ssifi',
+        chat: chatAnswer,
       },
     ])
     setChatContent('')
