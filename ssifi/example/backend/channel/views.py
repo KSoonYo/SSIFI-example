@@ -14,11 +14,14 @@ def stt(request):
     '''
     fs = FileSystemStorage()
 
+    if not request.FILES:
+        return JsonResponse({'detail': '음성 파일이 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
     file = request.FILES['speech']
     file_extension = str(file).split('.')[-1]
 
     if file_extension.lower() != 'wav':
-        return JsonResponse({'detail': '파일 형식이 잘못되었습니다.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        return JsonResponse({'detail': '파일 형식이 잘못되었습니다.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     savename = fs.save('input.wav', file)
 
@@ -37,8 +40,20 @@ def tts(request):
     '''
     사용자가 입력한 텍스트를 기준으로 문장을 생성하여 생성된 문장의 텍스트와 음성 URL을 반환
     '''
+
+    if not request.POST.get('message'):
+        return JsonResponse({'detail': 'message를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not request.POST.get('mode'):
+        return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if type(request.POST['message']) != str:
+        return JsonResponse({'detail': 'message는 문자열만 허용됩니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # TODO: mode 입력 문자열이 지정된 것인지 확인하는 로직
+
     user_message = request.POST['message']
-    ai_model = request.POST['persona']
+    ai_model = request.POST['mode']
 
     # TODO: koGPT 모델에 텍스트와 사용모델을 넘겨주고 생성된 문장을 받는 로직
     message = f'[{user_message}]로 [{ai_model}]이(가) 답변한 결과'
