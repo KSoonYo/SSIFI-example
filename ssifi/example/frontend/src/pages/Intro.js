@@ -1,7 +1,8 @@
 import React from 'react'
-import IconButton from '@mui/material/IconButton'
-import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined'
 import { useNavigate } from 'react-router-dom'
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import '../style/Intro.css'
 
 const Intro = () => {
   const navigate = useNavigate()
@@ -18,14 +19,16 @@ const Intro = () => {
         </h1>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-        <IconButton
+        <button
+          type="button"
+          className="intro-button"
+          style={{ border: '1px solid #3b8c9a', borderRadius: '25px' }}
           onClick={() => {
             navigate('/main')
           }}
-          sx={{ mx: 'auto', boxShadow: 10, fontSize: 50, borderRadius: 10 }}
         >
-          <ArrowForwardIosOutlinedIcon />
-        </IconButton>
+          <FontAwesomeIcon icon={faAngleRight} size="3x" style={{ color: 'gray' }} />
+        </button>
       </div>
     </div>
   )
