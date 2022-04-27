@@ -4,8 +4,13 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-import os
+import os, sys
 import playsound
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
+
+from STT import STT
+from NLP import novelbot
 
 
 @api_view(['POST'])
@@ -26,9 +31,7 @@ def stt(request):
 
     savename = fs.save('stt/input.wav', file)
 
-    # TODO: AI stt 모델에 음성파일을 넘겨주고 text를 return 받는 로직
-    result = str(file)
-    playsound.playsound(os.path.join(settings.MEDIA_ROOT, savename))
+    result = STT.speech_recognition(os.path.join(settings.MEDIA_ROOT, savename))
 
     os.remove(os.path.join(settings.MEDIA_ROOT, savename))
     
