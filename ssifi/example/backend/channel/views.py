@@ -5,7 +5,6 @@ from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import os, sys
-import playsound
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
 
@@ -31,9 +30,14 @@ def stt(request):
 
     savename = fs.save('stt/input.wav', file)
 
-    result = STT.speech_recognition(os.path.join(settings.MEDIA_ROOT, savename))
+    try:
+        result = STT.speech_recognition(os.path.join(settings.MEDIA_ROOT, savename))
 
-    os.remove(os.path.join(settings.MEDIA_ROOT, savename))
+    except Exception:
+        return JsonResponse({'detail': '음성을 인식할 수 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    finally:
+        os.remove(os.path.join(settings.MEDIA_ROOT, savename))
     
     response = {'message': result}
     return JsonResponse(response)
@@ -55,13 +59,17 @@ def tts(request):
     if not req.get('mode'):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # TODO: mode 입력 문자열이 지정된 것인지 확인하는 로직
+    mode = {'novel'}
+
+    if req.get('mode') not in mode:
+        return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     user_message = req['message']
     ai_model = req['mode']
 
     # TODO: koGPT 모델에 텍스트와 사용모델을 넘겨주고 생성된 문장을 받는 로직
-    message = f'[{user_message}]로 [{ai_model}]이(가) 답변한 결과'
+    if req.get('mode') == 'novel':
+        message = novelbot.novelbot(user_message, 500)
 
     # TODO: 생성된 message를 (+모델명?) 넘겨주고 음성 파일을 생성하는 로직
     base_url = 'http://localhost:8000'
