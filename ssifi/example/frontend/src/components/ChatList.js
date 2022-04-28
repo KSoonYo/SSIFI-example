@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react'
+import '../style/ChatList.css'
 
 const ChatList = props => {
   const scrollRef = useRef()
@@ -9,17 +10,28 @@ const ChatList = props => {
 
   const scrollToBottom = () => {
     const { scrollHeight, clientHeight } = scrollRef.current
-    // scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
     scrollRef.current.scrollTop = scrollHeight - clientHeight
   }
 
   return (
-    <div className="chatList" ref={scrollRef} style={props.style}>
+    <div
+      className="chatList"
+      ref={scrollRef}
+      style={{ ...props.style, overflow: 'auto', display: 'flex', flexDirection: 'column' }}
+    >
       {props.chatList.map((chatItem, index) => {
         return (
-          <div key={index} className="chatItem">
-            <h2> {chatItem.id} </h2>
-            <p className="chatContent">{chatItem.chat}</p>
+          <div
+            key={index}
+            style={
+              chatItem.id === 'me'
+                ? { display: 'flex', justifyContent: 'flex-start' }
+                : { display: 'flex', justifyContent: 'flex-end' }
+            }
+          >
+            <div key={index} className={chatItem.id === 'me' ? 'myChat' : 'ssifiChat'}>
+              <p className="chatContent">{chatItem.chat}</p>
+            </div>
           </div>
         )
       })}
