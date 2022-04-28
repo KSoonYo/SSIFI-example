@@ -111,9 +111,9 @@ const VoiceMode = () => {
   }
 
   return (
-    <div>
+    <div className="voiceWrapper">
       <Box>
-        <img src="assets/ssifi.png" alt="씨피" width="100%" style={{ objectFit: 'cover' }} />
+        <img src="assets/ssifi2.gif" alt="씨피" width="100%" style={{ objectFit: 'cover' }} />
       </Box>
       <Box style={soundWave}>
         <SoundWave type={onRec ? 'wait' : 'listening'} />
@@ -124,8 +124,14 @@ const VoiceMode = () => {
           <SendIcon />
         </IconButton>
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-end' }}>
-        <IconButton sx={{ position: 'fixed', bottom: '0', width: '100%' }} onClick={handleOpen}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <IconButton sx={{ position: 'fixed', bottom: '0', width: '320px' }} onClick={handleOpen}>
           <ExpandLessRoundedIcon />
         </IconButton>
       </Box>
@@ -163,7 +169,7 @@ const soundWave = {
 }
 
 const messageBox = {
-  width: '329px',
+  width: '90%',
   height: '108px',
   border: '2px solid purple',
   borderRadius: '30px',
@@ -175,9 +181,9 @@ const messageBox = {
 
 const modalStyle = {
   position: 'absolute',
-  top: '73vh',
-  left: '50vw',
-  height: '50vh',
+  top: '70%',
+  left: '50%',
+  height: '80vh',
   transform: 'translate(-50%, -50%)',
   width: '90vw',
   margin: '0 auto',

@@ -8,16 +8,14 @@ const Intro = () => {
   const navigate = useNavigate()
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-      <div>
-        <div style={{ height: '40vh' }}>
-          <img src="assets/ssifi.png" alt="씨피" width="100%" height="100%" style={{ objectFit: 'cover' }} />
-        </div>
-        <h1>
-          <p>안녕하세요</p>
-          <p>저는 SSIFI입니다.</p>
-        </h1>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', height: '100%' }}>
+      <div style={{ height: '40vh' }}>
+        <img src="assets/ssifi2.gif" alt="씨피" width="100%" height="100%" style={{ objectFit: 'cover' }} />
       </div>
+      <h1>
+        <p>안녕하세요</p>
+        <p>저는 SSIFI입니다.</p>
+      </h1>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <button
           type="button"

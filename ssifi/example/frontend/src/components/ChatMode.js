@@ -1,33 +1,36 @@
 import React, { useState } from 'react'
 import { postRequest } from '../api/requests.js'
 import ChatList from './ChatList.js'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const ChatMode = () => {
   const [chatList, setChatList] = useState([])
   const [chatContent, setChatContent] = useState('')
-  const [chatAnswer, setChatAnswer] = useState('')
 
   const handleAddChat = async function () {
-    try {
-      const context = await postRequest('', { mode: 'test', message: chatContent })
-      setChatAnswer(context.data.message)
-    } catch {
-      console.log('error')
-      return null
-    }
-
     setChatList(prev => [
       ...prev,
       {
         id: 'me',
         chat: chatContent,
       },
-      {
-        id: 'ssifi',
-        chat: chatAnswer,
-      },
     ])
-    setChatContent('')
+
+    try {
+      const context = await postRequest('api/channel/tts/', { mode: 'test', message: chatContent })
+      setChatList(prev => [
+        ...prev,
+        {
+          id: 'ssifi',
+          chat: context.data.message,
+        },
+      ])
+      setChatContent('')
+    } catch {
+      console.log('error')
+      return null
+    }
   }
 
   const onKeyPress = e => {
@@ -38,10 +41,20 @@ const ChatMode = () => {
 
   return (
     <div className="chatWrapper">
-      <ChatList style={{ height: '80vh', overflow: 'auto' }} chatList={chatList} />
-      <div className="chatArea">
-        <input type="text" value={chatContent} onKeyPress={onKeyPress} onChange={e => setChatContent(e.target.value)} />
-        <button onClick={() => handleAddChat()}> 입력 </button>
+      <ChatList style={{ height: '80vh' }} chatList={chatList} />
+      <div className="chatArea" style={{ width: '100%', marginTop: '50px' }}>
+        <input
+          type="text"
+          style={{ width: '90%', marginRight: '2%' }}
+          value={chatContent}
+          onKeyPress={onKeyPress}
+          onChange={e => setChatContent(e.target.value)}
+        />
+        <div className="chatArea-input-append">
+          <span>
+            <FontAwesomeIcon icon={faPaperPlane} />
+          </span>
+        </div>
       </div>
     </div>
   )

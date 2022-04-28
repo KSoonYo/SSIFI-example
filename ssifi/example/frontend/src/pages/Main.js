@@ -7,8 +7,8 @@ import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded'
 const Main = () => {
   const [mode, setMode] = useState(true)
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <Box sx={{ margin: '0 0 0 auto' }}>
+    <div style={{ height: '100%' }}>
+      <Box sx={{ margin: '0 0 0 auto', display: 'flex', justifyContent: 'end' }}>
         <IconButton variant="outlined" onClick={() => setMode(!mode)}>
           <ToggleOffRoundedIcon sx={{ fontSize: '50px' }} />
         </IconButton>

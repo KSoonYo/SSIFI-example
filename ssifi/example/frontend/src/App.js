@@ -5,10 +5,14 @@ import Intro from './pages/Intro'
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Intro />} />
-      <Route path="/main" element={<Main />} />
-    </Routes>
+    <div className="wrapper">
+      <div className="content-wrapper">
+        <Routes>
+          <Route path="/" element={<Intro />} />
+          <Route path="/main" element={<Main />} />
+        </Routes>
+      </div>
+    </div>
   )
 }
 
