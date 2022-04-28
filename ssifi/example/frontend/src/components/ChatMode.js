@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { postRequest } from '../api/requests.js'
-import ChatList from './ChatList.jsx'
+import ChatList from './ChatList.js'
 
 const ChatMode = () => {
   const [chatList, setChatList] = useState([])
