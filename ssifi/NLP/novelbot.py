@@ -1,8 +1,15 @@
+import os, platform
 import torch
 from transformers import AutoTokenizer, AutoModelWithLMHead, AutoModelForCausalLM
 
-tokenizer_path = 'NLP/models/novelbot/tokenizer'
-model_path = 'NLP/models/novelbot/model'
+if platform.system() == "Windows":
+  base_path = str(os.path.abspath(__file__)).split('\\')
+else:
+  base_path = str(os.path.abspath(__file__)).split('/')
+base_path = '/'.join(base_path[:-1])
+
+tokenizer_path = base_path + '/models/novelbot/tokenizer'
+model_path = base_path + '/models/novelbot/model'
 # NOVEL BOT
 def novelbot(prompt, max_length: int = 256):
   tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
