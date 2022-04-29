@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { postRequest } from '../api/requests.js'
-import ChatList from './ChatList.js'
+import ChatList from './ChatList.jsx'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
