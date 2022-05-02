@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(
 
 from STT import STT
 from NLP import novelbot
+from TTS import synthesize
 
 
 @api_view(['POST'])
@@ -69,12 +70,17 @@ def tts(request):
 
     # TODO: koGPT 모델에 텍스트와 사용모델을 넘겨주고 생성된 문장을 받는 로직
     if req.get('mode') == 'novel':
-        message = novelbot.novelbot(user_message, 500)
+        message = novelbot.novelbot(user_message, 100)
 
     # TODO: 생성된 message를 (+모델명?) 넘겨주고 음성 파일을 생성하는 로직
     base_url = 'http://localhost:8000'
+    result_path = './media/tts'
+    # TODO: file_name으로 이름을 받아올 예정
+    synthesize.make_sound(message, result_path)
     file_name = '띠링.wav'
     url = base_url + settings.MEDIA_URL + 'tts/' + file_name
+
+    # TODO: 삭제 로직
 
     response = {'message': message, 'url': url}
     return JsonResponse(response)
