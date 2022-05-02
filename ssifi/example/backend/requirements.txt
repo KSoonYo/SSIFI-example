@@ -25,7 +25,7 @@ Deprecated==1.2.13
 Django==3.2.13
 django-cors-headers==3.11.0
 djangorestframework==3.13.1
-dpcpp-cpp-rt==2022.0.3
+dpcpp-cpp-rt
 drf-yasg==1.20.0
 executing==0.8.3
 filelock==3.6.0
@@ -34,10 +34,10 @@ huggingface-hub==0.5.1
 idna==3.3
 importlib-metadata==4.11.3
 inflection==0.5.1
-intel-cmplr-lib-rt==2022.0.3
-intel-cmplr-lic-rt==2022.0.3
-intel-opencl-rt==2022.0.3
-intel-openmp==2022.0.3
+intel-cmplr-lib-rt
+intel-cmplr-lic-rt
+intel-opencl-rt
+intel-openmp
 ipython==7.32.0
 itypes==1.2.0
 jedi==0.18.1
@@ -50,7 +50,7 @@ llvmlite==0.38.0
 MarkupSafe==2.1.1
 matplotlib==3.5.1
 matplotlib-inline==0.1.3
-mkl==2022.0.3
+mkl
 mkl-fft==1.3.1
 mkl-service==2.4.0
 numba==0.55.1
@@ -68,10 +68,10 @@ pycparser==2.21
 Pygments==2.12.0
 pyparsing==3.0.8
 python-dateutil==2.8.2
-pytz==2022.1
+pytz
 PyYAML==6.0
 redis==4.2.2
-regex==2022.4.24
+regex
 requests==2.27.1
 resampy==0.2.2
 ruamel.yaml==0.17.21
@@ -84,7 +84,7 @@ SoundFile==0.10.3.post1
 SpeechRecognition==3.8.1
 sqlparse==0.4.2
 stack-data==0.2.0
-tbb==2021.5.2
+tbb
 threadpoolctl==3.1.0
 tokenizers==0.10.3
 torch==1.11.0
