@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-import os, sys
+import os, sys, re
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
 
@@ -71,16 +71,20 @@ def tts(request):
     # TODO: koGPT 모델에 텍스트와 사용모델을 넘겨주고 생성된 문장을 받는 로직
     if req.get('mode') == 'novel':
         message = novelbot.novelbot(user_message, 100)
+    
+    sentences = re.split('\. |\! |\? ', message)
 
-    # TODO: 생성된 message를 (+모델명?) 넘겨주고 음성 파일을 생성하는 로직
+    urls = []
     base_url = 'http://localhost:8000'
     result_path = './media/tts'
     # TODO: file_name으로 이름을 받아올 예정
-    synthesize.make_sound(message, result_path)
-    file_name = '띠링.wav'
-    url = base_url + settings.MEDIA_URL + 'tts/' + file_name
+    for sentence in sentences:
+        synthesize.make_sound(sentence, result_path)
+        file_name = '띠링.wav'
+        url = base_url + settings.MEDIA_URL + 'tts/' + file_name
+        urls.append(url)
 
     # TODO: 삭제 로직
 
-    response = {'message': message, 'url': url}
+    response = {'message': message, 'url': urls}
     return JsonResponse(response)
