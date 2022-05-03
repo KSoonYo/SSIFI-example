@@ -4,11 +4,30 @@ from transformers import AutoTokenizer, AutoModelWithLMHead, AutoModelForCausalL
 save_dir_tokenizer = ''
 save_dir_model = ''
 
+ctx = "cuda" if torch.cuda.is_available() else "cpu"
+device = torch.device(ctx)
+
+# BASIC BOT
+save_dir_tokenizer = './models/basicbot/tokenizer'
+save_dir_model = './models/basicbot/model'
+tokenizer = PreTrainedTokenizerFast.from_pretrained("skt/kogpt2-base-v2")
+model = GPT2LMHeadModel.from_pretrained("skt/kogpt2-base-v2")
+tokenizer.save_pretrained(save_dir_tokenizer)
+model.save_pretrained(save_dir_model)
+
 # NOVEL BOT
 save_dir_tokenizer = './models/novelbot/tokenizer'
 save_dir_model = './models/novelbot/model'
 tokenizer = AutoTokenizer.from_pretrained("ttop324/kogpt2novel")
 model = AutoModelWithLMHead.from_pretrained("ttop324/kogpt2novel")
+tokenizer.save_pretrained(save_dir_tokenizer)
+model.save_pretrained(save_dir_model)
+
+# WELLNESS BOT
+save_dir_tokenizer = './models/wellnessbot/tokenizer'
+save_dir_model = './models/wellnessbot/model'
+tokenizer = PreTrainedTokenizerFast.from_pretrained("taeminlee/kogpt2")
+model = GPT2LMHeadModel.from_pretrained("taeminlee/kogpt2")
 tokenizer.save_pretrained(save_dir_tokenizer)
 model.save_pretrained(save_dir_model)
 
