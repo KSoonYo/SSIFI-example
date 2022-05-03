@@ -80,6 +80,9 @@ def tts(request):
     urls = []
     base_url = 'http://localhost:8000'
 
+    if not os.path.isdir(os.path.join(settings.MEDIA_ROOT, 'tts')):
+        os.mkdir(os.path.join(settings.MEDIA_ROOT, 'tts'))
+
     result_path = './media/tts'
     for sentence in sentences:
         file_name = synthesize.make_sound(sentence, result_path)
