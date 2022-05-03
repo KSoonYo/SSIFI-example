@@ -45,8 +45,7 @@ def main(args):
     # Load checkpoint if exists
     checkpoint_path = os.path.join(hp.checkpoint_path)
     try:
-        checkpoint = torch.load(os.path.join(
-            checkpoint_path, map_location=device, 'checkpoint_{}.pth.tar'.format(args.restore_step)))
+        checkpoint = torch.load(os.path.join(checkpoint_path, 'checkpoint_{}.pth.tar'.format(args.restore_step)))
         model.load_state_dict(checkpoint['model'])
         optimizer.load_state_dict(checkpoint['optimizer'])
         print("\n---Model Restored at Step {}---\n".format(args.restore_step))
@@ -207,10 +206,11 @@ def main(args):
                         Time, [i for i in range(len(Time))], axis=None)
                     Time = np.append(Time, temp_value)
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+def train():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--restore_step', type=int, default=0)
+    parser.add_argument('--restore_step', type=int, default=350000)
     args = parser.parse_args()
 
     main(args)

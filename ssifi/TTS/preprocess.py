@@ -1,5 +1,5 @@
 import os
-from data import kss
+from .data import kss
 from . import hparams as hp
 
 def write_metadata(train, val, out_dir):
@@ -59,5 +59,6 @@ def main():
 
     write_metadata(train, val, out_dir)
     
-if __name__ == "__main__":
+# if __name__ == "__main__":
+def pre():
     main()
