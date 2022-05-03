@@ -106,6 +106,14 @@ export default class AudioReactRecorder extends React.Component {
 
     const self = this
     this.recorder.onaudioprocess = function (e) {
+      // recording time 20sec limit
+      if (e.playbackTime > 2) {
+        self.stop()
+        self.stream.getTracks().forEach(function (track) {
+          track.stop()
+        })
+        self.context.close()
+      }
       if (!self.recording) return
       let left = e.inputBuffer.getChannelData(0)
       let right = e.inputBuffer.getChannelData(1)
@@ -179,7 +187,6 @@ export default class AudioReactRecorder extends React.Component {
 
   stop = () => {
     const { onStop, type } = this.props
-
     this.recording = false
     this.closeMic()
 
