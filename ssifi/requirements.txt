@@ -12,6 +12,7 @@ huggingface-hub==0.5.1
 ipython
 jedi==0.18.1
 kiwisolver==1.4.2
+kogpt2-transformers==0.3.0
 librosa==0.9.1
 llvmlite==0.38.0
 matplotlib==3.5.1
