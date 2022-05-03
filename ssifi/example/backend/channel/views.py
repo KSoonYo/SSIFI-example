@@ -4,8 +4,14 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-import os
-import playsound
+from .tasks import delete_tts_file
+import os, sys, re
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
+
+from STT import STT
+from NLP import novelbot, wellnessbot
+from TTS import synthesize
 
 
 @api_view(['POST'])
@@ -24,13 +30,16 @@ def stt(request):
     if file_extension.lower() != 'wav':
         return JsonResponse({'detail': '파일 형식이 잘못되었습니다.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    savename = fs.save('input.wav', file)
+    savename = fs.save('stt/input.wav', file)
 
-    # TODO: AI stt 모델에 음성파일을 넘겨주고 text를 return 받는 로직
-    result = str(file)
-    playsound.playsound(os.path.join(settings.MEDIA_ROOT, savename))
+    try:
+        result = STT.speech_recognition(os.path.join(settings.MEDIA_ROOT, savename))
 
-    os.remove(os.path.join(settings.MEDIA_ROOT, savename))
+    except Exception:
+        return JsonResponse({'detail': '음성을 인식할 수 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    finally:
+        os.remove(os.path.join(settings.MEDIA_ROOT, savename))
     
     response = {'message': result}
     return JsonResponse(response)
@@ -52,18 +61,34 @@ def tts(request):
     if not req.get('mode'):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # TODO: mode 입력 문자열이 지정된 것인지 확인하는 로직
+    mode = {'novel', 'wellness'}
+
+    if req.get('mode') not in mode:
+        return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     user_message = req['message']
     ai_model = req['mode']
 
-    # TODO: koGPT 모델에 텍스트와 사용모델을 넘겨주고 생성된 문장을 받는 로직
-    message = f'[{user_message}]로 [{ai_model}]이(가) 답변한 결과'
+    if req.get('mode') == 'novel':
+        message = novelbot.novelbot(user_message, 100)
 
-    # TODO: 생성된 message를 (+모델명?) 넘겨주고 음성 파일을 생성하는 로직
+    elif req.get('mode') == 'wellness':
+        message = wellnessbot.wellnessbot(user_message, 50)
+    
+    sentences = re.split('\. |\! |\? ', message)
+
+    urls = []
     base_url = 'http://localhost:8000'
-    file_name = '띠링.wav'
-    url = base_url + settings.STATIC_URL + file_name
 
-    response = {'message': message, 'url': url}
+    if not os.path.isdir(os.path.join(settings.MEDIA_ROOT, 'tts')):
+        os.mkdir(os.path.join(settings.MEDIA_ROOT, 'tts'))
+
+    result_path = './media/tts'
+    for sentence in sentences:
+        file_name = synthesize.make_sound(sentence, result_path)
+        url = base_url + settings.MEDIA_URL + 'tts/' + file_name
+        urls.append(url)
+        delete_tts_file.delay(file_name)
+
+    response = {'message': message, 'url': urls}
     return JsonResponse(response)
