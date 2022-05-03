@@ -1,5 +1,5 @@
 import { Box, Typography, Modal, Button } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import IconButton from '@mui/material/IconButton'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
@@ -14,7 +14,7 @@ import Moon from './Moon'
 
 import ChatList from './ChatList'
 
-const VoiceMode = ({ chatList }) => {
+const VoiceMode = ({ chatList, audioUrls }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
@@ -29,6 +29,22 @@ const VoiceMode = ({ chatList }) => {
     }
     setOnRec(!onRec)
   }
+
+  useEffect(() => {
+    let audioIndex = 0
+    let audio = new Audio()
+    audio.src = audioUrls[0]
+    audio.currentTime = 0
+    audio.play()
+
+    audio.addEventListener('ended', () => {
+      if (audioIndex !== audioUrls.length && audioUrls.length !== 0) {
+        audioIndex += 1
+        audio.src = audioUrls[audioIndex]
+        audio.play()
+      }
+    })
+  }, [audioUrls])
 
   const start = () => {
     setRecordState(RecordState.START)

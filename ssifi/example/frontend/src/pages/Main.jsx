@@ -8,6 +8,7 @@ import { postRequest } from '../api/requests.js'
 const Main = () => {
   const [mode, setMode] = useState(true)
   const [chatList, setChatList] = useState([])
+  const [audioUrls, setAudioUrls] = useState([])
   const [chatContent, setChatContent] = useState('')
 
   const handleAddChat = async function () {
@@ -28,6 +29,7 @@ const Main = () => {
           chat: context.data.message,
         },
       ])
+      setAudioUrls(context.data.url)
       setChatContent('')
     } catch {
       console.log('error')
@@ -48,13 +50,14 @@ const Main = () => {
         </IconButton>
       </Box>
       {mode ? (
-        <VoiceMode chatList={chatList} />
+        <VoiceMode chatList={chatList} audioUrls={audioUrls} />
       ) : (
         <ChatMode
           chatList={chatList}
           chatContent={chatContent}
           onKeyPress={onKeyPress}
           setChatContent={setChatContent}
+          handleAddChat={handleAddChat}
         />
       )}
     </div>
