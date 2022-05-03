@@ -1,5 +1,5 @@
 import { Box, Typography, Modal } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -16,7 +16,7 @@ import Moon from './Moon'
 
 import ChatList from './ChatList'
 
-const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, setChatList }) => {
+const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
@@ -29,6 +29,22 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, setCh
 
     setOnRec(!onRec)
   }
+
+  useEffect(() => {
+    let audioIndex = 0
+    let audio = new Audio()
+    audio.src = audioUrls[0]
+    audio.currentTime = 0
+    audio.play()
+
+    audio.addEventListener('ended', () => {
+      if (audioIndex !== audioUrls.length && audioUrls.length !== 0) {
+        audioIndex += 1
+        audio.src = audioUrls[audioIndex]
+        audio.play()
+      }
+    })
+  }, [audioUrls])
 
   const start = () => {
     setLoad(true)
