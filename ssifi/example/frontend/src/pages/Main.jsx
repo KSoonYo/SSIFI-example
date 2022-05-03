@@ -3,6 +3,7 @@ import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
 import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded'
+import ToggleOnIcon from '@mui/icons-material/ToggleOn'
 import { postRequest } from '../api/requests.js'
 
 const Main = () => {
@@ -10,7 +11,8 @@ const Main = () => {
   const [chatList, setChatList] = useState([])
   const [chatContent, setChatContent] = useState('')
 
-  const handleAddChat = async function () {
+  const handleAddChat = async function (data) {
+    console.log(data)
     setChatList(prev => [
       ...prev,
       {
@@ -18,9 +20,8 @@ const Main = () => {
         chat: chatContent,
       },
     ])
-
     try {
-      const context = await postRequest('api/channel/tts/', { mode: 'test', message: chatContent })
+      const context = await postRequest('api/channel/tts/', { mode: 'test', message: data })
       setChatList(prev => [
         ...prev,
         {
@@ -37,18 +38,28 @@ const Main = () => {
 
   const onKeyPress = e => {
     if (e.key === 'Enter') {
-      handleAddChat()
+      handleAddChat(chatContent)
     }
   }
   return (
     <div style={{ height: '100%' }}>
       <Box sx={{ margin: '0 0 0 auto', display: 'flex', justifyContent: 'end' }}>
         <IconButton variant="outlined" onClick={() => setMode(!mode)}>
-          <ToggleOffRoundedIcon sx={{ fontSize: '50px' }} />
+          {mode ? (
+            <ToggleOffRoundedIcon sx={{ fontSize: '50px', color: 'white' }} />
+          ) : (
+            <ToggleOnIcon sx={{ fontSize: '50px', color: 'white' }} />
+          )}
         </IconButton>
       </Box>
       {mode ? (
-        <VoiceMode chatList={chatList} />
+        <VoiceMode
+          handleAddChat={handleAddChat}
+          chatContent={chatContent}
+          setChatContent={setChatContent}
+          chatList={chatList}
+          setChatList={setChatList}
+        />
       ) : (
         <ChatMode
           chatList={chatList}

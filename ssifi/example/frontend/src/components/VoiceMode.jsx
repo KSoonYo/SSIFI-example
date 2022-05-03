@@ -1,11 +1,12 @@
-import { Box, Typography, Modal, Button } from '@mui/material'
-import React, { useRef, useState } from 'react'
+import { Box, Typography, Modal } from '@mui/material'
+import React, { useState } from 'react'
+import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import IconButton from '@mui/material/IconButton'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
 import MicIcon from '@mui/icons-material/Mic'
-import SendIcon from '@mui/icons-material/Send'
 import SoundWave from './SoundWave'
 import { postRequest } from '../api/requests'
 import { SyncLoader } from '../../node_modules/react-spinners/index'
@@ -15,13 +16,11 @@ import Moon from './Moon'
 
 import ChatList from './ChatList'
 
-const VoiceMode = ({ chatList }) => {
+const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, setChatList }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
-  const [text, setText] = useState('')
   const [load, setLoad] = useState(false)
-  const buttonEl = useRef(null)
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -51,17 +50,28 @@ const VoiceMode = ({ chatList }) => {
       const formData = new FormData()
       formData.append('speech', audioFile)
       const response = await postRequest(`/api/channel/stt/`, formData)
-      setText(response.data.message)
+
+      setChatContent(response.data.message)
+
       console.log(response.data) // 응답 텍스트 결과
+
       setLoad(false)
     } catch (err) {
       console.log(err)
     }
   }
 
+  /**
+  Todo 
+  STT 결과 텍스트 전송 기능  
+  ChatList에 STT 결과 추가
+  ChatList에 TTS 결과 추가    
+  
+  */
+
   return (
     <div className="voiceWrapper">
-      <Moon></Moon>
+      <Moon />
       {/* TODO : SoundWave 파형 만들기  */}
       <AudioReactRecorder state={recordState} onStop={onStop} load={load} />
       <Box style={soundWave}>
@@ -79,24 +89,27 @@ const VoiceMode = ({ chatList }) => {
                 margin={8}
               />
             ) : (
-              text
+              chatContent
             )}
           </Typography>
-          <IconButton onClick={() => console.log('TTS를 위한 텍스트 전송 기능 추가')} disabled={load} color="warning">
-            <SendIcon sx={load ? { color: 'gray' } : { color: 'white' }} />
+          <IconButton
+            onClick={() => {
+              handleAddChat(chatContent)
+            }}
+            disabled={load}
+            color="warning"
+          >
+            <FontAwesomeIcon icon={faSatelliteDish} size="xl" style={load ? { color: 'gray' } : { color: 'white' }} />
           </IconButton>
         </Box>
       ) : (
-        <Button
-          variant="contained"
-          ref={buttonEl}
+        <IconButton
           onClick={handleRec}
-          sx={{ backgroundColor: '#b35ce2', borderRadius: '13px' }}
+          sx={{ backgroundColor: 'transparent', borderRadius: '13px', border: '1px solid white' }}
         >
-          <MicIcon sx={{ fontSize: '50px' }} />
-        </Button>
+          <MicIcon sx={{ fontSize: '50px', color: 'white' }} />
+        </IconButton>
       )}
-
       <Box
         sx={{
           display: 'flex',
@@ -105,16 +118,11 @@ const VoiceMode = ({ chatList }) => {
         }}
       >
         <IconButton sx={{ position: 'fixed', bottom: '0', width: '320px' }} onClick={handleOpen}>
-          <ExpandLessRoundedIcon />
+          <ExpandLessRoundedIcon style={{ color: 'white' }} />
         </IconButton>
       </Box>
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={open} onClose={handleClose}>
         <Box sx={modalStyle}>
           <IconButton sx={{ width: '100%' }} onClick={handleClose}>
             <ExpandMoreRoundedIcon />
@@ -137,10 +145,11 @@ const soundWave = {
 }
 
 const messageBox = {
-  width: '90%',
+  width: '80%',
   height: '10vh',
-  backgroundColor: '#b35ce2',
+  backgroundColor: 'trasparent',
   borderRadius: '25px',
+  border: '1px solid white',
   display: 'flex',
   justifyContent: 'space-around',
   alignItems: 'center',
