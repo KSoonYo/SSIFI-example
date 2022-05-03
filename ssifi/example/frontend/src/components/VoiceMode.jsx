@@ -1,5 +1,5 @@
 import { Box, Typography, Modal, Button } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 import IconButton from '@mui/material/IconButton'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
@@ -8,6 +8,7 @@ import MicIcon from '@mui/icons-material/Mic'
 import SendIcon from '@mui/icons-material/Send'
 import SoundWave from './SoundWave'
 import { postRequest } from '../api/requests'
+import { SyncLoader } from '../../node_modules/react-spinners/index'
 
 import AudioReactRecorder, { RecordState } from './AudioRecorder'
 
@@ -15,19 +16,20 @@ const VoiceMode = () => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
+  const [text, setText] = useState('')
+  const [load, setLoad] = useState(false)
+  const buttonEl = useRef(null)
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const handleRec = () => {
-    if (onRec === true) {
-      stop()
-    } else {
-      start()
-    }
+    onRec ? stop() : start()
+
     setOnRec(!onRec)
   }
 
   const start = () => {
+    setLoad(true)
     setRecordState(RecordState.START)
     console.log('녹음 시작!')
   }
@@ -46,7 +48,9 @@ const VoiceMode = () => {
       const formData = new FormData()
       formData.append('speech', audioFile)
       const response = await postRequest(`/api/channel/stt/`, formData)
+      setText(response.data.message)
       console.log(response.data) // 응답 텍스트 결과
+      setLoad(false)
     } catch (err) {
       console.log(err)
     }
@@ -54,20 +58,44 @@ const VoiceMode = () => {
 
   return (
     <div className="voiceWrapper">
-      <AudioReactRecorder state={recordState} onStop={onStop} />
-
       <Box>
         <img src="assets/ssifi2.gif" alt="씨피" width="100%" style={{ objectFit: 'cover' }} />
       </Box>
+      {/* TODO : SoundWave 파형 만들기  */}
+      <AudioReactRecorder state={recordState} onStop={onStop} load={load} />
       <Box style={soundWave}>
-        <SoundWave type={onRec ? 'wait' : 'listening'} />
+        <SoundWave type={onRec ? 'listening' : 'wait'} />
       </Box>
-      <Box sx={messageBox}>
-        <Typography>대기 표시</Typography>
-        <IconButton>
-          <SendIcon />
-        </IconButton>
-      </Box>
+      {onRec ? (
+        <Box sx={messageBox}>
+          <Typography sx={{ color: 'white' }}>
+            {load ? (
+              <SyncLoader
+                color={'#ffffff'}
+                loading={load}
+                css={{ display: 'block', margin: '0 auto', borderColor: 'red' }}
+                size={15}
+                margin={8}
+              />
+            ) : (
+              text
+            )}
+          </Typography>
+          <IconButton onClick={() => console.log('TTS를 위한 텍스트 전송 기능 추가')} disabled={load} color="warning">
+            <SendIcon sx={load ? { color: 'gray' } : { color: 'white' }} />
+          </IconButton>
+        </Box>
+      ) : (
+        <Button
+          variant="contained"
+          ref={buttonEl}
+          onClick={handleRec}
+          sx={{ backgroundColor: '#b35ce2', borderRadius: '13px' }}
+        >
+          <MicIcon sx={{ fontSize: '50px' }} />
+        </Button>
+      )}
+
       <Box
         sx={{
           display: 'flex',
@@ -79,10 +107,7 @@ const VoiceMode = () => {
           <ExpandLessRoundedIcon />
         </IconButton>
       </Box>
-      <Button variant="contained" onClick={handleRec} sx={{ backgroundColor: 'red' }}>
-        <MicIcon />
-      </Button>
-      <Button>결과 확인</Button>
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -94,7 +119,7 @@ const VoiceMode = () => {
             <ExpandMoreRoundedIcon />
           </IconButton>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            채팅 리스트
+            {/* <ChatList /> */}
           </Typography>
         </Box>
       </Modal>
@@ -114,9 +139,9 @@ const soundWave = {
 
 const messageBox = {
   width: '90%',
-  height: '108px',
-  border: '2px solid purple',
-  borderRadius: '30px',
+  height: '10vh',
+  backgroundColor: '#b35ce2',
+  borderRadius: '25px',
   display: 'flex',
   justifyContent: 'space-around',
   alignItems: 'center',
