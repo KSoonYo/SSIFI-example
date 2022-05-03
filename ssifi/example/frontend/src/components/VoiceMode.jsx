@@ -10,8 +10,11 @@ import SoundWave from './SoundWave'
 import { postRequest } from '../api/requests'
 
 import AudioReactRecorder, { RecordState } from './AudioRecorder'
+import Moon from './Moon'
 
-const VoiceMode = () => {
+import ChatList from './ChatList'
+
+const VoiceMode = ({ chatList }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
@@ -56,9 +59,7 @@ const VoiceMode = () => {
     <div className="voiceWrapper">
       <AudioReactRecorder state={recordState} onStop={onStop} />
 
-      <Box>
-        <img src="assets/ssifi2.gif" alt="씨피" width="100%" style={{ objectFit: 'cover' }} />
-      </Box>
+      <Moon></Moon>
       <Box style={soundWave}>
         <SoundWave type={onRec ? 'wait' : 'listening'} />
       </Box>
@@ -93,9 +94,7 @@ const VoiceMode = () => {
           <IconButton sx={{ width: '100%' }} onClick={handleClose}>
             <ExpandMoreRoundedIcon />
           </IconButton>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            채팅 리스트
-          </Typography>
+          <ChatList chatList={chatList}></ChatList>
         </Box>
       </Modal>
     </div>
