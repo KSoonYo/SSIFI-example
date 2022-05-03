@@ -10,7 +10,7 @@ import os, sys, re
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
 
 from STT import STT
-from NLP import novelbot
+from NLP import novelbot, wellnessbot
 from TTS import synthesize
 
 
@@ -61,7 +61,7 @@ def tts(request):
     if not req.get('mode'):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    mode = {'novel'}
+    mode = {'novel', 'wellness'}
 
     if req.get('mode') not in mode:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -71,19 +71,21 @@ def tts(request):
 
     if req.get('mode') == 'novel':
         message = novelbot.novelbot(user_message, 100)
+
+    elif req.get('mode') == 'wellness':
+        message = wellnessbot.wellnessbot(user_message, 50)
     
     sentences = re.split('\. |\! |\? ', message)
 
     urls = []
     base_url = 'http://localhost:8000'
+
     result_path = './media/tts'
     for sentence in sentences:
         file_name = synthesize.make_sound(sentence, result_path)
         url = base_url + settings.MEDIA_URL + 'tts/' + file_name
         urls.append(url)
         delete_tts_file.delay(file_name)
-
-    # TODO: 삭제 로직
 
     response = {'message': message, 'url': urls}
     return JsonResponse(response)
