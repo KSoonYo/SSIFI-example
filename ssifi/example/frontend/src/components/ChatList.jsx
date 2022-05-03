@@ -31,8 +31,8 @@ const ChatList = props => {
             }
           >
             <div key={index} className={chatItem.id === 'me' ? 'myChat' : 'ssifiChat'}>
-              <Typography style={{ color: 'white' }}>
-                <p className="chatContent">{chatItem.chat}</p>
+              <Typography className="chatContent" style={{ color: 'white' }}>
+                {chatItem.chat}
               </Typography>
             </div>
           </div>

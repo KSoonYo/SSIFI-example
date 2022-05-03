@@ -17,7 +17,13 @@ const ChatMode = ({ chatList, handleAddChat, chatContent, onKeyPress, setChatCon
           onKeyPress={onKeyPress}
           onChange={e => setChatContent(e.target.value)}
         />
-        <span className="chatArea-input-append" style={{ cursor: 'pointer' }} onClick={handleAddChat}>
+        <span
+          className="chatArea-input-append"
+          style={{ cursor: 'pointer' }}
+          onClick={() => {
+            handleAddChat(chatContent)
+          }}
+        >
           <FontAwesomeIcon icon={faSatelliteDish} size="xl" style={{ color: 'white' }} />
         </span>
       </div>

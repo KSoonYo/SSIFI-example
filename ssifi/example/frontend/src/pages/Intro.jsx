@@ -29,7 +29,8 @@ const Intro = () => {
           color="secondary"
           sx={{
             bgcolor: 'white',
-            width: '20%',
+            width: '80px',
+            height: '80px',
           }}
           onClick={() => {
             navigate('/main')
