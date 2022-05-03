@@ -1,4 +1,4 @@
-import os
+import os, platform
 import torch.nn as nn
 import torch
 from transformers import PreTrainedTokenizerFast, GPT2LMHeadModel
@@ -7,7 +7,10 @@ from NLP.kogpt_wellness import DialogKoGPT2
 ctx = "cuda" if torch.cuda.is_available() else "cpu"
 device = torch.device(ctx)
 
-base_path = str(os.path.abspath(__file__)).split('\\')
+if platform.system() == "Windows":
+	base_path = str(os.path.abspath(__file__)).split('\\')
+else:
+	base_path = str(os.path.abspath(__file__)).split('/')
 base_path = '/'.join(base_path[:-1])
 tokenizer_path = base_path + '/models/wellnessbot/tokenizer'
 model_path = base_path + '/models/wellnessbot/model'
