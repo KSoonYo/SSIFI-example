@@ -1,48 +1,13 @@
-import React, { useState } from 'react'
-import { postRequest } from '../api/requests.js'
+import React from 'react'
 import ChatList from './ChatList.jsx'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const ChatMode = () => {
-  const [chatList, setChatList] = useState([])
-  const [chatContent, setChatContent] = useState('')
-
-  const handleAddChat = async function () {
-    setChatList(prev => [
-      ...prev,
-      {
-        id: 'me',
-        chat: chatContent,
-      },
-    ])
-
-    try {
-      const context = await postRequest('api/channel/tts/', { mode: 'test', message: chatContent })
-      setChatList(prev => [
-        ...prev,
-        {
-          id: 'ssifi',
-          chat: context.data.message,
-        },
-      ])
-      setChatContent('')
-    } catch {
-      console.log('error')
-      return null
-    }
-  }
-
-  const onKeyPress = e => {
-    if (e.key === 'Enter') {
-      handleAddChat()
-    }
-  }
-
+const ChatMode = ({ chatList, chatContent, onKeyPress, setChatContent }) => {
   return (
     <div className="chatWrapper">
       <ChatList style={{ height: '80vh' }} chatList={chatList} />
-      <div className="chatArea" style={{ width: '100%', marginTop: '50px' }}>
+      <div className="chatArea" style={{ width: '100%', marginTop: '30px' }}>
         <input
           type="text"
           style={{ width: '90%', marginRight: '2%' }}
