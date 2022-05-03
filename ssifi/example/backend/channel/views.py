@@ -68,7 +68,6 @@ def tts(request):
     user_message = req['message']
     ai_model = req['mode']
 
-    # TODO: koGPT 모델에 텍스트와 사용모델을 넘겨주고 생성된 문장을 받는 로직
     if req.get('mode') == 'novel':
         message = novelbot.novelbot(user_message, 100)
     
@@ -77,10 +76,8 @@ def tts(request):
     urls = []
     base_url = 'http://localhost:8000'
     result_path = './media/tts'
-    # TODO: file_name으로 이름을 받아올 예정
     for sentence in sentences:
-        synthesize.make_sound(sentence, result_path)
-        file_name = '띠링.wav'
+        file_name = synthesize.make_sound(sentence, result_path)
         url = base_url + settings.MEDIA_URL + 'tts/' + file_name
         urls.append(url)
 
