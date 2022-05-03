@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react'
+import { Typography } from '@mui/material'
 import '../style/ChatList.css'
 
 const ChatList = props => {
@@ -30,7 +31,9 @@ const ChatList = props => {
             }
           >
             <div key={index} className={chatItem.id === 'me' ? 'myChat' : 'ssifiChat'}>
-              <p className="chatContent">{chatItem.chat}</p>
+              <Typography style={{ color: 'white' }}>
+                <p className="chatContent">{chatItem.chat}</p>
+              </Typography>
             </div>
           </div>
         )
