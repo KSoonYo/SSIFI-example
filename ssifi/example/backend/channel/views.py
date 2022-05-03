@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from .tasks import delete_tts_file
 import os, sys, re
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
@@ -80,6 +81,7 @@ def tts(request):
         file_name = synthesize.make_sound(sentence, result_path)
         url = base_url + settings.MEDIA_URL + 'tts/' + file_name
         urls.append(url)
+        delete_tts_file.delay(file_name)
 
     # TODO: 삭제 로직
 
