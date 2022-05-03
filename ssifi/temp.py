@@ -16,7 +16,7 @@ from NLP import novelbot, wellnessbot, basicbot
 # print(output)
 
 # NLP (WELLNESSBOT)
-output = Wellnessbot.wellnessbot("외로운 오늘", 50)
+output = wellnessbot.wellnessbot("외로운 오늘", 50)
 print(output)
 
 # output = input()
