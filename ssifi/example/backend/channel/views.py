@@ -96,3 +96,11 @@ def tts(request):
 
     response = {'message': ssifi_response, 'url': urls}
     return JsonResponse(response)
+
+
+@api_view(['POST'])
+def make_client_key(request):
+    '''
+    요청받은 시간으로부터 1시간 동안 유효한 유니크 키를 반환
+    '''
+    return
