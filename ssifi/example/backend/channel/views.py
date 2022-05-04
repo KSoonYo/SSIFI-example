@@ -5,8 +5,8 @@ from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from .models import Message
-from .tasks import delete_tts_file
-import os, sys, re
+from .tasks import delete_tts_file, make_key, is_valid_key
+import os, sys, re, uuid
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
 
@@ -103,4 +103,7 @@ def make_client_key(request):
     '''
     요청받은 시간으로부터 1시간 동안 유효한 유니크 키를 반환
     '''
-    return
+    key = str(uuid.uuid1())
+    make_key.delay(key)
+    response = {'key': key}
+    return JsonResponse(response)
