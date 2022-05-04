@@ -1,4 +1,4 @@
-import { Box, Typography, Modal } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React, { useState, useEffect } from 'react'
 import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,12 +15,13 @@ import AudioReactRecorder, { RecordState } from './AudioRecorder'
 import Moon from './Moon'
 
 import ChatList from './ChatList'
+import { Slide } from '../../node_modules/@mui/material/index'
 
 const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
-  const [load, setLoad] = useState(false)
+  const [sttLoad, setSTTLoad] = useState(false)
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -47,7 +48,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   }, [audioUrls])
 
   const start = () => {
-    setLoad(true)
+    setSTTLoad(true)
     setRecordState(RecordState.START)
     console.log('녹음 시작!')
   }
@@ -70,37 +71,39 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       setChatContent(response.data.message)
 
       console.log(response.data) // 응답 텍스트 결과
-
-      setLoad(false)
+      setSTTLoad(false)
     } catch (err) {
       console.log(err)
+      setSTTLoad(false)
+      setOnRec(false)
     }
   }
 
-  /**
-  Todo 
-  STT 결과 텍스트 전송 기능  
-  ChatList에 STT 결과 추가
-  ChatList에 TTS 결과 추가    
-  
-  */
+  const chatBox = (
+    <Box sx={styles.chatBox}>
+      <IconButton sx={{ width: '100%' }} onClick={handleClose}>
+        <ExpandMoreRoundedIcon style={{ color: 'white' }} />
+      </IconButton>
+      <ChatList chatList={chatList} />
+    </Box>
+  )
 
   return (
     <div className="voiceWrapper">
       <Moon />
       {/* TODO : SoundWave 파형 만들기  */}
-      <AudioReactRecorder state={recordState} onStop={onStop} load={load} />
-      <Box style={soundWave}>
+      <AudioReactRecorder state={recordState} onStop={onStop} load={sttLoad} />
+      <Box style={styles.soundWave}>
         <SoundWave type={onRec ? 'listening' : 'wait'} />
       </Box>
       {onRec ? (
-        <Box sx={messageBox}>
+        <Box sx={styles.sttResult}>
           <Typography sx={{ color: 'white' }}>
-            {load ? (
+            {sttLoad ? (
               <SyncLoader
                 color={'#ffffff'}
-                loading={load}
-                css={{ display: 'block', margin: '0 auto', borderColor: 'red' }}
+                loading={sttLoad}
+                css={{ display: 'block', margin: '0 auto' }}
                 size={15}
                 margin={8}
               />
@@ -111,20 +114,29 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
           <IconButton
             onClick={() => {
               handleAddChat(chatContent)
+              setOnRec(false)
             }}
-            disabled={load}
-            color="warning"
+            disabled={sttLoad}
           >
-            <FontAwesomeIcon icon={faSatelliteDish} size="xl" style={load ? { color: 'gray' } : { color: 'white' }} />
+            <FontAwesomeIcon
+              icon={faSatelliteDish}
+              size="xl"
+              style={sttLoad ? { color: 'gray' } : { color: 'white' }}
+            />
           </IconButton>
         </Box>
       ) : (
-        <IconButton
-          onClick={handleRec}
-          sx={{ backgroundColor: 'transparent', borderRadius: '13px', border: '1px solid white' }}
+        <Box
+          sx={{
+            backgroundColor: 'transparent',
+            borderRadius: '13px',
+            border: '1px solid white',
+          }}
         >
-          <MicIcon sx={{ fontSize: '50px', color: 'white' }} />
-        </IconButton>
+          <IconButton onClick={handleRec}>
+            <MicIcon sx={{ fontSize: '50px', color: 'white' }} />
+          </IconButton>
+        </Box>
       )}
       <Box
         sx={{
@@ -134,18 +146,12 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
         }}
       >
         <IconButton sx={{ position: 'fixed', bottom: '0', width: '320px' }} onClick={handleOpen}>
-          <ExpandLessRoundedIcon style={{ color: 'white' }} />
+          <ExpandLessRoundedIcon style={{ display: open ? 'none' : undefined, color: 'white' }} />
         </IconButton>
       </Box>
-
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={modalStyle}>
-          <IconButton sx={{ width: '100%' }} onClick={handleClose}>
-            <ExpandMoreRoundedIcon />
-          </IconButton>
-          <ChatList chatList={chatList} />
-        </Box>
-      </Modal>
+      <Slide direction="up" in={open} mountOnEnter unmountOnExit>
+        {chatBox}
+      </Slide>
     </div>
   )
 }
@@ -153,36 +159,34 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
 export default VoiceMode
 
 // style
-const soundWave = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '100px',
-}
-
-const messageBox = {
-  width: '80%',
-  height: '10vh',
-  backgroundColor: 'trasparent',
-  borderRadius: '25px',
-  border: '1px solid white',
-  display: 'flex',
-  justifyContent: 'space-around',
-  alignItems: 'center',
-  margin: '40px auto',
-}
-
-const modalStyle = {
-  position: 'absolute',
-  top: '70%',
-  left: '50%',
-  height: '80vh',
-  transform: 'translate(-50%, -50%)',
-  width: '90vw',
-  margin: '0 auto',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  borderRadius: '50px',
-  boxShadow: 24,
-  p: 4,
+const styles = {
+  soundWave: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100px',
+  },
+  sttResult: {
+    width: '80%',
+    height: '10vh',
+    backgroundColor: 'trasparent',
+    borderRadius: '25px',
+    border: '1px solid white',
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    margin: '40px auto',
+  },
+  chatBox: {
+    position: 'absolute',
+    height: '50vh',
+    bottom: '0',
+    transform: 'translate(-50%, -50%)',
+    width: '87%',
+    margin: '0 auto',
+    bgcolor: 'rgba(0, 0, 0, 0.5)',
+    border: '1px solid white',
+    boxShadow: 24,
+    p: 4,
+  },
 }
