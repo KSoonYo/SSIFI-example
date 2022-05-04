@@ -20,6 +20,10 @@ def stt(request):
     '''
     음성파일(.wav)를 입력받아 해당 음성의 한국어 text를 반환
     '''
+    key = request.POST.get('key')
+    if not is_valid_key.delay(key).get():
+        return JsonResponse({'detail': '인증에 실패하였습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+
     fs = FileSystemStorage()
 
     if not request.FILES:
@@ -55,6 +59,10 @@ def tts(request):
         req = json.loads(request.body)
     except Exception:
         return JsonResponse({'detail': '지원되지 않는 미디어 형태입니다. '}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    key = req.get('key')
+    if not is_valid_key.delay(key).get():
+        return JsonResponse({'detail': '인증에 실패하였습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
     
     if not req.get('message'):
         return JsonResponse({'detail': 'message를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -76,6 +84,8 @@ def tts(request):
     elif req.get('mode') == 'wellness':
         ssifi_response = wellnessbot.wellnessbot(user_message, 50)
     
+    # TODO: DB 변경 필요 & user_key 필드 추가
+    # TODO: 프론트에서 정보 제공 동의를 받은 클라이언트 데이터만 저장하도록 수정
     message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode)
     message.save()
     
@@ -88,6 +98,7 @@ def tts(request):
         os.mkdir(os.path.join(settings.MEDIA_ROOT, 'tts'))
 
     result_path = './media/tts'
+    # TODO: 파일 이름을 따로 보내서 저장하는 방식 필요
     for sentence in sentences:
         file_name = synthesize.make_sound(sentence, result_path)
         url = base_url + settings.MEDIA_URL + 'tts/' + file_name
