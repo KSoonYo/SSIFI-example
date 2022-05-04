@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from .models import Message
 from .tasks import delete_tts_file
 import os, sys, re
 
@@ -61,21 +62,24 @@ def tts(request):
     if not req.get('mode'):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    mode = {'novel', 'wellness'}
+    modes = {'novel', 'wellness'}
 
-    if req.get('mode') not in mode:
+    if req.get('mode') not in modes:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     user_message = req['message']
-    ai_model = req['mode']
+    mode = req['mode']
 
     if req.get('mode') == 'novel':
-        message = novelbot.novelbot(user_message, 100)
+        ssifi_response = novelbot.novelbot(user_message, 100)
 
     elif req.get('mode') == 'wellness':
-        message = wellnessbot.wellnessbot(user_message, 50)
+        ssifi_response = wellnessbot.wellnessbot(user_message, 50)
     
-    sentences = re.split('\. |\! |\? ', message)
+    message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode)
+    message.save()
+    
+    sentences = re.split('\. |\! |\? ', ssifi_response)
 
     urls = []
     base_url = 'http://localhost:8000'
@@ -90,5 +94,5 @@ def tts(request):
         urls.append(url)
         delete_tts_file.delay(file_name)
 
-    response = {'message': message, 'url': urls}
+    response = {'message': ssifi_response, 'url': urls}
     return JsonResponse(response)
