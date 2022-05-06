@@ -28,8 +28,8 @@ const ChatList = props => {
             key={index}
             style={
               chatItem.id === 'me'
-                ? { display: 'flex', justifyContent: 'flex-start' }
-                : { display: 'flex', justifyContent: 'flex-end' }
+                ? { display: 'flex', justifyContent: 'flex-end' }
+                : { display: 'flex', justifyContent: 'flex-start' }
             }
           >
             <div
