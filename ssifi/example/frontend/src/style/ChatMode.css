@@ -7,7 +7,7 @@
   border: none;
   background-color: transparent;
   color: white;
-  padding: 6px 10px;
+  padding: 5px 10px;
   font-size: 1rem;
 }
 
@@ -18,7 +18,7 @@
 /* .chatArea-input-append {
   padding: 3px 3px;
 }
-
+*/
 .chatArea-input-append:hover {
-  background-color: gray;
-} */
+  opacity: 0.4;
+}

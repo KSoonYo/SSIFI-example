@@ -35,19 +35,28 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   }
 
   useEffect(() => {
-    let audioIndex = 0
-    let audio = new Audio()
-    audio.src = audioUrls[0]
-    audio.currentTime = 0
-    audio.play()
-
-    audio.addEventListener('ended', () => {
-      if (audioIndex !== audioUrls.length && audioUrls.length !== 0) {
-        audioIndex += 1
-        audio.src = audioUrls[audioIndex]
+    try {
+      if (audioUrls.length !== 0) {
+        let audioIndex = 0
+        let audio = new Audio()
+        audio.src = audioUrls[0]
+        audio.currentTime = 0
         audio.play()
+
+        audio.addEventListener('ended', () => {
+          if (audioIndex < audioUrls.length - 1) {
+            audioIndex += 1
+            audio.src = audioUrls[audioIndex]
+            audio.play()
+          }
+        })
+        return audio.removeEventListener('ended', () => {
+          console.log('이벤트 제거')
+        })
       }
-    })
+    } catch {
+      console.log('error')
+    }
   }, [audioUrls])
 
   const start = () => {
