@@ -6,9 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from .models import Message
 from .tasks import delete_tts_file, make_key, is_valid_key
-import os, sys, re, uuid
-
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
+import os, re, uuid
 
 from STT import STT
 from NLP import novelbot, wellnessbot
