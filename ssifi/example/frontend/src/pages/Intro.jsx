@@ -15,13 +15,18 @@ const Intro = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-evenly',
+        alignItems: 'center',
         height: '100%',
       }}
     >
       <Moon></Moon>
       <h1 style={{ color: 'white', padding: '0 20px' }}>
-        <p>안녕하세요</p>
-        <p>저는 SSIFI입니다.</p>
+        <p className="intro-script">
+          <span>안녕하세요</span>
+        </p>
+        <p className="intro-script">
+          <span>저는 SSIFI 입니다.</span>
+        </p>
       </h1>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <IconButton
