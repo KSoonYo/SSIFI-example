@@ -1,5 +1,6 @@
 import './App.css'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Main from './pages/Main'
 import Intro from './pages/Intro'
 import Particles from 'react-tsparticles'
@@ -7,17 +8,12 @@ import { loadFull } from 'tsparticles'
 
 function App() {
   const particlesInit = async main => {
-    console.log(main)
-
-    // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
-    // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
-    // starting from v2 you can add only the features you need reducing the bundle size
     await loadFull(main)
   }
 
-  const particlesLoaded = container => {
-    console.log(container)
-  }
+  const particlesLoaded = container => {}
+
+  const location = useLocation()
 
   return (
     <div className="wrapper">
@@ -80,10 +76,14 @@ function App() {
             detectRetina: true,
           }}
         />
-        <Routes>
-          <Route path="/" element={<Intro />} />
-          <Route path="/main" element={<Main />} />
-        </Routes>
+        <TransitionGroup className="transition-group">
+          <CSSTransition key={location.pathname} classNames="fade" timeout={700}>
+            <Routes location={location}>
+              <Route path="/" element={<Intro />} />
+              <Route path="/main" element={<Main />} />
+            </Routes>
+          </CSSTransition>
+        </TransitionGroup>
       </div>
     </div>
   )
