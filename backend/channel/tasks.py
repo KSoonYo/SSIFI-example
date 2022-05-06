@@ -21,13 +21,13 @@ def delete_tts_file(file_name):
 @shared_task
 def make_key(key):
     key_set.add(key)
-    print(str(datetime.now()) + f' 클라이언트 {key_set} 추가')
+    print(str(datetime.now()) + f' 클라이언트 {key} 추가')
     print(key_set)
 
     time.sleep(3600)
 
     key_set.remove(key)
-    print(str(datetime.now()) + f' 클라이언트 {key_set} 삭제')
+    print(str(datetime.now()) + f' 클라이언트 {key} 삭제')
     print(key_set)
 
 
