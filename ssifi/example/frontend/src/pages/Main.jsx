@@ -13,7 +13,6 @@ const Main = () => {
   const [chatContent, setChatContent] = useState('')
 
   const handleAddChat = async function (data) {
-    console.log(data)
     setChatList(prev => [
       ...prev,
       {
@@ -21,28 +20,32 @@ const Main = () => {
         chat: chatContent,
       },
     ])
-    try {
-      const context = await postRequest('api/channel/tts/', { mode: 'test', message: data })
+    setChatContent('')
+
+    setTimeout(async () => {
       setChatList(prev => [
         ...prev,
         {
-          id: 'ssifi',
-          chat: context.data.message,
+          id: 'loading',
+          chat: '',
         },
       ])
-      setAudioUrls(context.data.url)
-      setChatContent('')
-    } catch {
-      console.log('error')
-      return null
-    }
+      try {
+        const context = await postRequest('api/channel/tts/', { mode: 'test', message: data })
+        setChatList(prev => [
+          ...prev.filter(elem => elem.id !== 'loading'),
+          {
+            id: 'ssifi',
+            chat: context.data.message,
+          },
+        ])
+        setAudioUrls(context.data.url)
+      } catch {
+        console.log('error')
+      }
+    }, 1000)
   }
 
-  const onKeyPress = e => {
-    if (e.key === 'Enter') {
-      handleAddChat(chatContent)
-    }
-  }
   return (
     <div style={{ height: '100%' }}>
       <Box sx={{ margin: '0 0 0 auto', display: 'flex', justifyContent: 'end' }}>
@@ -67,7 +70,6 @@ const Main = () => {
         <ChatMode
           chatList={chatList}
           chatContent={chatContent}
-          onKeyPress={onKeyPress}
           setChatContent={setChatContent}
           handleAddChat={handleAddChat}
         />
