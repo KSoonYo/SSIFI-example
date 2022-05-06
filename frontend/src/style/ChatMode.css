@@ -1,0 +1,24 @@
+.chatArea {
+  display: flex;
+  border-bottom: 1px solid white;
+}
+
+.chatArea-input {
+  border: none;
+  background-color: transparent;
+  color: white;
+  padding: 5px 10px;
+  font-size: 1rem;
+}
+
+.chatArea-input:focus {
+  outline: none;
+}
+
+/* .chatArea-input-append {
+  padding: 3px 3px;
+}
+*/
+.chatArea-input-append:hover {
+  opacity: 0.4;
+}
