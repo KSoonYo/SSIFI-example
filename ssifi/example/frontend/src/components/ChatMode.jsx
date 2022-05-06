@@ -4,7 +4,13 @@ import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import '../style/ChatMode.css'
 
-const ChatMode = ({ chatList, handleAddChat, chatContent, onKeyPress, setChatContent }) => {
+const ChatMode = ({ chatList, handleAddChat, chatContent, setChatContent }) => {
+  const onKeyPress = e => {
+    if (e.key === 'Enter' && chatContent !== '') {
+      handleAddChat(chatContent)
+    }
+  }
+
   return (
     <div className="chatWrapper">
       <ChatList style={{ height: '80vh' }} chatList={chatList} />
@@ -21,7 +27,9 @@ const ChatMode = ({ chatList, handleAddChat, chatContent, onKeyPress, setChatCon
           className="chatArea-input-append"
           style={{ cursor: 'pointer' }}
           onClick={() => {
-            handleAddChat(chatContent)
+            if (chatContent !== '') {
+              handleAddChat(chatContent)
+            }
           }}
         >
           <FontAwesomeIcon icon={faSatelliteDish} size="xl" style={{ color: 'white' }} />
