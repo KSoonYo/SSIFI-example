@@ -4,8 +4,9 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from .tasks import delete_tts_file
-import os, sys, re
+from .models import Message
+from .tasks import delete_tts_file, make_key, is_valid_key
+import os, sys, re, uuid
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
 
@@ -19,6 +20,10 @@ def stt(request):
     '''
     음성파일(.wav)를 입력받아 해당 음성의 한국어 text를 반환
     '''
+    key = request.POST.get('key')
+    if not is_valid_key.delay(key).get():
+        return JsonResponse({'detail': '인증에 실패하였습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+
     fs = FileSystemStorage()
 
     if not request.FILES:
@@ -54,6 +59,10 @@ def tts(request):
         req = json.loads(request.body)
     except Exception:
         return JsonResponse({'detail': '지원되지 않는 미디어 형태입니다. '}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    key = req.get('key')
+    if not is_valid_key.delay(key).get():
+        return JsonResponse({'detail': '인증에 실패하였습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
     
     if not req.get('message'):
         return JsonResponse({'detail': 'message를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -61,21 +70,26 @@ def tts(request):
     if not req.get('mode'):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    mode = {'novel', 'wellness'}
+    modes = {'novel', 'wellness'}
 
-    if req.get('mode') not in mode:
+    if req.get('mode') not in modes:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     user_message = req['message']
-    ai_model = req['mode']
+    mode = req['mode']
 
     if req.get('mode') == 'novel':
-        message = novelbot.novelbot(user_message, 100)
+        ssifi_response = novelbot.novelbot(user_message, 100)
 
     elif req.get('mode') == 'wellness':
-        message = wellnessbot.wellnessbot(user_message, 50)
+        ssifi_response = wellnessbot.wellnessbot(user_message, 50)
     
-    sentences = re.split('\. |\! |\? ', message)
+    # TODO: DB 변경 필요 & user_key 필드 추가
+    # TODO: 프론트에서 정보 제공 동의를 받은 클라이언트 데이터만 저장하도록 수정
+    message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode)
+    message.save()
+    
+    sentences = re.split('\. |\! |\? ', ssifi_response)
 
     urls = []
     base_url = 'http://localhost:8000'
@@ -84,11 +98,23 @@ def tts(request):
         os.mkdir(os.path.join(settings.MEDIA_ROOT, 'tts'))
 
     result_path = './media/tts'
+    # TODO: 파일 이름을 따로 보내서 저장하는 방식 필요
     for sentence in sentences:
         file_name = synthesize.make_sound(sentence, result_path)
         url = base_url + settings.MEDIA_URL + 'tts/' + file_name
         urls.append(url)
         delete_tts_file.delay(file_name)
 
-    response = {'message': message, 'url': urls}
+    response = {'message': ssifi_response, 'url': urls}
+    return JsonResponse(response)
+
+
+@api_view(['POST'])
+def make_client_key(request):
+    '''
+    요청받은 시간으로부터 1시간 동안 유효한 유니크 키를 반환
+    '''
+    key = str(uuid.uuid1())
+    make_key.delay(key)
+    response = {'key': key}
     return JsonResponse(response)
