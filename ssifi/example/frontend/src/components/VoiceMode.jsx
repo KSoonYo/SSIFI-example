@@ -6,12 +6,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import IconButton from '@mui/material/IconButton'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
+import CellTowerIcon from '@mui/icons-material/CellTower'
 import MicIcon from '@mui/icons-material/Mic'
 import SoundWave from './SoundWave'
 import { postRequest } from '../api/requests'
 import { SyncLoader } from '../../node_modules/react-spinners/index'
 
 import AudioReactRecorder, { RecordState } from './AudioRecorder'
+import AudioRecorderTest from './AudioRecorderTest'
 import Moon from './Moon'
 
 import ChatList from './ChatList'
@@ -22,6 +24,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
   const [sttLoad, setSTTLoad] = useState(false)
+  const [ttsLoad, setTTSLoad] = useState(false)
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -79,6 +82,13 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
     }
   }
 
+  const onSendTTS = () => {
+    setTTSLoad(true)
+    handleAddChat(chatContent)
+    setTTSLoad(false)
+    setOnRec(false)
+  }
+
   const chatBox = (
     <Box sx={styles.chatBox}>
       <IconButton sx={{ width: '100%' }} onClick={handleClose}>
@@ -96,6 +106,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       <Box style={styles.soundWave}>
         <SoundWave type={onRec ? 'listening' : 'wait'} />
       </Box>
+      {/* <AudioRecorderTest state={recordState} onStop={onStop} />{' '} */}
       {onRec ? (
         <Box sx={styles.sttResult}>
           <Typography sx={{ color: 'white' }}>
@@ -104,20 +115,14 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
                 color={'#ffffff'}
                 loading={sttLoad}
                 css={{ display: 'block', margin: '0 auto' }}
-                size={15}
+                size={10}
                 margin={8}
               />
             ) : (
               chatContent
             )}
           </Typography>
-          <IconButton
-            onClick={() => {
-              handleAddChat(chatContent)
-              setOnRec(false)
-            }}
-            disabled={sttLoad}
-          >
+          <IconButton onClick={onSendTTS} disabled={sttLoad}>
             <FontAwesomeIcon
               icon={faSatelliteDish}
               size="xl"
@@ -149,6 +154,26 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
           <ExpandLessRoundedIcon style={{ display: open ? 'none' : undefined, color: 'white' }} />
         </IconButton>
       </Box>
+      {ttsLoad ? (
+        <Box
+          sx={{
+            width: '100%',
+            height: '108%',
+            bgcolor: 'rgba(0, 0, 0, 0.5)',
+            position: 'absolute',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            transform: 'translate(0, -8%)',
+            flexDirection: 'column',
+          }}
+        >
+          <CellTowerIcon sx={{ color: 'white', fontSize: '100px' }}></CellTowerIcon>
+          <Typography sx={{ color: 'white' }}>교신중</Typography>
+        </Box>
+      ) : (
+        ''
+      )}
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
         {chatBox}
       </Slide>
