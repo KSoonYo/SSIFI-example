@@ -96,6 +96,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       console.log('응답 결과:', response.data) // 응답 텍스트 결과
       setSTTLoad(false)
       setRecordState(RecordState.NONE)
+      // Todo: 401 에러 처리 (Intro로 이동)
     } catch (err) {
       console.log(err)
       setSTTLoad(false)

@@ -6,14 +6,21 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import { getRequest } from '../api/requests'
 
 const InfoDialog = ({ open, handleClose, navigate }) => {
-  const isSaved = () => {
-    sessionStorage.setItem('isSaved', true)
+  const isSaved = status => {
+    sessionStorage.setItem('isSaved', status)
+    getKey()
   }
 
-  const isNotSaved = () => {
-    sessionStorage.setItem('isSaved', false)
+  const getKey = async () => {
+    try {
+      const response = await getRequest('api/channel/key/')
+      sessionStorage.setItem('key', response.data.key)
+    } catch {
+      console.log('key publish failed')
+    }
   }
 
   return (
@@ -34,7 +41,7 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
       <DialogActions>
         <Button
           onClick={() => {
-            isNotSaved()
+            isSaved(false)
             handleClose()
             setTimeout(() => {
               navigate('/main')
@@ -46,7 +53,7 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
         </Button>
         <Button
           onClick={() => {
-            isSaved()
+            isSaved(true)
             handleClose()
             setTimeout(() => {
               navigate('/main')
