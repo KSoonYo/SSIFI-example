@@ -114,7 +114,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   }
 
   const chatBox = (
-    <Box sx={styles.chatBox}>
+    <Box sx={styles.chatBox} className="chat-box">
       <IconButton sx={{ width: '100%' }} onClick={handleClose}>
         <ExpandMoreRoundedIcon style={{ color: 'white' }} />
       </IconButton>
@@ -125,7 +125,8 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   return (
     <div className="voiceWrapper" onClick={open ? handleClose : null}>
       <Moon ssifiTalk={ssifiTalk} />
-      <AudioReactRecorder state={recordState} onStop={onStop} load={sttLoad} />
+
+      <AudioReactRecorder state={recordState} onStop={onStop} />
 
       <input ref={checked} type="checkbox" id="stt-wrapper" />
 

@@ -156,3 +156,11 @@
 .voice-text-box {
   word-break: break-all;
 }
+
+.chat-box {
+  -ms-overflow-style: none;
+}
+
+.chat-box::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
