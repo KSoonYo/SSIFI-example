@@ -15,8 +15,6 @@ import Moon from './Moon'
 import { postRequest } from '../api/requests'
 import AudioReactRecorder, { RecordState } from './AudioRecorder'
 
-import '../style/VoiceMode.css'
-
 const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls, initAudioUrls }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
@@ -90,6 +88,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       console.log(audioFile)
       const formData = new FormData()
       formData.append('speech', audioFile)
+      formData.append('key', sessionStorage.getItem('key'))
       const response = await postRequest(`/api/channel/stt/`, formData)
 
       setChatContent(response.data.message)
