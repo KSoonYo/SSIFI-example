@@ -9,7 +9,7 @@ from .tasks import delete_tts_file, make_key, is_valid_key
 import os, re, uuid, time
 
 from STT import STT
-from NLP import novelbot, wellnessbot
+from NLP import Novelbot, Wellnessbot, Painterbot, Reporterbot, Writerbot
 from TTS import synthesize
 
 
@@ -68,7 +68,7 @@ def tts(request):
     if not req.get('mode'):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    modes = {'novel', 'wellness'}
+    modes = {'novel', 'wellness', 'painter', 'reporter', 'writer'}
 
     if req.get('mode') not in modes:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -77,12 +77,23 @@ def tts(request):
     mode = req['mode']
 
     if req.get('mode') == 'novel':
-        ssifi_response = novelbot.novelbot(user_message, 100)
+        ssifi_response = Novelbot.novelbot(user_message, 100)
 
     elif req.get('mode') == 'wellness':
-        ssifi_response = wellnessbot.wellnessbot(user_message, 50)
+        ssifi_response = Wellnessbot.wellnessbot(user_message, 50)
+
+    elif req.get('mode') == 'painter':
+        # TODO: 현재 메모리 초과, AWS 상황에서 확인 필요
+        # TODO: 번역 api 최대 횟수 지정 필요
+        ssifi_response = Painterbot.painterbot(user_message)
+
+    elif req.get('mode') == 'reporter':
+        # TODO: 세부 모델을 입력받는 방법 논의
+        ssifi_response = Reporterbot.reporterbot(user_message, 200, 'society')
+
+    elif req.get('mode') == 'writer':
+        ssifi_response = Writerbot.writerbot(user_message, 200)
     
-    # TODO: DB 변경 필요 & user_key 필드 추가
     # TODO: 프론트에서 정보 제공 동의를 받은 클라이언트 데이터만 저장하도록 수정
     message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode, client_key=key)
     message.save()
