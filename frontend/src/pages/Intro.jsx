@@ -1,13 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import IconButton from '@mui/material/IconButton'
 import Moon from './../components/Moon.jsx'
+import InfoDialog from './../components/InfoDialog'
+
 import '../style/Intro.css'
 
 const Intro = () => {
   const navigate = useNavigate()
+
+  const [open, setOpen] = useState(false)
+
+  const handleClose = () => {
+    setOpen(false)
+  }
 
   return (
     <div
@@ -38,12 +46,13 @@ const Intro = () => {
             height: '80px',
           }}
           onClick={() => {
-            navigate('/main')
+            setOpen(true)
           }}
         >
           <FontAwesomeIcon icon={faAngleRight} size="2x" style={{ color: 'white' }} />
         </IconButton>
       </div>
+      <InfoDialog open={open} handleClose={handleClose} navigate={navigate}></InfoDialog>
     </div>
   )
 }
