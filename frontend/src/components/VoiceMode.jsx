@@ -2,37 +2,27 @@ import { Box, Typography } from '@mui/material'
 import React, { useState, useEffect } from 'react'
 import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
 import IconButton from '@mui/material/IconButton'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
-import CellTowerIcon from '@mui/icons-material/CellTower'
 import MicIcon from '@mui/icons-material/Mic'
-import SoundWave from './SoundWave'
-import { postRequest } from '../api/requests'
 import { SyncLoader } from '../../node_modules/react-spinners/index'
-
-import AudioReactRecorder, { RecordState } from './AudioRecorder'
-import AudioRecorderTest from './AudioRecorderTest'
-import Moon from './Moon'
-
-import ChatList from './ChatList'
 import { Slide } from '../../node_modules/@mui/material/index'
+
+import '../style/VoiceMode.css'
+import ChatList from './ChatList'
+import Moon from './Moon'
+import { postRequest } from '../api/requests'
+import AudioReactRecorder, { RecordState } from './AudioRecorder'
 
 const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
   const [sttLoad, setSTTLoad] = useState(false)
-  const [ttsLoad, setTTSLoad] = useState(false)
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-  const handleRec = () => {
-    onRec ? stop() : start()
-
-    setOnRec(!onRec)
-  }
 
   useEffect(() => {
     try {
@@ -65,37 +55,25 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
     console.log('녹음 시작!')
   }
 
-  const stop = () => {
-    setRecordState(RecordState.STOP)
-    console.log('녹음 중지!')
-  }
-
   const onStop = async audioData => {
     console.log('audioData', audioData)
     const audioFile = new File([audioData.blob], 'voice.wav', { lastModified: new Date().getTime(), type: 'audio/wav' })
     try {
       console.log(audioFile)
-      // 음성 파일 formdata로 전송
       const formData = new FormData()
       formData.append('speech', audioFile)
       const response = await postRequest(`/api/channel/stt/`, formData)
 
       setChatContent(response.data.message)
 
-      console.log(response.data) // 응답 텍스트 결과
+      console.log(response.data)
       setSTTLoad(false)
+      setRecordState(RecordState.NONE)
     } catch (err) {
       console.log(err)
       setSTTLoad(false)
       setOnRec(false)
     }
-  }
-
-  const onSendTTS = () => {
-    setTTSLoad(true)
-    handleAddChat(chatContent)
-    setTTSLoad(false)
-    setOnRec(false)
   }
 
   const chatBox = (
@@ -110,12 +88,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   return (
     <div className="voiceWrapper">
       <Moon />
-      {/* TODO : SoundWave 파형 만들기  */}
-      <AudioReactRecorder state={recordState} onStop={onStop} load={sttLoad} />
-      <Box style={styles.soundWave}>
-        <SoundWave type={onRec ? 'listening' : 'wait'} />
-      </Box>
-      {/* <AudioRecorderTest state={recordState} onStop={onStop} />{' '} */}
+      <AudioReactRecorder state={recordState} onStop={onStop} />
       {onRec ? (
         <Box sx={styles.sttResult}>
           <Typography sx={{ color: 'white' }}>
@@ -131,7 +104,13 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
               chatContent
             )}
           </Typography>
-          <IconButton onClick={onSendTTS} disabled={sttLoad}>
+          <IconButton
+            onClick={() => {
+              handleAddChat(chatContent)
+              setOnRec(false)
+            }}
+            disabled={sttLoad}
+          >
             <FontAwesomeIcon
               icon={faSatelliteDish}
               size="xl"
@@ -147,38 +126,32 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
             border: '1px solid white',
           }}
         >
-          <IconButton onClick={handleRec}>
+          <IconButton
+            onClick={() => {
+              start()
+              setOnRec(!onRec)
+            }}
+          >
             <MicIcon sx={{ fontSize: '50px', color: 'white' }} />
           </IconButton>
         </Box>
       )}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <Box sx={styles.chatOpenBtn}>
         <IconButton sx={{ position: 'fixed', bottom: '0', width: '320px' }} onClick={handleOpen}>
           <ExpandLessRoundedIcon style={{ display: open ? 'none' : undefined, color: 'white' }} />
         </IconButton>
       </Box>
-      {ttsLoad ? (
-        <Box
-          sx={{
-            width: '100%',
-            height: '108%',
-            bgcolor: 'rgba(0, 0, 0, 0.5)',
-            position: 'absolute',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            transform: 'translate(0, -8%)',
-            flexDirection: 'column',
-          }}
-        >
-          <CellTowerIcon sx={{ color: 'white', fontSize: '100px' }}></CellTowerIcon>
-          <Typography sx={{ color: 'white' }}>교신중</Typography>
+      {chatList.includes(chatList.find(elem => elem.id === 'loading')) ? (
+        <Box sx={styles.ttsLoader}>
+          <div className="main_box">
+            <div className="dot"></div>
+            <div className="parent">
+              <div className="child">
+                <div className="subchild"></div>
+              </div>
+            </div>
+          </div>
+          <Typography sx={{ color: 'white' }}>음성을 우주로 보내고 있어요.</Typography>
         </Box>
       ) : (
         ''
@@ -221,6 +194,23 @@ const styles = {
     bgcolor: 'rgba(0, 0, 0, 0.5)',
     border: '1px solid white',
     boxShadow: 24,
+    overflowY: 'auto',
     p: 4,
+  },
+  chatOpenBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ttsLoader: {
+    width: '100%',
+    height: '108%',
+    bgcolor: 'rgba(0, 0, 0, 0.7)',
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: 'translate(0, -8%)',
+    flexDirection: 'column',
   },
 }

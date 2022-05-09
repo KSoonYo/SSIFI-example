@@ -1,0 +1,113 @@
+.main_box {
+  width: 50%;
+  height: 20%;
+  min-width: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0px 0px 10px white;
+  position: absolute;
+  background-color: white;
+}
+
+.parent,
+.child,
+.subchild {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 10px solid transparent;
+  border-left: 10px solid white;
+  border-right: 10px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ani3 3s ease-out infinite;
+}
+
+.child {
+  width: 75%;
+  height: 75%;
+  animation: ani2 3s ease-out infinite;
+}
+@keyframes ani2 {
+  0% {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+  25% {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+  50% {
+    border-left: 10px solid white;
+    border-right: 10px solid white;
+  }
+  75% {
+    border-left: 10px solid white;
+    border-right: 10px solid white;
+  }
+  100% {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+}
+.subchild {
+  width: 65%;
+  height: 65%;
+  animation: ani1 3s ease-out infinite;
+}
+
+@keyframes ani1 {
+  0% {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+  25% {
+    border-left: 10px solid white;
+    border-right: 10px solid white;
+  }
+  50% {
+    border-left: 10px solid white;
+    border-right: 10px solid white;
+  }
+  75% {
+    border-left: 10px solid white;
+    border-right: 10px solid white;
+  }
+  100% {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+}
+
+@keyframes ani3 {
+  0% {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+  25% {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+  50% {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+  75% {
+    border-left: 10px solid white;
+    border-right: 10px solid white;
+  }
+  100% {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+}
