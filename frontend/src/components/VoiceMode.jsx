@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -19,39 +19,63 @@ import Moon from './Moon'
 import ChatList from './ChatList'
 import { Slide } from '../../node_modules/@mui/material/index'
 
-const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls }) => {
+import '../style/VoiceMode.css'
+
+const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls, initAudioUrls }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
   const [sttLoad, setSTTLoad] = useState(false)
   const [ttsLoad, setTTSLoad] = useState(false)
+  const [ssifiTalk, setssifiTalk] = useState(false)
 
+  const checked = useRef(null)
+  const voiceText = useRef(null)
+
+  const handleTextBox = () => {
+    checked.current.click()
+  }
+  const handleVoiceText = () => {
+    voiceText.current.style = 'display: block'
+    voiceText.current.focus()
+  }
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const handleRec = () => {
     onRec ? stop() : start()
-
     setOnRec(!onRec)
+    handleTextBox()
   }
+
+  // 채팅 모드로 전환 시 audioUrls 배열 초기화
+  useEffect(() => {
+    return () => {
+      setssifiTalk(false)
+      initAudioUrls()
+    }
+  }, [initAudioUrls])
 
   useEffect(() => {
     try {
       if (audioUrls.length !== 0) {
         let audioIndex = 0
         let audio = new Audio()
-        audio.src = audioUrls[0]
+        audio.src = audioUrls[audioIndex]
         audio.currentTime = 0
         audio.play()
+        setssifiTalk(true)
 
         audio.addEventListener('ended', () => {
           if (audioIndex < audioUrls.length - 1) {
             audioIndex += 1
             audio.src = audioUrls[audioIndex]
             audio.play()
+          } else {
+            setssifiTalk(false)
           }
         })
         return audio.removeEventListener('ended', () => {
-          console.log('이벤트 제거')
+          console.log('audio play unmounted')
         })
       }
     } catch {
@@ -71,7 +95,6 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   }
 
   const onStop = async audioData => {
-    console.log('audioData', audioData)
     const audioFile = new File([audioData.blob], 'voice.wav', { lastModified: new Date().getTime(), type: 'audio/wav' })
     try {
       console.log(audioFile)
@@ -82,12 +105,14 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
 
       setChatContent(response.data.message)
 
-      console.log(response.data) // 응답 텍스트 결과
+      console.log('응답 결과:', response.data) // 응답 텍스트 결과
       setSTTLoad(false)
     } catch (err) {
       console.log(err)
       setSTTLoad(false)
       setOnRec(false)
+
+      handleTextBox()
     }
   }
 
@@ -96,6 +121,8 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
     handleAddChat(chatContent)
     setTTSLoad(false)
     setOnRec(false)
+
+    handleTextBox()
   }
 
   const chatBox = (
@@ -108,50 +135,66 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   )
 
   return (
-    <div className="voiceWrapper">
-      <Moon />
+    <div className="voiceWrapper" onClick={open ? handleClose : null}>
+      <Moon ssifiTalk={ssifiTalk} />
       {/* TODO : SoundWave 파형 만들기  */}
       <AudioReactRecorder state={recordState} onStop={onStop} load={sttLoad} />
       <Box style={styles.soundWave}>
         <SoundWave type={onRec ? 'listening' : 'wait'} />
       </Box>
       {/* <AudioRecorderTest state={recordState} onStop={onStop} />{' '} */}
-      {onRec ? (
-        <Box sx={styles.sttResult}>
-          <Typography sx={{ color: 'white' }}>
-            {sttLoad ? (
-              <SyncLoader
-                color={'#ffffff'}
-                loading={sttLoad}
-                css={{ display: 'block', margin: '0 auto' }}
-                size={10}
-                margin={8}
+
+      <input ref={checked} type="checkbox" id="stt-wrapper" />
+
+      <Box className="stt-wrapper">
+        {onRec ? (
+          <Box className="stt-result">
+            <Typography component="div" sx={{ color: 'white', width: '75%', paddingTop: '10px' }}>
+              {sttLoad ? (
+                <SyncLoader
+                  color={'#ffffff'}
+                  loading={sttLoad}
+                  css={{ display: 'block', margin: '0 auto' }}
+                  size={10}
+                  margin={8}
+                />
+              ) : (
+                <Box>
+                  <input
+                    className="voice-text-input"
+                    ref={voiceText}
+                    type="text"
+                    value={chatContent}
+                    maxLength="80"
+                    onChange={e => setChatContent(e.target.value)}
+                  />
+                  <p
+                    className="voice-text-box"
+                    onClick={() => {
+                      handleVoiceText()
+                    }}
+                  >
+                    {chatContent}
+                  </p>
+                </Box>
+              )}
+            </Typography>
+            <IconButton onClick={onSendTTS} disabled={sttLoad}>
+              <FontAwesomeIcon
+                icon={faSatelliteDish}
+                size="xl"
+                style={sttLoad ? { color: 'gray' } : { color: 'white' }}
               />
-            ) : (
-              chatContent
-            )}
-          </Typography>
-          <IconButton onClick={onSendTTS} disabled={sttLoad}>
-            <FontAwesomeIcon
-              icon={faSatelliteDish}
-              size="xl"
-              style={sttLoad ? { color: 'gray' } : { color: 'white' }}
-            />
-          </IconButton>
-        </Box>
-      ) : (
-        <Box
-          sx={{
-            backgroundColor: 'transparent',
-            borderRadius: '13px',
-            border: '1px solid white',
-          }}
-        >
-          <IconButton onClick={handleRec}>
-            <MicIcon sx={{ fontSize: '50px', color: 'white' }} />
-          </IconButton>
-        </Box>
-      )}
+            </IconButton>
+          </Box>
+        ) : (
+          <Box className="mic-btn">
+            <IconButton onClick={handleRec} style={{ borderRedius: '13px', border: '1px solid white' }}>
+              <MicIcon sx={{ fontSize: '50px', color: 'white' }} />
+            </IconButton>
+          </Box>
+        )}
+      </Box>
       <Box
         sx={{
           display: 'flex',
@@ -200,17 +243,6 @@ const styles = {
     justifyContent: 'center',
     height: '100px',
   },
-  sttResult: {
-    width: '80%',
-    height: '10vh',
-    backgroundColor: 'trasparent',
-    borderRadius: '25px',
-    border: '1px solid white',
-    display: 'flex',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    margin: '40px auto',
-  },
   chatBox: {
     position: 'absolute',
     height: '50vh',
@@ -222,5 +254,6 @@ const styles = {
     border: '1px solid white',
     boxShadow: 24,
     p: 4,
+    overflowY: 'auto',
   },
 }
