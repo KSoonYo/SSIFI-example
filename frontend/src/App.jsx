@@ -1,10 +1,12 @@
 import './App.css'
+// import React, { useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Main from './pages/Main'
 import Intro from './pages/Intro'
 import Particles from 'react-tsparticles'
 import { loadFull } from 'tsparticles'
+// import { getRequest } from '../api/requests.js'
 
 function App() {
   const particlesInit = async main => {
@@ -14,6 +16,18 @@ function App() {
   const particlesLoaded = container => {}
 
   const location = useLocation()
+
+  // key 발급 요청
+  // useEffect(() => {
+  //   if (!localStorage.getItem('key')) {
+  //     try {
+  //       const response = getRequest('api/channel/key/')
+  //       localStorage.setItem('key', response.data.key)
+  //     } catch {
+  //       console.log('key publish failed')
+  //     }
+  //   }
+  // }, [])
 
   return (
     <div className="wrapper">
