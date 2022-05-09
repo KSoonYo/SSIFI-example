@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
@@ -11,6 +11,13 @@ const Main = () => {
   const [chatList, setChatList] = useState([])
   const [audioUrls, setAudioUrls] = useState([])
   const [chatContent, setChatContent] = useState('')
+
+  // audioUrl 초기화
+  // useCallback으로 부모 컴포넌트에서 함수 정의 후 자식으로 전달
+  // https://stackoverflow.com/questions/62464488/how-to-use-a-prop-function-inside-of-useeffect
+  const initAudioUrls = useCallback(() => {
+    setAudioUrls([])
+  }, [])
 
   const handleAddChat = async function (data) {
     setChatList(prev => [
@@ -65,6 +72,7 @@ const Main = () => {
           chatList={chatList}
           setChatList={setChatList}
           audioUrls={audioUrls}
+          initAudioUrls={initAudioUrls}
         />
       ) : (
         <ChatMode
