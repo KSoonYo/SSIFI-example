@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
 import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded'
 import ToggleOnIcon from '@mui/icons-material/ToggleOn'
-import { postRequest } from '../api/requests.js'
+import { getRequest, postRequest } from '../api/requests.js'
 
 const Main = () => {
   const [mode, setMode] = useState(true)
@@ -17,6 +17,18 @@ const Main = () => {
   // https://stackoverflow.com/questions/62464488/how-to-use-a-prop-function-inside-of-useeffect
   const initAudioUrls = useCallback(() => {
     setAudioUrls([])
+  }, [])
+
+  // key 발급 요청
+  useEffect(() => {
+    if (!sessionStorage.getItem('key')) {
+      try {
+        const response = getRequest('api/channel/key/')
+        sessionStorage.setItem('key', response.data.key)
+      } catch {
+        console.log('key publish failed')
+      }
+    }
   }, [])
 
   const handleAddChat = async function (data) {
@@ -38,7 +50,12 @@ const Main = () => {
         },
       ])
       try {
-        const context = await postRequest('api/channel/tts/', { mode: 'test', message: data })
+        const context = await postRequest('api/channel/tts/', {
+          mode: 'test',
+          message: data,
+          isSaved: sessionStorage.getItem('isSaved'),
+          key: sessionStorage.getItem('key'),
+        })
         setChatList(prev => [
           ...prev.filter(elem => elem.id !== 'loading'),
           {

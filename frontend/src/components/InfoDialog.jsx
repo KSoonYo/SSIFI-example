@@ -8,6 +8,14 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
 const InfoDialog = ({ open, handleClose, navigate }) => {
+  const isSaved = () => {
+    sessionStorage.setItem('isSaved', true)
+  }
+
+  const isNotSaved = () => {
+    sessionStorage.setItem('isSaved', false)
+  }
+
   return (
     <Dialog
       open={open}
@@ -26,6 +34,7 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
       <DialogActions>
         <Button
           onClick={() => {
+            isNotSaved()
             handleClose()
             setTimeout(() => {
               navigate('/main')
@@ -37,6 +46,7 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
         </Button>
         <Button
           onClick={() => {
+            isSaved()
             handleClose()
             setTimeout(() => {
               navigate('/main')
