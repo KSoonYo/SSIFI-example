@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from .models import Message
 from .tasks import delete_tts_file, make_key, is_valid_key
-import os, re, uuid
+import os, re, uuid, time
 
 from STT import STT
 from NLP import novelbot, wellnessbot
@@ -96,12 +96,12 @@ def tts(request):
         os.mkdir(os.path.join(settings.MEDIA_ROOT, 'tts'))
 
     result_path = './media/tts'
-    # TODO: 파일 이름을 따로 보내서 저장하는 방식 필요
-    for sentence in sentences:
-        file_name = synthesize.make_sound(sentence, result_path)
-        url = base_url + settings.MEDIA_URL + 'tts/' + file_name
+    for i in range(len(sentences)):
+        file_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}'
+        synthesize.make_sound(file_name, sentences[i], result_path)
+        url = base_url + settings.MEDIA_URL + 'tts/' + file_name + '.wav'
         urls.append(url)
-        delete_tts_file.delay(file_name)
+        delete_tts_file.delay(file_name + '.wav')
 
     response = {'message': ssifi_response, 'url': urls}
     return JsonResponse(response)
