@@ -1,12 +1,12 @@
-FROM python:3.7
-ENV PYTHONDONTWRITEBUTECODE=1
-ENV PYTHONUNBUFFERED=1
+FROM ubuntu:20.04
+# ENV PYTHONDONTWRITEBUTECODE=1
+# ENV PYTHONUNBUFFERED=1
 
 WORKDIR /server
 COPY . /server
 
 RUN apt-get update
-RUN apt-get install -y libsndfile1
+RUN apt-get install -y python3-pip python3-dev libsndfile1
 
 RUN pip3 install virtualenv
 RUN source venv/bin/activate
