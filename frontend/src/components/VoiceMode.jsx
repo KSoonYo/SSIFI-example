@@ -16,7 +16,7 @@ import { postRequest } from '../api/requests'
 import AudioReactRecorder, { RecordState } from './AudioRecorder'
 import ModeList from './ModeList'
 
-const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls, initAudioUrls }) => {
+const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls, initAudioUrls, ttsLoad }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
@@ -44,6 +44,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   // 채팅 모드로 전환 시 audioUrls 배열 초기화
   useEffect(() => {
     return () => {
+      setRecordState(RecordState.NONE)
       setssifiTalk(false)
       initAudioUrls()
     }
@@ -107,8 +108,9 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
     }
   }
 
-  const onSendTTS = () => {
+  const onSendTTS = async () => {
     handleAddChat(chatContent)
+
     setOnRec(false)
 
     handleTextBox()
@@ -193,21 +195,19 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
           <ExpandLessRoundedIcon style={{ display: open ? 'none' : undefined, color: 'white' }} />
         </IconButton>
       </Box>
-      {chatList.includes(chatList.find(elem => elem.id === 'loading')) ? (
-        <Box sx={styles.ttsLoader}>
-          <div className="main_box">
-            <div className="dot"></div>
-            <div className="parent">
-              <div className="child">
-                <div className="subchild"></div>
-              </div>
+      {/* {ttsLoad && ( */}
+      <Box sx={styles.ttsLoader}>
+        <div className="main_box">
+          <div className="dot"></div>
+          <div className="parent">
+            <div className="child">
+              <div className="subchild"></div>
             </div>
           </div>
-          <Typography sx={{ color: 'white' }}>음성을 우주로 보내고 있어요.</Typography>
-        </Box>
-      ) : (
-        ''
-      )}
+        </div>
+        <Typography sx={{ color: 'white' }}>음성을 우주로 보내고 있어요.</Typography>
+      </Box>
+      {/* )} */}
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
         {chatBox}
       </Slide>
@@ -245,13 +245,12 @@ const styles = {
   },
   ttsLoader: {
     width: '100%',
-    height: '108%',
+    height: '100%',
     bgcolor: 'rgba(0, 0, 0, 0.7)',
     position: 'absolute',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    transform: 'translate(0, -8%)',
     flexDirection: 'column',
   },
 }

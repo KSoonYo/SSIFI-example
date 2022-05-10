@@ -1,11 +1,13 @@
 .mode-list {
   width: 80%;
   margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  overflow-x: auto;
-  -ms-overflow-style: none;
+  overflow: auto;
   padding: 0 3px;
+  white-space: nowrap;
+}
+
+.mode-btn {
+  display: inline-block;
 }
 
 .mode-list::-webkit-scrollbar {
