@@ -71,6 +71,7 @@ def tts(request):
     modes = {'novel', 'wellness', 'painter', 'writer', 'beauty', 'economy', 'entertainments', 'IT', 'society'}
     mode = req['mode']
     user_message = req['message']
+    base_url = 'http://localhost:8000'
 
     if mode not in modes:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -104,18 +105,18 @@ def tts(request):
     sentences = re.split('\. |\! |\? ', ssifi_response)
 
     urls = []
-    base_url = 'http://localhost:8000'
 
     if not os.path.isdir(os.path.join(settings.MEDIA_ROOT, 'tts')):
         os.mkdir(os.path.join(settings.MEDIA_ROOT, 'tts'))
 
-    result_path = './media/tts'
-    for i in range(len(sentences)):
-        file_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}'
-        synthesize.make_sound(file_name, sentences[i], result_path)
-        url = base_url + settings.MEDIA_URL + 'tts/' + file_name + '.wav'
-        urls.append(url)
-        delete_tts_file.delay(file_name + '.wav')
+    if mode != 'painter':
+        result_path = './media/tts'
+        for i in range(len(sentences)):
+            file_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}'
+            synthesize.make_sound(file_name, sentences[i], result_path)
+            url = base_url + settings.MEDIA_URL + 'tts/' + file_name + '.wav'
+            urls.append(url)
+            delete_tts_file.delay(file_name + '.wav')
 
     response = {'message': ssifi_response, 'url': urls}
     return JsonResponse(response)
