@@ -9,7 +9,13 @@ from .tasks import delete_tts_file, make_key, is_valid_key, delete_painter_file
 import os, re, hashlib, time
 
 from STT import STT
-from NLP import Novelbot, Wellnessbot, Painterbot, Reporterbot, Writerbot
+from NLP import (
+    novelbot,
+    wellnessbot,
+    Painterbot,
+    Reporterbot,
+    Writerbot
+)
 from TTS import synthesize
 
 
@@ -77,10 +83,10 @@ def tts(request):
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if mode == 'novel':
-        ssifi_response = Novelbot.novelbot(user_message, 100)
+        ssifi_response = novelbot.novelbot(user_message, 100)
 
     elif mode == 'wellness':
-        ssifi_response = Wellnessbot.wellnessbot(user_message, 50)
+        ssifi_response = wellnessbot.wellnessbot(user_message, 50)
 
     elif mode == 'painter':
         # TODO: 현재 메모리 초과, AWS 상황에서 확인 필요
