@@ -1,7 +1,6 @@
 FROM alpine
 # ENV PYTHONDONTWRITEBUTECODE=1
 # ENV PYTHONUNBUFFERED=1
-SHELL ["/bin/bash", "-c"]
 
 WORKDIR /server
 COPY . /server
@@ -11,7 +10,7 @@ RUN apt-get install -y python3-pip python3-dev libsndfile1 git
 
 RUN pip install virtualenv
 RUN virtualenv venv
-RUN source venv/bin/activate
+RUN . venv/bin/activate
 
 RUN pip install -r requirements.txt
 RUN pip install -r backend_requirements.txt
