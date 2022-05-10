@@ -101,7 +101,7 @@ def tts(request):
         # TODO: 서브모드가 추가될 경우 확인 로직
         ssifi_response = Writerbot.writerbot(user_message, 200)
     
-    if (req.get('isSaved' == 'true')):
+    if req.get('isSaved') == 'true':
         message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode, client_key=key)
         message.save()
     
