@@ -5,13 +5,11 @@ from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from .models import Message
-from .tasks import delete_tts_file, make_key, is_valid_key
-import os, sys, re, uuid
-
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))))
+from .tasks import delete_tts_file, make_key, is_valid_key, delete_painter_file
+import os, re, hashlib, time
 
 from STT import STT
-from NLP import novelbot, wellnessbot
+from NLP import Novelbot, Wellnessbot, Painterbot, Reporterbot, Writerbot
 from TTS import synthesize
 
 
@@ -70,40 +68,55 @@ def tts(request):
     if not req.get('mode'):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    modes = {'novel', 'wellness'}
+    modes = {'novel', 'wellness', 'painter', 'writer', 'beauty', 'economy', 'entertainments', 'IT', 'society'}
+    mode = req['mode']
+    user_message = req['message']
+    base_url = 'http://localhost:8000'
 
-    if req.get('mode') not in modes:
+    if mode not in modes:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    user_message = req['message']
-    mode = req['mode']
+    if mode == 'novel':
+        ssifi_response = Novelbot.novelbot(user_message, 100)
 
-    if req.get('mode') == 'novel':
-        ssifi_response = novelbot.novelbot(user_message, 100)
+    elif mode == 'wellness':
+        ssifi_response = Wellnessbot.wellnessbot(user_message, 50)
 
-    elif req.get('mode') == 'wellness':
-        ssifi_response = wellnessbot.wellnessbot(user_message, 50)
+    elif mode == 'painter':
+        # TODO: 현재 메모리 초과, AWS 상황에서 확인 필요
+        # TODO: 번역 api 최대 횟수 지정 필요
+        painter_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}.jpeg'
+        painter_path = os.path.join(settings.MEDIA_ROOT, 'painter', painter_name)
+        Painterbot.painterbot(user_message, painter_path)
+        delete_painter_file.delay(painter_name)
+        ssifi_response = base_url + settings.MEDIA_URL + 'painter/' + painter_name
+
+    elif mode in {'beauty', 'economy', 'entertainments', 'IT', 'society'}:
+        ssifi_response = Reporterbot.reporterbot(user_message, 200, mode)
+
+    elif mode == 'writer':
+        # TODO: 서브모드가 추가될 경우 확인 로직
+        ssifi_response = Writerbot.writerbot(user_message, 200)
     
-    # TODO: DB 변경 필요 & user_key 필드 추가
-    # TODO: 프론트에서 정보 제공 동의를 받은 클라이언트 데이터만 저장하도록 수정
-    message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode)
-    message.save()
+    if req.get('isSaved') == 'true':
+        message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode, client_key=key)
+        message.save()
     
     sentences = re.split('\. |\! |\? ', ssifi_response)
 
     urls = []
-    base_url = 'http://localhost:8000'
 
     if not os.path.isdir(os.path.join(settings.MEDIA_ROOT, 'tts')):
         os.mkdir(os.path.join(settings.MEDIA_ROOT, 'tts'))
 
-    result_path = './media/tts'
-    # TODO: 파일 이름을 따로 보내서 저장하는 방식 필요
-    for sentence in sentences:
-        file_name = synthesize.make_sound(sentence, result_path)
-        url = base_url + settings.MEDIA_URL + 'tts/' + file_name
-        urls.append(url)
-        delete_tts_file.delay(file_name)
+    if mode != 'painter':
+        result_path = './media/tts'
+        for i in range(len(sentences)):
+            file_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}'
+            synthesize.make_sound(file_name, sentences[i], result_path)
+            url = base_url + settings.MEDIA_URL + 'tts/' + file_name + '.wav'
+            urls.append(url)
+            delete_tts_file.delay(file_name + '.wav')
 
     response = {'message': ssifi_response, 'url': urls}
     return JsonResponse(response)
@@ -114,7 +127,16 @@ def make_client_key(request):
     '''
     요청받은 시간으로부터 1시간 동안 유효한 유니크 키를 반환
     '''
-    key = str(uuid.uuid1())
-    make_key.delay(key)
-    response = {'key': key}
+    try:
+        req = json.loads(request.body)
+    except Exception:
+        return JsonResponse({'detail': '지원되지 않는 미디어 형태입니다. '}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    init_key = req.get('uuid') + ''.join(str(time.time()).split('.'))
+    encode_key = init_key.encode('utf-8')
+    key = hashlib.new('sha256')
+    key.update(encode_key)
+    
+    make_key.delay(key.hexdigest())
+    response = {'key': key.hexdigest()}
     return JsonResponse(response)
