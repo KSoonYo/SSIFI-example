@@ -208,7 +208,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       ) : (
         ''
       )}
-      <Slide direction="up" in={open} mountOnEnter unmountOnExit>
+      <Slide direction="up" in={open} mountOnEnter>
         {chatBox}
       </Slide>
     </div>
