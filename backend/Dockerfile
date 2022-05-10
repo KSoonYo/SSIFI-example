@@ -9,7 +9,7 @@ RUN apt-get update
 RUN apt-get install -y python3-pip python3-dev libsndfile1
 
 RUN pip3 install virtualenv
-RUN source venv/bin/activate
+RUN . venv/bin/activate
 
 RUN pip3 install -r requirements.txt
 RUN pip3 install -r backend_requirements.txt
