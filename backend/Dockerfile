@@ -1,22 +1,21 @@
-FROM ubuntu:20.04
+FROM alpine
 # ENV PYTHONDONTWRITEBUTECODE=1
 # ENV PYTHONUNBUFFERED=1
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash"]
 
 WORKDIR /server
 COPY . /server
 
 RUN apt-get update
-RUN apt-get install -y python3-pip python3-dev libsndfile1
+RUN apt-get install -y python3-pip python3-dev libsndfile1 git
 
-RUN pip3 install virtualenv
+RUN pip install virtualenv
 RUN virtualenv venv
 RUN source venv/bin/activate
 
-RUN pip3 install -r requirements.txt
-RUN pip3 install -r backend_requirements.txt
+RUN pip install -r requirements.txt
+RUN pip install -r backend_requirements.txt
 
-RUN pip3 install gunicorn
 RUN python manage.py migrate
 EXPOSE 8000
 
