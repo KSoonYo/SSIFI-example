@@ -44,6 +44,7 @@ const Main = () => {
           {
             id: 'ssifi',
             chat: context.data.message,
+            url: context.data.url,
           },
         ])
         setAudioUrls(context.data.url)
@@ -55,7 +56,7 @@ const Main = () => {
 
   return (
     <div style={{ height: '100%' }}>
-      <Box sx={{ margin: '0 0 0 auto', display: 'flex', justifyContent: 'end' }}>
+      <Box sx={{ margin: '0 0 0 auto', display: 'flex', justifyContent: 'end', height: '7%' }}>
         <IconButton variant="outlined" onClick={() => setMode(!mode)}>
           {mode ? (
             <ToggleOffRoundedIcon sx={{ fontSize: '50px', color: 'white' }} />
