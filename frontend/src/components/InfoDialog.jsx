@@ -1,12 +1,13 @@
 import React from 'react'
 
+import { v4 as uuidv4 } from 'uuid'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-import { getRequest } from '../api/requests'
+import { postRequest } from '../api/requests'
 
 const InfoDialog = ({ open, handleClose, navigate }) => {
   const isSaved = status => {
@@ -17,7 +18,7 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
 
   const getKey = async () => {
     try {
-      const response = await getRequest('api/channel/key/')
+      const response = await postRequest('api/channel/key/', uuidv4())
       sessionStorage.setItem('key', response.data.key)
     } catch {
       console.log('key publish failed')
