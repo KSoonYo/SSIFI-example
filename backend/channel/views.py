@@ -93,9 +93,9 @@ def tts(request):
     elif req.get('mode') == 'writer':
         ssifi_response = Writerbot.writerbot(user_message, 200)
     
-    # TODO: 프론트에서 정보 제공 동의를 받은 클라이언트 데이터만 저장하도록 수정
-    message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode, client_key=key)
-    message.save()
+    if (req.get('isSaved' == 'true')):
+        message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode, client_key=key)
+        message.save()
     
     sentences = re.split('\. |\! |\? ', ssifi_response)
 
