@@ -3,4 +3,11 @@
   margin: 0 auto;
   display: flex;
   justify-content: center;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  padding: 0 3px;
+}
+
+.mode-list::-webkit-scrollbar {
+  display: none;
 }

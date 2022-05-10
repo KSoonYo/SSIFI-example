@@ -8,7 +8,11 @@ const ModeList = () => {
     { name: '소설', mode: 'novel' },
     { name: '상식', mode: 'wellness' },
     { name: '화가', mode: 'painter' },
-    { name: '기자', mode: 'reporter' },
+    { name: '뷰티', mode: 'beauty' },
+    { name: '경제', mode: 'economy' },
+    { name: '연예', mode: 'entertainments' },
+    { name: 'IT', mode: 'IT' },
+    { name: '사회', mode: 'society' },
     { name: '작가', mode: 'writer' },
   ]
 
