@@ -9,7 +9,13 @@ from .tasks import delete_tts_file, make_key, is_valid_key, delete_painter_file
 import os, re, hashlib, time
 
 from STT import STT
-from NLP import Novelbot, Wellnessbot, Painterbot, Reporterbot, Writerbot
+from NLP import (
+    # novelbot,
+    # wellnessbot,
+    Painterbot,
+    Reporterbot,
+    Writerbot
+)
 from TTS import synthesize
 
 
