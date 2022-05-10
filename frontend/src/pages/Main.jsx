@@ -12,7 +12,8 @@ const Main = () => {
   const [chatList, setChatList] = useState([
     {
       id: 'ssifi',
-      chat: '안녕하세요 여러분의 SSIFI 입니다. \n음성 모드에서 대화를 나누어보세요 !\n우측 상단 버튼을 통해 채팅도 진행할 수 있습니다 !',
+      chat: '안녕하세요 여러분의 SSIFI 입니다. \n음성 모드에서 대화를 나누어보세요!\n우측 상단 버튼을 통해 채팅도 진행할 수 있습니다 !',
+      info: true,
     },
   ])
   const [audioUrls, setAudioUrls] = useState([])
@@ -58,6 +59,7 @@ const Main = () => {
           {
             id: 'ssifi',
             chat: context.data.message,
+            info: false,
             url: context.data.url,
           },
         ])
