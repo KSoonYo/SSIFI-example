@@ -68,20 +68,20 @@ def tts(request):
     if not req.get('mode'):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    modes = {'novel', 'wellness', 'painter', 'reporter', 'writer'}
+    modes = {'novel', 'wellness', 'painter', 'writer', 'beauty', 'economy', 'entertainments', 'IT', 'society'}
     mode = req['mode']
     user_message = req['message']
 
     if mode not in modes:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if req.get('mode') == 'novel':
+    if mode == 'novel':
         ssifi_response = Novelbot.novelbot(user_message, 100)
 
-    elif req.get('mode') == 'wellness':
+    elif mode == 'wellness':
         ssifi_response = Wellnessbot.wellnessbot(user_message, 50)
 
-    elif req.get('mode') == 'painter':
+    elif mode == 'painter':
         # TODO: 현재 메모리 초과, AWS 상황에서 확인 필요
         # TODO: 번역 api 최대 횟수 지정 필요
         painter_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}.jpeg'
@@ -90,19 +90,10 @@ def tts(request):
         delete_painter_file.delay(painter_name)
         ssifi_response = base_url + settings.MEDIA_URL + 'painter/' + painter_name
 
-    elif req.get('mode') == 'reporter':
-        # TODO: 서브모드 대신 일반 모드로 들어올 경우 report 확인 로직
-        if not req.get('submode'):
-            return JsonResponse({'detail': 'submode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+    elif mode in {'beauty', 'economy', 'entertainments', 'IT', 'society'}:
+        ssifi_response = Reporterbot.reporterbot(user_message, 200, mode)
 
-        sub_modes = {'beauty', 'economy', 'entertainments', 'IT', 'society'}
-        sub_mode = req.get('submode')
-        if sub_mode not in sub_modes:
-            return JsonResponse({'detail': '지원하지 않는 submode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        ssifi_response = Reporterbot.reporterbot(user_message, 200, sub_mode)
-
-    elif req.get('mode') == 'writer':
+    elif mode == 'writer':
         # TODO: 서브모드가 추가될 경우 확인 로직
         ssifi_response = Writerbot.writerbot(user_message, 200)
     
