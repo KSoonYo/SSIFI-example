@@ -18,7 +18,7 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
 
   const getKey = async () => {
     try {
-      const response = await postRequest('api/channel/key/', uuidv4())
+      const response = await postRequest('api/channel/key/', { uuid: uuidv4() })
       sessionStorage.setItem('key', response.data.key)
     } catch {
       console.log('key publish failed')

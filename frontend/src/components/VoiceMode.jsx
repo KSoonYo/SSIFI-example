@@ -22,6 +22,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   const [recordState, setRecordState] = useState('')
   const [sttLoad, setSTTLoad] = useState(false)
   const [ssifiTalk, setssifiTalk] = useState(false)
+  const [audio] = useState(new Audio())
 
   const checked = useRef(null)
   const voiceText = useRef(null)
@@ -46,14 +47,16 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
     return () => {
       setssifiTalk(false)
       initAudioUrls()
+      if (audio && audio.currentTime > 0) {
+        audio.pause()
+      }
     }
-  }, [initAudioUrls])
+  }, [initAudioUrls, audio])
 
   useEffect(() => {
     try {
       if (audioUrls.length !== 0) {
         let audioIndex = 0
-        let audio = new Audio()
         audio.src = audioUrls[audioIndex]
         audio.currentTime = 0
         audio.play()
@@ -75,7 +78,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
     } catch {
       console.log('error')
     }
-  }, [audioUrls])
+  }, [audioUrls, audio])
 
   const start = () => {
     setSTTLoad(true)
