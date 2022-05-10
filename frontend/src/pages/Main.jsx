@@ -55,6 +55,7 @@ const Main = () => {
           {
             id: 'ssifi',
             chat: context.data.message,
+            url: context.data.url,
           },
         ])
         setAudioUrls(context.data.url)
@@ -66,7 +67,9 @@ const Main = () => {
 
   return (
     <div style={{ height: '100%' }}>
-      <Box sx={{ margin: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box
+        sx={{ margin: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '7%' }}
+      >
         <Typography sx={{ margin: '0 10px', color: 'white', fontWeight: 600 }}></Typography>
         <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>
           {mode ? 'SSIFI와 대화하기' : 'SSIFI와 채팅하기'}

@@ -6,6 +6,7 @@ import '../style/ChatList.css'
 
 const ChatList = props => {
   const scrollRef = useRef()
+  const audioRef = useRef()
 
   useEffect(() => {
     scrollToBottom()
@@ -16,11 +17,29 @@ const ChatList = props => {
     scrollRef.current.scrollTop = scrollHeight - clientHeight
   }
 
+  const initAudioPlay = () => {
+    if (audioRef.current && audioRef.current.currentTime > 0) {
+      audioRef.current.pause()
+    }
+  }
+
+  const handleAudioPlay = index => {
+    props.chatList.forEach((elem, idx) => {
+      if (idx === index) {
+        audioRef.current = new Audio(elem.url)
+        audioRef.current.play()
+      }
+    })
+  }
+
   return (
     <div
       className="chatList"
       ref={scrollRef}
       style={{ ...props.style, overflow: 'auto', display: 'flex', flexDirection: 'column' }}
+      onClick={() => {
+        initAudioPlay()
+      }}
     >
       {props.chatList.map((chatItem, index) => {
         return (
@@ -32,14 +51,18 @@ const ChatList = props => {
                 : { display: 'flex', justifyContent: 'flex-start' }
             }
           >
-            <div
-              key={index}
-              className={chatItem.id === 'me' ? 'myChat' : chatItem.id === 'loading' ? 'loading' : 'ssifiChat'}
-            >
+            <div className={chatItem.id === 'me' ? 'myChat' : chatItem.id === 'loading' ? 'loading' : 'ssifiChat'}>
+              <audio ref={audioRef} style={{ display: 'none' }}></audio>
               {chatItem.id === 'loading' ? (
                 <FontAwesomeIcon className="spin-pulse" icon={faSpinner} style={{ color: 'white' }} />
               ) : (
-                <Typography className="chatContent" style={{ color: 'white' }}>
+                <Typography
+                  onClick={() => {
+                    handleAudioPlay(index)
+                  }}
+                  className="chatContent"
+                  style={{ color: 'white' }}
+                >
                   {chatItem.chat}
                 </Typography>
               )}
