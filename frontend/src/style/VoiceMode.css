@@ -1,3 +1,11 @@
+.voiceWrapper {
+  display: flex;
+  height: 90%;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
 .main_box {
   width: 50%;
   height: 20%;
