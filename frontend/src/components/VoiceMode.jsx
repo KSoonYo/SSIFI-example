@@ -195,19 +195,19 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
           <ExpandLessRoundedIcon style={{ display: open ? 'none' : undefined, color: 'white' }} />
         </IconButton>
       </Box>
-      {/* {ttsLoad && ( */}
-      <Box sx={styles.ttsLoader}>
-        <div className="main_box">
-          <div className="dot"></div>
-          <div className="parent">
-            <div className="child">
-              <div className="subchild"></div>
+      {ttsLoad && (
+        <Box sx={styles.ttsLoader}>
+          <div className="main_box">
+            <div className="dot"></div>
+            <div className="parent">
+              <div className="child">
+                <div className="subchild"></div>
+              </div>
             </div>
           </div>
-        </div>
-        <Typography sx={{ color: 'white' }}>음성을 우주로 보내고 있어요.</Typography>
-      </Box>
-      {/* )} */}
+          <Typography sx={{ color: 'white' }}>음성을 우주로 보내고 있어요.</Typography>
+        </Box>
+      )}
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
         {chatBox}
       </Slide>
@@ -245,7 +245,7 @@ const styles = {
   },
   ttsLoader: {
     width: '100%',
-    height: '100%',
+    height: '110%',
     bgcolor: 'rgba(0, 0, 0, 0.7)',
     position: 'absolute',
     display: 'flex',
