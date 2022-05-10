@@ -33,8 +33,11 @@ def save_images(batch: torch.Tensor):
 	output_image.save(save_image_path)
 	return Image.fromarray(reshaped.numpy())
 
-def painterbot(prompt) :
+def painterbot(prompt, path='') :
+	global save_image_path
 
+	if path:
+		save_image_path = path
 	# Google translator 라이브러리를 통한 번역
 	translator = Translator()
 	prompt = translator.translate(prompt, dest='en')
