@@ -1,6 +1,4 @@
 FROM ubuntu:20.04
-# ENV PYTHONDONTWRITEBUTECODE=1
-# ENV PYTHONUNBUFFERED=1
 
 WORKDIR /server
 COPY . /server
@@ -17,6 +15,9 @@ RUN pip install -r requirements.txt
 RUN pip install -r backend_requirements.txt
 
 RUN python3 manage.py migrate
+RUN python3 manage.py makemigrations
+RUN python3 manage.py collectstatic
+
 EXPOSE 8000
 
 # CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
