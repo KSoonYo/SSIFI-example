@@ -1,7 +1,7 @@
 FROM alpine
 # ENV PYTHONDONTWRITEBUTECODE=1
 # ENV PYTHONUNBUFFERED=1
-SHELL ["/bin/bash"]
+SHELL ["/bin/bash", "-c"]
 
 WORKDIR /server
 COPY . /server
