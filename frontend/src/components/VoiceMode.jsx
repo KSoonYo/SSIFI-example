@@ -14,6 +14,7 @@ import ChatList from './ChatList'
 import Moon from './Moon'
 import { postRequest } from '../api/requests'
 import AudioReactRecorder, { RecordState } from './AudioRecorder'
+import ModeList from './ModeList'
 
 const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls, initAudioUrls }) => {
   const [open, setOpen] = useState(false)
@@ -118,6 +119,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       <IconButton sx={{ width: '100%' }} onClick={handleClose}>
         <ExpandMoreRoundedIcon style={{ color: 'white' }} />
       </IconButton>
+      <ModeList />
       <ChatList chatList={chatList} />
     </Box>
   )

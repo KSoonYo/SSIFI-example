@@ -9,7 +9,12 @@ import { Typography } from '../../node_modules/@mui/material/index'
 
 const Main = () => {
   const [mode, setMode] = useState(true)
-  const [chatList, setChatList] = useState([])
+  const [chatList, setChatList] = useState([
+    {
+      id: 'ssifi',
+      chat: '안녕하세요 여러분의 SSIFI 입니다. \n음성 모드에서 대화를 나누어보세요 !\n우측 상단 버튼을 통해 채팅도 진행할 수 있습니다 !',
+    },
+  ])
   const [audioUrls, setAudioUrls] = useState([])
   const [chatContent, setChatContent] = useState('')
 
@@ -40,7 +45,7 @@ const Main = () => {
       ])
       try {
         const context = await postRequest('api/channel/tts/', {
-          mode: 'test',
+          mode: sessionStorage.getItem('mode'),
           message: data,
           isSaved: sessionStorage.getItem('isSaved'),
           key: sessionStorage.getItem('key'),
