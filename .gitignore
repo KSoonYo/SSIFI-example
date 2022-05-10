@@ -423,3 +423,4 @@ pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/venv,node,python,django,jupyternotebooks,visualstudiocode
 models
+secrets.json
