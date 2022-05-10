@@ -1,6 +1,7 @@
 FROM ubuntu:20.04
 # ENV PYTHONDONTWRITEBUTECODE=1
 # ENV PYTHONUNBUFFERED=1
+SHELL ["/bin/bash", "-c"]
 
 WORKDIR /server
 COPY . /server
@@ -9,7 +10,8 @@ RUN apt-get update
 RUN apt-get install -y python3-pip python3-dev libsndfile1
 
 RUN pip3 install virtualenv
-RUN . venv/bin/activate
+RUN virtualenv venv
+RUN source venv/bin/activate
 
 RUN pip3 install -r requirements.txt
 RUN pip3 install -r backend_requirements.txt
