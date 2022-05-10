@@ -69,12 +69,11 @@ def tts(request):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
     modes = {'novel', 'wellness', 'painter', 'reporter', 'writer'}
-
-    if req.get('mode') not in modes:
-        return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    user_message = req['message']
     mode = req['mode']
+    user_message = req['message']
+
+    if mode not in modes:
+        return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if req.get('mode') == 'novel':
         ssifi_response = Novelbot.novelbot(user_message, 100)
@@ -118,7 +117,7 @@ def tts(request):
     return JsonResponse(response)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def make_client_key(request):
     '''
     요청받은 시간으로부터 1시간 동안 유효한 유니크 키를 반환
