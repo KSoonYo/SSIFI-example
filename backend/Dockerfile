@@ -8,10 +8,13 @@ COPY . /server
 RUN apt-get update
 RUN apt-get install -y libsndfile1
 
+RUN pip3 install virtualenv
+RUN source venv/bin/activate
+
 RUN pip3 install -r requirements.txt
 RUN pip3 install -r backend_requirements.txt
-RUN pip3 install gunicorn
 
+RUN pip3 install gunicorn
 RUN python manage.py migrate
 EXPOSE 8000
 
