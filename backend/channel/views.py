@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from .models import Message
 from .tasks import delete_tts_file, make_key, is_valid_key, delete_painter_file
-import os, re, uuid, time
+import os, re, hashlib, time
 
 from STT import STT
 from NLP import Novelbot, Wellnessbot, Painterbot, Reporterbot, Writerbot
@@ -121,13 +121,21 @@ def tts(request):
     return JsonResponse(response)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def make_client_key(request):
     '''
     요청받은 시간으로부터 1시간 동안 유효한 유니크 키를 반환
     '''
-    # TODO: POST 변경 & uuid받아서 시간을 붙여 새로운 키 발급
-    key = str(uuid.uuid1())
-    make_key.delay(key)
-    response = {'key': key}
+    try:
+        req = json.loads(request.body)
+    except Exception:
+        return JsonResponse({'detail': '지원되지 않는 미디어 형태입니다. '}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    init_key = req.get('uuid') + ''.join(str(time.time()).split('.'))
+    encode_key = init_key.encode('utf-8')
+    key = hashlib.new('sha256')
+    key.update(encode_key)
+    
+    make_key.delay(key.hexdigest())
+    response = {'key': key.hexdigest()}
     return JsonResponse(response)
