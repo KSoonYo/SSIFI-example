@@ -1,57 +1,75 @@
 import { Box, Typography } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
 import IconButton from '@mui/material/IconButton'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
-import CellTowerIcon from '@mui/icons-material/CellTower'
 import MicIcon from '@mui/icons-material/Mic'
-import SoundWave from './SoundWave'
-import { postRequest } from '../api/requests'
 import { SyncLoader } from '../../node_modules/react-spinners/index'
-
-import AudioReactRecorder, { RecordState } from './AudioRecorder'
-import AudioRecorderTest from './AudioRecorderTest'
-import Moon from './Moon'
-
-import ChatList from './ChatList'
 import { Slide } from '../../node_modules/@mui/material/index'
 
-const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls }) => {
+import '../style/VoiceMode.css'
+import ChatList from './ChatList'
+import Moon from './Moon'
+import { postRequest } from '../api/requests'
+import AudioReactRecorder, { RecordState } from './AudioRecorder'
+import ModeList from './ModeList'
+
+const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls, initAudioUrls }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
   const [sttLoad, setSTTLoad] = useState(false)
-  const [ttsLoad, setTTSLoad] = useState(false)
+  const [ssifiTalk, setssifiTalk] = useState(false)
 
+  const checked = useRef(null)
+  const voiceText = useRef(null)
+
+  const handleTextBox = () => {
+    checked.current.click()
+  }
+  const handleVoiceText = () => {
+    voiceText.current.style = 'display: block'
+    voiceText.current.focus()
+  }
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const handleRec = () => {
-    onRec ? stop() : start()
-
+    start()
     setOnRec(!onRec)
+    handleTextBox()
   }
+
+  // 채팅 모드로 전환 시 audioUrls 배열 초기화
+  useEffect(() => {
+    return () => {
+      setssifiTalk(false)
+      initAudioUrls()
+    }
+  }, [initAudioUrls])
 
   useEffect(() => {
     try {
       if (audioUrls.length !== 0) {
         let audioIndex = 0
         let audio = new Audio()
-        audio.src = audioUrls[0]
+        audio.src = audioUrls[audioIndex]
         audio.currentTime = 0
         audio.play()
+        setssifiTalk(true)
 
         audio.addEventListener('ended', () => {
           if (audioIndex < audioUrls.length - 1) {
             audioIndex += 1
             audio.src = audioUrls[audioIndex]
             audio.play()
+          } else {
+            setssifiTalk(false)
           }
         })
         return audio.removeEventListener('ended', () => {
-          console.log('이벤트 제거')
+          console.log('audio play unmounted')
         })
       }
     } catch {
@@ -65,93 +83,105 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
     console.log('녹음 시작!')
   }
 
-  const stop = () => {
-    setRecordState(RecordState.STOP)
-    console.log('녹음 중지!')
-  }
-
   const onStop = async audioData => {
-    console.log('audioData', audioData)
     const audioFile = new File([audioData.blob], 'voice.wav', { lastModified: new Date().getTime(), type: 'audio/wav' })
     try {
       console.log(audioFile)
-      // 음성 파일 formdata로 전송
       const formData = new FormData()
       formData.append('speech', audioFile)
+      formData.append('key', sessionStorage.getItem('key'))
       const response = await postRequest(`/api/channel/stt/`, formData)
 
       setChatContent(response.data.message)
 
-      console.log(response.data) // 응답 텍스트 결과
+      console.log('응답 결과:', response.data) // 응답 텍스트 결과
       setSTTLoad(false)
+      setRecordState(RecordState.NONE)
+      // Todo: 401 에러 처리 (Intro로 이동)
     } catch (err) {
       console.log(err)
       setSTTLoad(false)
       setOnRec(false)
+
+      handleTextBox()
     }
   }
 
   const onSendTTS = () => {
-    setTTSLoad(true)
     handleAddChat(chatContent)
-    setTTSLoad(false)
     setOnRec(false)
+
+    handleTextBox()
   }
 
   const chatBox = (
-    <Box sx={styles.chatBox}>
+    <Box sx={styles.chatBox} className="chat-box">
       <IconButton sx={{ width: '100%' }} onClick={handleClose}>
         <ExpandMoreRoundedIcon style={{ color: 'white' }} />
       </IconButton>
+      <ModeList />
       <ChatList chatList={chatList} />
     </Box>
   )
 
   return (
-    <div className="voiceWrapper">
-      <Moon />
-      {/* TODO : SoundWave 파형 만들기  */}
-      <AudioReactRecorder state={recordState} onStop={onStop} load={sttLoad} />
-      <Box style={styles.soundWave}>
-        <SoundWave type={onRec ? 'listening' : 'wait'} />
-      </Box>
-      {/* <AudioRecorderTest state={recordState} onStop={onStop} />{' '} */}
-      {onRec ? (
-        <Box sx={styles.sttResult}>
-          <Typography sx={{ color: 'white' }}>
-            {sttLoad ? (
-              <SyncLoader
-                color={'#ffffff'}
-                loading={sttLoad}
-                css={{ display: 'block', margin: '0 auto' }}
-                size={10}
-                margin={8}
+    <div className="voiceWrapper" onClick={open ? handleClose : null}>
+      <Moon ssifiTalk={ssifiTalk} />
+
+      <AudioReactRecorder state={recordState} onStop={onStop} />
+
+      <input ref={checked} type="checkbox" id="stt-wrapper" />
+
+      <Box className="stt-wrapper">
+        {onRec ? (
+          <Box className="stt-result">
+            <Typography component="div" sx={{ color: 'white', width: '75%', paddingTop: '10px' }}>
+              {sttLoad ? (
+                <SyncLoader
+                  color={'#ffffff'}
+                  loading={sttLoad}
+                  css={{ display: 'block', margin: '0 auto' }}
+                  size={10}
+                  margin={8}
+                />
+              ) : (
+                <Box>
+                  <input
+                    className="voice-text-input"
+                    ref={voiceText}
+                    type="text"
+                    value={chatContent}
+                    maxLength="80"
+                    onChange={e => setChatContent(e.target.value)}
+                  />
+                  <p
+                    className="voice-text-box"
+                    onClick={() => {
+                      handleVoiceText()
+                    }}
+                    disabled={sttLoad}
+                  >
+                    {chatContent}
+                  </p>
+                </Box>
+              )}
+            </Typography>
+            <IconButton onClick={onSendTTS} disabled={sttLoad}>
+              <FontAwesomeIcon
+                icon={faSatelliteDish}
+                size="xl"
+                style={sttLoad ? { color: 'gray' } : { color: 'white' }}
               />
-            ) : (
-              chatContent
-            )}
-          </Typography>
-          <IconButton onClick={onSendTTS} disabled={sttLoad}>
-            <FontAwesomeIcon
-              icon={faSatelliteDish}
-              size="xl"
-              style={sttLoad ? { color: 'gray' } : { color: 'white' }}
-            />
-          </IconButton>
-        </Box>
-      ) : (
-        <Box
-          sx={{
-            backgroundColor: 'transparent',
-            borderRadius: '13px',
-            border: '1px solid white',
-          }}
-        >
-          <IconButton onClick={handleRec}>
-            <MicIcon sx={{ fontSize: '50px', color: 'white' }} />
-          </IconButton>
-        </Box>
-      )}
+            </IconButton>
+          </Box>
+        ) : (
+          <Box className="mic-btn">
+            <IconButton onClick={handleRec} style={{ borderRedius: '13px', border: '1px solid white' }}>
+              <MicIcon sx={{ fontSize: '50px', color: 'white' }} />
+            </IconButton>
+          </Box>
+        )}
+      </Box>
       <Box
         sx={{
           display: 'flex',
@@ -163,22 +193,17 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
           <ExpandLessRoundedIcon style={{ display: open ? 'none' : undefined, color: 'white' }} />
         </IconButton>
       </Box>
-      {ttsLoad ? (
-        <Box
-          sx={{
-            width: '100%',
-            height: '108%',
-            bgcolor: 'rgba(0, 0, 0, 0.5)',
-            position: 'absolute',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            transform: 'translate(0, -8%)',
-            flexDirection: 'column',
-          }}
-        >
-          <CellTowerIcon sx={{ color: 'white', fontSize: '100px' }}></CellTowerIcon>
-          <Typography sx={{ color: 'white' }}>교신중</Typography>
+      {chatList.includes(chatList.find(elem => elem.id === 'loading')) ? (
+        <Box sx={styles.ttsLoader}>
+          <div className="main_box">
+            <div className="dot"></div>
+            <div className="parent">
+              <div className="child">
+                <div className="subchild"></div>
+              </div>
+            </div>
+          </div>
+          <Typography sx={{ color: 'white' }}>음성을 우주로 보내고 있어요.</Typography>
         </Box>
       ) : (
         ''
@@ -200,17 +225,6 @@ const styles = {
     justifyContent: 'center',
     height: '100px',
   },
-  sttResult: {
-    width: '80%',
-    height: '10vh',
-    backgroundColor: 'trasparent',
-    borderRadius: '25px',
-    border: '1px solid white',
-    display: 'flex',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    margin: '40px auto',
-  },
   chatBox: {
     position: 'absolute',
     height: '50vh',
@@ -221,6 +235,23 @@ const styles = {
     bgcolor: 'rgba(0, 0, 0, 0.5)',
     border: '1px solid white',
     boxShadow: 24,
+    overflowY: 'auto',
     p: 4,
+  },
+  chatOpenBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ttsLoader: {
+    width: '100%',
+    height: '108%',
+    bgcolor: 'rgba(0, 0, 0, 0.7)',
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: 'translate(0, -8%)',
+    flexDirection: 'column',
   },
 }
