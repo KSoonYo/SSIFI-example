@@ -18,6 +18,7 @@ const Main = () => {
   ])
   const [audioUrls, setAudioUrls] = useState([])
   const [chatContent, setChatContent] = useState('')
+  const [ttsLoad, setTTSLoad] = useState(false)
 
   // audioUrl 초기화
   // useCallback으로 부모 컴포넌트에서 함수 정의 후 자식으로 전달
@@ -27,6 +28,7 @@ const Main = () => {
   }, [])
 
   const handleAddChat = async function (data) {
+    setTTSLoad(true)
     setChatList(prev => [
       ...prev,
       {
@@ -51,6 +53,7 @@ const Main = () => {
           isSaved: sessionStorage.getItem('isSaved'),
           key: sessionStorage.getItem('key'),
         })
+        setTTSLoad(false)
         setChatList(prev => [
           ...prev.filter(elem => elem.id !== 'loading'),
           {
@@ -70,12 +73,17 @@ const Main = () => {
   return (
     <div style={{ height: '100%' }}>
       <Box
-        sx={{ margin: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '7%' }}
+        sx={{
+          margin: 'auto',
+          display: 'flex',
+          width: '80%',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          height: '7%',
+        }}
       >
-        <Typography sx={{ margin: '0 10px', color: 'white', fontWeight: 600 }}></Typography>
-        <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>
-          {mode ? 'SSIFI와 대화하기' : 'SSIFI와 채팅하기'}
-        </Typography>
+        <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>SSIFI</Typography>
+        <Typography sx={{ margin: '0 10px', color: 'gray' }}>{mode ? 'Voice Mode' : 'Chat Mode'}</Typography>
         <IconButton variant="outlined" onClick={() => setMode(!mode)}>
           {mode ? (
             <ToggleOffRoundedIcon sx={{ fontSize: '50px', color: 'white' }} />
@@ -93,6 +101,7 @@ const Main = () => {
           setChatList={setChatList}
           audioUrls={audioUrls}
           initAudioUrls={initAudioUrls}
+          ttsLoad={ttsLoad}
         />
       ) : (
         <ChatMode
