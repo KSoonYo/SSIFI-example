@@ -19,6 +19,18 @@ def delete_tts_file(file_name):
 
 
 @shared_task
+def delete_painter_file(file_name):
+    time.sleep(3600)
+
+    if os.path.isfile(f'media/painter/{file_name}'):
+        os.remove(f'media/painter/{file_name}')
+        print(str(datetime.now()) + f' {file_name} 삭제')
+
+    else:
+        print(str(datetime.now()) + f' {file_name}이 없습니다.')
+
+
+@shared_task
 def make_key(key):
     key_set.add(key)
     print(str(datetime.now()) + f' 클라이언트 {key} 추가')

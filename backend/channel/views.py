@@ -5,7 +5,7 @@ from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from .models import Message
-from .tasks import delete_tts_file, make_key, is_valid_key
+from .tasks import delete_tts_file, make_key, is_valid_key, delete_painter_file
 import os, re, uuid, time
 
 from STT import STT
@@ -84,9 +84,14 @@ def tts(request):
     elif req.get('mode') == 'painter':
         # TODO: 현재 메모리 초과, AWS 상황에서 확인 필요
         # TODO: 번역 api 최대 횟수 지정 필요
-        ssifi_response = Painterbot.painterbot(user_message)
+        painter_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}.jpeg'
+        painter_path = os.path.join(settings.MEDIA_ROOT, 'painter', painter_name)
+        Painterbot.painterbot(user_message, painter_path)
+        delete_painter_file.delay(painter_name)
+        ssifi_response = base_url + settings.MEDIA_URL + 'painter/' + painter_name
 
     elif req.get('mode') == 'reporter':
+        # TODO: 서브모드 대신 일반 모드로 들어올 경우 report 확인 로직
         if not req.get('submode'):
             return JsonResponse({'detail': 'submode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -130,6 +135,7 @@ def make_client_key(request):
     '''
     요청받은 시간으로부터 1시간 동안 유효한 유니크 키를 반환
     '''
+    # TODO: POST 변경 & uuid받아서 시간을 붙여 새로운 키 발급
     key = str(uuid.uuid1())
     make_key.delay(key)
     response = {'key': key}
