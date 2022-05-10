@@ -14,6 +14,7 @@ import ChatList from './ChatList'
 import Moon from './Moon'
 import { postRequest } from '../api/requests'
 import AudioReactRecorder, { RecordState } from './AudioRecorder'
+import ModeList from './ModeList'
 
 const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls, initAudioUrls }) => {
   const [open, setOpen] = useState(false)
@@ -96,6 +97,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       console.log('응답 결과:', response.data) // 응답 텍스트 결과
       setSTTLoad(false)
       setRecordState(RecordState.NONE)
+      // Todo: 401 에러 처리 (Intro로 이동)
     } catch (err) {
       console.log(err)
       setSTTLoad(false)
@@ -117,6 +119,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       <IconButton sx={{ width: '100%' }} onClick={handleClose}>
         <ExpandMoreRoundedIcon style={{ color: 'white' }} />
       </IconButton>
+      <ModeList />
       <ChatList chatList={chatList} />
     </Box>
   )
@@ -205,7 +208,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       ) : (
         ''
       )}
-      <Slide direction="up" in={open} mountOnEnter unmountOnExit>
+      <Slide direction="up" in={open} mountOnEnter>
         {chatBox}
       </Slide>
     </div>
