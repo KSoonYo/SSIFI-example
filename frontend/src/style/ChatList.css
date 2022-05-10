@@ -18,15 +18,18 @@
   background: linear-gradient(to bottom right, #c18dd9, #fa8dc7, #ff97a7);
 }
 
+.message-box {
+  position: relative;
+  max-width: 70%;
+  animation: speech 0.7s linear 1;
+}
+
 .myChat,
 .ssifiChat {
   position: relative;
   padding: 10px 10px 10px 10px;
-  max-width: 70%;
   margin-top: 20px;
-
   border-radius: 15px;
-  animation: speech 0.7s linear 1;
 }
 
 .loading {
@@ -46,8 +49,18 @@
   word-wrap: break-word;
 }
 
+.ssifi-content {
+  display: flex;
+  flex-direction: column;
+}
+
 .spin-pulse {
   animation: circle 1.2s steps(8) infinite;
+}
+
+.play,
+.pause {
+  cursor: pointer;
 }
 
 @keyframes speech {
