@@ -87,10 +87,18 @@ def tts(request):
         ssifi_response = Painterbot.painterbot(user_message)
 
     elif req.get('mode') == 'reporter':
-        # TODO: 세부 모델을 입력받는 방법 논의
-        ssifi_response = Reporterbot.reporterbot(user_message, 200, 'society')
+        if not req.get('submode'):
+            return JsonResponse({'detail': 'submode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        sub_modes = {'beauty', 'economy', 'entertainments', 'IT', 'society'}
+        sub_mode = req.get('submode')
+        if sub_mode not in sub_modes:
+            return JsonResponse({'detail': '지원하지 않는 submode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        ssifi_response = Reporterbot.reporterbot(user_message, 200, sub_mode)
 
     elif req.get('mode') == 'writer':
+        # TODO: 서브모드가 추가될 경우 확인 로직
         ssifi_response = Writerbot.writerbot(user_message, 200)
     
     if (req.get('isSaved' == 'true')):
