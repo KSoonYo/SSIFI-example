@@ -30,7 +30,7 @@ const ChatList = props => {
     props.chatList.forEach((elem, idx) => {
       if (idx === index) {
         let audioIndex = 0
-        audioRef.current = new Audio(elem.url[0])
+        audioRef.current.src = elem.url[0]
         audioRef.current.currentTime = 0
         audioRef.current.play()
 
