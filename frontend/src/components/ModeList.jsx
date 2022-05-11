@@ -6,13 +6,13 @@ import '../style/ModeList.css'
 const ModeList = () => {
   const modeList = [
     { name: '소설', mode: 'novel' },
-    { name: '상식', mode: 'wellness' },
+    { name: '심리상담', mode: 'wellness' },
     { name: '화가', mode: 'painter' },
-    { name: '뷰티', mode: 'beauty' },
-    { name: '경제', mode: 'economy' },
-    { name: '연예', mode: 'entertainments' },
-    { name: 'IT', mode: 'IT' },
-    { name: '사회', mode: 'society' },
+    { name: '뷰티기사', mode: 'beauty' },
+    { name: '경제기사', mode: 'economy' },
+    { name: '연예기사', mode: 'entertainments' },
+    { name: 'IT기사', mode: 'IT' },
+    { name: '사회기사', mode: 'society' },
     { name: '작가', mode: 'writer' },
   ]
 
@@ -24,6 +24,7 @@ const ModeList = () => {
     <Box className="mode-list">
       {modeList.map(list => (
         <Button
+          className="mode-btn"
           key={list.name}
           onClick={() => {
             onSetMode(list.mode)
