@@ -1,13 +1,12 @@
 .mode-list {
+  display: flex;
+  align-items: center;
   width: 80%;
+  max-height: 80px;
   margin: 0 auto;
   overflow: auto;
-  padding: 0 3px;
+  padding: 3px 3px;
   white-space: nowrap;
-}
-
-.mode-btn {
-  display: inline-block;
 }
 
 .mode-list::-webkit-scrollbar {

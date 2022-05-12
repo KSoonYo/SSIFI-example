@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Typography } from '../../node_modules/@mui/material/index'
+import { Box, Button } from '../../node_modules/@mui/material/index'
 
 import '../style/ModeList.css'
 
@@ -33,10 +33,11 @@ const ModeList = () => {
             color: 'white',
             borderRadius: '10px',
             border: '1px solid white',
-            fontFamily: 'SpoqaHanSansNeo Regular',
+            mr: '5px',
+            fontFamily: 'SpoqaHanSansNeo Medium',
           }}
         >
-          <Typography>{list.name}</Typography>
+          {list.name}
         </Button>
       ))}
     </Box>
