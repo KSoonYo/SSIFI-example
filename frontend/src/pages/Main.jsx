@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
@@ -6,6 +6,8 @@ import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded'
 import ToggleOnIcon from '@mui/icons-material/ToggleOn'
 import { postRequest } from '../api/requests.js'
 import { Typography } from '../../node_modules/@mui/material/index'
+import { useNavigate } from '../../node_modules/react-router-dom/index'
+import checkNotKey from '../functions/CheckNotKey'
 import Modal from '@mui/material/Modal'
 
 const Main = () => {
@@ -20,6 +22,7 @@ const Main = () => {
   const [audioUrls, setAudioUrls] = useState([])
   const [chatContent, setChatContent] = useState('')
   const [ttsLoad, setTTSLoad] = useState(false)
+  const navigate = useNavigate()
   const [toggable, setToggable] = useState(true)
   const [imageOpen, setImageOpen] = useState(false)
   const [imageUrl, setImageUrl] = useState(null)
@@ -81,11 +84,18 @@ const Main = () => {
           },
         ])
         setAudioUrls(context.data.url)
-      } catch {
-        console.log('error')
+      } catch (err) {
+        if (err.response.status === 401) {
+          alert('세션이 만료되었습니다.')
+          navigate('/')
+        }
       }
     }, 1000)
   }
+
+  useEffect(() => {
+    checkNotKey(() => navigate('/'))
+  })
 
   const ImageModal = () => {
     return (

@@ -14,6 +14,9 @@ const ModeList = () => {
     { name: 'IT기사', mode: 'IT' },
     { name: '사회기사', mode: 'society' },
     { name: '작가', mode: 'writer' },
+    { name: '코미디', mode: 'comedy' },
+    { name: '드라마', mode: 'drama' },
+    { name: '뉴스', mode: 'news' },
   ]
 
   const onSetMode = mode => {
