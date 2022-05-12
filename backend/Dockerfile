@@ -14,8 +14,9 @@ RUN virtualenv venv
 RUN . venv/bin/activate
 
 
-RUN pip install -r requirements.txt
-RUN pip install -r backend_requirements.txt
+# RUN pip install -r requirements.txt
+# RUN pip install -r backend_requirements.txt
+RUN pip install -r all_requirements.txt
 
 RUN python3 manage.py migrate
 RUN python3 manage.py makemigrations
