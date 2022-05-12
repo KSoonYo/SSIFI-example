@@ -48,15 +48,14 @@ MIDDLEWARE = [
 ALLOWED_HOSTS = ["*"]
 
 CORS_ORIGIN_WHITELIST = [
-    "*"
-    # 'http://localhost',
-    # 'http://127.0.0.1',
-    # 'http://127.0.0.1:3000',
-    # 'http://localhost:3000',
-    # 'http://127.0.0.1:8000',
-    # 'http://localhost:8000',
-    # 'https://k6s203.p.ssafy.io',
-    # 'https://k6s203.p.ssafy.io:3000'        
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'https://k6s203.p.ssafy.io',
+    'https://k6s203.p.ssafy.io:3000'        
 ]
 
 CORS_ALLOW_CREDENTIALS = True
