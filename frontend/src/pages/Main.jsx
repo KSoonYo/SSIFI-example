@@ -58,8 +58,9 @@ const Main = () => {
         },
       ])
       try {
+        let mode = sessionStorage.getItem('mode')
         const context = await postRequest('api/channel/tts/', {
-          mode: sessionStorage.getItem('mode'),
+          mode: mode,
           message: data,
           isSaved: sessionStorage.getItem('isSaved'),
           key: sessionStorage.getItem('key'),
@@ -78,6 +79,7 @@ const Main = () => {
             chat: context.data.message,
             info: false,
             url: context.data.url,
+            mode: mode,
           },
         ])
         setAudioUrls(context.data.url)
