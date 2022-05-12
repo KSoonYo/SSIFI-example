@@ -6,7 +6,6 @@ COPY . /server
 # python, pip 다운 및 필요한 모듈, 가상환경 다운
 RUN apt-get update
 RUN apt install -y python3-pip python3-dev libsndfile1 git
-RUN apt install wget
 
 # 가상환경 실행(gunicorn)
 RUN pip install virtualenv
