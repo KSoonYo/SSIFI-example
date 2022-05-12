@@ -17,11 +17,8 @@ for key, value in secrets.items():
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["k6s203.p.ssafy.io"]
-
 
 # Application definition
-
 INSTALLED_APPS = [
     'channel',
 
@@ -48,7 +45,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000', 'http://localhost:3000']
+ALLOWED_HOSTS = ["*"]
+
+CORS_ORIGIN_WHITELIST = [
+    "*"
+    # 'http://localhost',
+    # 'http://127.0.0.1',
+    # 'http://127.0.0.1:3000',
+    # 'http://localhost:3000',
+    # 'http://127.0.0.1:8000',
+    # 'http://localhost:8000',
+    # 'https://k6s203.p.ssafy.io',
+    # 'https://k6s203.p.ssafy.io:3000'        
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'backend.urls'
