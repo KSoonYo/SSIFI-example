@@ -108,7 +108,7 @@ def tts(request):
     if not os.path.isdir(os.path.join(settings.MEDIA_ROOT, 'tts')):
         os.mkdir(os.path.join(settings.MEDIA_ROOT, 'tts'))
 
-    if mode != 'painter':
+    if mode in {'wellness'}:
         result_path = './media/tts'
         for i in range(len(sentences)):
             file_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}'
