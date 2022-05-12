@@ -1,4 +1,5 @@
 import './App.css'
+// import React, { useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Main from './pages/Main'

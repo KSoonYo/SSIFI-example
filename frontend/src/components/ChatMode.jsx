@@ -3,6 +3,7 @@ import ChatList from './ChatList'
 import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import '../style/ChatMode.css'
+import ModeList from './ModeList'
 
 const ChatMode = ({ chatList, handleAddChat, chatContent, setChatContent }) => {
   const onKeyPress = e => {
@@ -14,6 +15,7 @@ const ChatMode = ({ chatList, handleAddChat, chatContent, setChatContent }) => {
   return (
     <div className="chatWrapper">
       <ChatList style={{ height: '80vh' }} chatList={chatList} />
+      <ModeList />
       <div className="chatArea" style={{ width: '100%', paddingTop: '20px' }}>
         <input
           type="text"

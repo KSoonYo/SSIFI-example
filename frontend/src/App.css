@@ -3,20 +3,18 @@
   justify-content: center;
   height: 100vh;
   overflow: hidden;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .content-wrapper {
   position: relative;
   width: 100vw;
   max-width: 500px;
-}
-
-.voiceWrapper {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
 }
 
 #tsparticles {
