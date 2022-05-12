@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
@@ -6,6 +6,9 @@ import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded'
 import ToggleOnIcon from '@mui/icons-material/ToggleOn'
 import { postRequest } from '../api/requests.js'
 import { Typography } from '../../node_modules/@mui/material/index'
+import { useNavigate } from '../../node_modules/react-router-dom/index'
+import checkNotKey from '../functions/CheckNotKey'
+import Modal from '@mui/material/Modal'
 
 const Main = () => {
   const [mode, setMode] = useState(true)
@@ -18,6 +21,11 @@ const Main = () => {
   ])
   const [audioUrls, setAudioUrls] = useState([])
   const [chatContent, setChatContent] = useState('')
+  const [ttsLoad, setTTSLoad] = useState(false)
+  const navigate = useNavigate()
+  const [toggable, setToggable] = useState(true)
+  const [imageOpen, setImageOpen] = useState(false)
+  const [imageUrl, setImageUrl] = useState(null)
 
   // audioUrl 초기화
   // useCallback으로 부모 컴포넌트에서 함수 정의 후 자식으로 전달
@@ -26,7 +34,15 @@ const Main = () => {
     setAudioUrls([])
   }, [])
 
+  const handleImageOpen = () => {
+    setImageOpen(true)
+  }
+  const handleImageClose = () => {
+    setImageOpen(false)
+  }
+
   const handleAddChat = async function (data) {
+    setTTSLoad(true)
     setChatList(prev => [
       ...prev,
       {
@@ -45,12 +61,20 @@ const Main = () => {
         },
       ])
       try {
+        let mode = sessionStorage.getItem('mode')
         const context = await postRequest('api/channel/tts/', {
-          mode: sessionStorage.getItem('mode'),
+          mode: mode,
           message: data,
           isSaved: sessionStorage.getItem('isSaved'),
           key: sessionStorage.getItem('key'),
         })
+        setTTSLoad(false)
+
+        if (sessionStorage.getItem('mode') === 'painter') {
+          handleImageOpen()
+          setImageUrl(context.data.message)
+        }
+
         setChatList(prev => [
           ...prev.filter(elem => elem.id !== 'loading'),
           {
@@ -58,25 +82,49 @@ const Main = () => {
             chat: context.data.message,
             info: false,
             url: context.data.url,
+            mode: mode,
           },
         ])
         setAudioUrls(context.data.url)
-      } catch {
-        console.log('error')
+      } catch (err) {
+        if (err.response.status === 401) {
+          alert('세션이 만료되었습니다.')
+          navigate('/')
+        }
       }
     }, 1000)
   }
 
+  useEffect(() => {
+    checkNotKey(() => navigate('/'))
+  })
+
+  const ImageModal = () => {
+    return (
+      <Modal open={imageOpen} onClose={handleImageClose}>
+        <Box sx={style}>
+          <img src={imageUrl} alt="씨피가그린그림" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </Box>
+      </Modal>
+    )
+  }
+
   return (
     <div style={{ height: '100%' }}>
+      <ImageModal></ImageModal>
       <Box
-        sx={{ margin: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '7%' }}
+        sx={{
+          margin: 'auto',
+          display: 'flex',
+          width: '80%',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          height: '7%',
+        }}
       >
-        <Typography sx={{ margin: '0 10px', color: 'white', fontWeight: 600 }}></Typography>
-        <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>
-          {mode ? 'SSIFI와 대화하기' : 'SSIFI와 채팅하기'}
-        </Typography>
-        <IconButton variant="outlined" onClick={() => setMode(!mode)}>
+        <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>SSIFI</Typography>
+        <Typography sx={{ margin: '0 10px', color: 'gray' }}>{mode ? 'Voice Mode' : 'Chat Mode'}</Typography>
+        <IconButton disabled={!toggable} variant="outlined" onClick={() => setMode(!mode)}>
           {mode ? (
             <ToggleOffRoundedIcon sx={{ fontSize: '50px', color: 'white' }} />
           ) : (
@@ -93,6 +141,8 @@ const Main = () => {
           setChatList={setChatList}
           audioUrls={audioUrls}
           initAudioUrls={initAudioUrls}
+          ttsLoad={ttsLoad}
+          setToggable={setToggable}
         />
       ) : (
         <ChatMode
@@ -107,3 +157,15 @@ const Main = () => {
 }
 
 export default Main
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+}

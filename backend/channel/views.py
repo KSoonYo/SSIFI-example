@@ -74,7 +74,7 @@ def tts(request):
     if not req.get('mode'):
         return JsonResponse({'detail': 'mode를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    modes = {'novel', 'wellness', 'painter', 'writer', 'beauty', 'economy', 'entertainments', 'IT', 'society'}
+    modes = {'novel', 'wellness', 'painter', 'beauty', 'economy', 'entertainments', 'IT', 'society', 'comedy', 'drama', 'news'}
     mode = req['mode']
     user_message = req['message']
     base_url = 'http://localhost:8000'
@@ -100,9 +100,8 @@ def tts(request):
     elif mode in {'beauty', 'economy', 'entertainments', 'IT', 'society'}:
         ssifi_response = Reporterbot.reporterbot(user_message, 200, mode)
 
-    elif mode == 'writer':
-        # TODO: 서브모드가 추가될 경우 확인 로직
-        ssifi_response = Writerbot.writerbot(user_message, 200)
+    elif mode in {'comedy', 'drama', 'news'}:
+        ssifi_response = Writerbot.writerbot(user_message, 200, mode)
     
     if req.get('isSaved') == 'true':
         message = Message(user_message=user_message, ssifi_response=ssifi_response, mode=mode, client_key=key)
@@ -115,7 +114,7 @@ def tts(request):
     if not os.path.isdir(os.path.join(settings.MEDIA_ROOT, 'tts')):
         os.mkdir(os.path.join(settings.MEDIA_ROOT, 'tts'))
 
-    if mode != 'painter':
+    if mode in {'wellness'}:
         result_path = './media/tts'
         for i in range(len(sentences)):
             file_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}'

@@ -15,14 +15,25 @@ import Moon from './Moon'
 import { postRequest } from '../api/requests'
 import AudioReactRecorder, { RecordState } from './AudioRecorder'
 import ModeList from './ModeList'
+import { useNavigate } from '../../node_modules/react-router-dom/index'
 
-const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls, initAudioUrls }) => {
+const VoiceMode = ({
+  chatContent,
+  handleAddChat,
+  setChatContent,
+  chatList,
+  audioUrls,
+  initAudioUrls,
+  ttsLoad,
+  setToggable,
+}) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
   const [recordState, setRecordState] = useState('')
   const [sttLoad, setSTTLoad] = useState(false)
   const [ssifiTalk, setssifiTalk] = useState(false)
   const [audio] = useState(new Audio())
+  const navigate = useNavigate()
 
   const checked = useRef(null)
   const voiceText = useRef(null)
@@ -45,6 +56,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   // 채팅 모드로 전환 시 audioUrls 배열 초기화
   useEffect(() => {
     return () => {
+      setRecordState(RecordState.NONE)
       setssifiTalk(false)
       initAudioUrls()
       if (audio && audio.currentTime > 0) {
@@ -59,8 +71,11 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
         let audioIndex = 0
         audio.src = audioUrls[audioIndex]
         audio.currentTime = 0
-        audio.play()
-        setssifiTalk(true)
+
+        audio.addEventListener('playing', () => {
+          console.log('오디오 재생 중')
+          setssifiTalk(true)
+        })
 
         audio.addEventListener('ended', () => {
           if (audioIndex < audioUrls.length - 1) {
@@ -69,8 +84,11 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
             audio.play()
           } else {
             setssifiTalk(false)
+            audio.pause()
           }
         })
+        audio.play()
+
         return audio.removeEventListener('ended', () => {
           console.log('audio play unmounted')
         })
@@ -82,6 +100,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
 
   const start = () => {
     setSTTLoad(true)
+    setToggable(false)
     setRecordState(RecordState.START)
     console.log('녹음 시작!')
   }
@@ -96,17 +115,20 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       const response = await postRequest(`/api/channel/stt/`, formData)
 
       setChatContent(response.data.message)
+      setToggable(true)
 
       console.log('응답 결과:', response.data) // 응답 텍스트 결과
       setSTTLoad(false)
       setRecordState(RecordState.NONE)
-      // Todo: 401 에러 처리 (Intro로 이동)
     } catch (err) {
-      console.log(err)
       setSTTLoad(false)
       setOnRec(false)
 
       handleTextBox()
+      if (err.response.status === 401) {
+        alert('세션이 만료되었습니다.')
+        navigate('/')
+      }
     }
   }
 
@@ -196,7 +218,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
           <ExpandLessRoundedIcon style={{ display: open ? 'none' : undefined, color: 'white' }} />
         </IconButton>
       </Box>
-      {chatList.includes(chatList.find(elem => elem.id === 'loading')) ? (
+      {ttsLoad && (
         <Box sx={styles.ttsLoader}>
           <div className="main_box">
             <div className="dot"></div>
@@ -208,8 +230,6 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
           </div>
           <Typography sx={{ color: 'white' }}>음성을 우주로 보내고 있어요.</Typography>
         </Box>
-      ) : (
-        ''
       )}
       <Slide direction="up" in={open} mountOnEnter>
         {chatBox}
@@ -248,13 +268,12 @@ const styles = {
   },
   ttsLoader: {
     width: '100%',
-    height: '108%',
+    height: '110%',
     bgcolor: 'rgba(0, 0, 0, 0.7)',
     position: 'absolute',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    transform: 'translate(0, -8%)',
     flexDirection: 'column',
   },
 }
