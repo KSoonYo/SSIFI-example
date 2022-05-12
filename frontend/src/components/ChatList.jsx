@@ -28,7 +28,7 @@ const ChatList = props => {
 
   const handleAudioPlay = index => {
     props.chatList.forEach((elem, idx) => {
-      if (idx === index) {
+      if (idx === index && elem.url.length > 0) {
         let audioIndex = 0
         audioRef.current.src = elem.url[0]
         audioRef.current.currentTime = 0
@@ -68,6 +68,23 @@ const ChatList = props => {
     )
   }
 
+  const ContentBox = ({ chatItem }) => {
+    if (chatItem.id === 'loading') {
+      return <FontAwesomeIcon className="spin-pulse" icon={faSpinner} style={{ color: 'white' }} />
+    } else if (chatItem.mode === 'painter') {
+      return (
+        <div className="chat-image-content">
+          <img src={chatItem.chat} alt="씨피가그린그림" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+      )
+    }
+    return (
+      <Typography className="chat-content" style={{ color: 'white' }}>
+        {chatItem.chat}
+      </Typography>
+    )
+  }
+
   return (
     <div
       className="chatList"
@@ -84,18 +101,9 @@ const ChatList = props => {
                 : { display: 'flex', justifyContent: 'flex-start' }
             }
           >
-            <div
-              className="message-box"
-              style={chatItem.id === 'ssifiChat' ? { display: 'flex', flexDirection: 'column' } : {}}
-            >
+            <div className="message-box">
               <div className={chatItem.id === 'me' ? 'myChat' : chatItem.id === 'loading' ? 'loading' : 'ssifiChat'}>
-                {chatItem.id === 'loading' ? (
-                  <FontAwesomeIcon className="spin-pulse" icon={faSpinner} style={{ color: 'white' }} />
-                ) : (
-                  <Typography className="chatContent" style={{ color: 'white' }}>
-                    {chatItem.chat}
-                  </Typography>
-                )}
+                <ContentBox chatItem={chatItem} />
               </div>
               <audio ref={audioRef} style={{ display: 'none' }}></audio>
               {chatItem.id === 'ssifi' && !chatItem.info ? <AudioBox index={index}></AudioBox> : <></>}
