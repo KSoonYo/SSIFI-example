@@ -71,10 +71,10 @@ const ChatList = props => {
   const ContentBox = ({ chatItem }) => {
     if (chatItem.id === 'loading') {
       return <FontAwesomeIcon className="spin-pulse" icon={faSpinner} style={{ color: 'white' }} />
-    } else if (sessionStorage.getItem('mode') === 'painter') {
+    } else if (chatItem.mode === 'painter') {
       return (
         <div className="chat-image-content">
-          <img src={chatItem.url} alt="씨피가그린그림" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={chatItem.chat} alt="씨피가그린그림" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
       )
     }
