@@ -103,7 +103,6 @@ mkl-service==2.4.0
 munkres==1.1.4
 networkx==2.6.3
 nltk==3.7
-numba
 numpy==1.22.3
 oauthlib==3.2.0
 openpyxl==3.0.9

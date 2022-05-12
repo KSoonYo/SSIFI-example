@@ -11,6 +11,7 @@ RUN apt install -y python3-pip python3-dev libsndfile1 git virtualenv
 RUN virtualenv venv
 RUN . venv/bin/activate
 RUN pip install -r all_requirements.txt
+RUN pip install numba
 
 # django서버 선언
 RUN python3 manage.py migrate
