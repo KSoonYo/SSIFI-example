@@ -7,11 +7,12 @@ COPY . /server
 RUN apt-get update
 RUN apt install -y python3-pip python3-dev libsndfile1 git
 
-
 # 가상환경 실행(gunicorn)
 RUN pip install virtualenv
 RUN virtualenv venv
 RUN . venv/bin/activate
+
+# pip 설치
 RUN pip install -r all_requirements.txt
 RUN pip install numba
 
