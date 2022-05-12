@@ -177,3 +177,4 @@ wget==3.2
 wincertstore==0.2
 wrapt==1.14.0
 zipp==3.8.0
+gunicorn
