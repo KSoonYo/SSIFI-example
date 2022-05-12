@@ -16,8 +16,8 @@ RUN pip install -r all_requirements.txt
 RUN pip install numba
 
 # django서버 선언
-RUN python3 manage.py migrate
 RUN python3 manage.py makemigrations
+RUN python3 manage.py migrate
 RUN python3 manage.py collectstatic
 
 # AI 함수사용을 위해 압축된 파일 해제
