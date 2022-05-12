@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Typography } from '../../node_modules/@mui/material/index'
+import { Box, Button } from '../../node_modules/@mui/material/index'
 
 import '../style/ModeList.css'
 
@@ -14,6 +14,9 @@ const ModeList = () => {
     { name: 'IT기사', mode: 'IT' },
     { name: '사회기사', mode: 'society' },
     { name: '작가', mode: 'writer' },
+    { name: '코미디', mode: 'comedy' },
+    { name: '드라마', mode: 'drama' },
+    { name: '뉴스', mode: 'news' },
   ]
 
   const onSetMode = mode => {
@@ -33,10 +36,11 @@ const ModeList = () => {
             color: 'white',
             borderRadius: '10px',
             border: '1px solid white',
-            fontFamily: 'SpoqaHanSansNeo Regular',
+            mr: '5px',
+            fontFamily: 'SpoqaHanSansNeo Medium',
           }}
         >
-          <Typography>{list.name}</Typography>
+          {list.name}
         </Button>
       ))}
     </Box>

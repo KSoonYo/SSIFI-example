@@ -91,6 +91,12 @@ export default class AudioReactRecorder extends React.Component {
     this.tested = false
 
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
+
+    this.canvasCtx.lineWidth = 2
+    this.canvasCtx.strokeStyle = 'rgb(255, 255, 255)'
+    this.canvasCtx.moveTo(0, 300 / 2)
+    this.canvasCtx.lineTo(300, 300 / 2)
+    this.canvasCtx.stroke()
   }
 
   getStream = constraints => {
