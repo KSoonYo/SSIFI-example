@@ -15,6 +15,7 @@ import Moon from './Moon'
 import { postRequest } from '../api/requests'
 import AudioReactRecorder, { RecordState } from './AudioRecorder'
 import ModeList from './ModeList'
+import { useNavigate } from '../../node_modules/react-router-dom/index'
 
 const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audioUrls, initAudioUrls, ttsLoad }) => {
   const [open, setOpen] = useState(false)
@@ -23,6 +24,7 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
   const [sttLoad, setSTTLoad] = useState(false)
   const [ssifiTalk, setssifiTalk] = useState(false)
   const [audio] = useState(new Audio())
+  const navigate = useNavigate()
 
   const checked = useRef(null)
   const voiceText = useRef(null)
@@ -101,19 +103,20 @@ const VoiceMode = ({ chatContent, handleAddChat, setChatContent, chatList, audio
       console.log('응답 결과:', response.data) // 응답 텍스트 결과
       setSTTLoad(false)
       setRecordState(RecordState.NONE)
-      // Todo: 401 에러 처리 (Intro로 이동)
     } catch (err) {
-      console.log(err)
       setSTTLoad(false)
       setOnRec(false)
 
       handleTextBox()
+      if (err.response.status === 401) {
+        alert('세션이 만료되었습니다.')
+        navigate('/')
+      }
     }
   }
 
-  const onSendTTS = async () => {
+  const onSendTTS = () => {
     handleAddChat(chatContent)
-
     setOnRec(false)
 
     handleTextBox()
