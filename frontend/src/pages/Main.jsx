@@ -8,6 +8,7 @@ import { postRequest } from '../api/requests.js'
 import { Typography } from '../../node_modules/@mui/material/index'
 import { useNavigate } from '../../node_modules/react-router-dom/index'
 import checkNotKey from '../functions/CheckNotKey'
+import Modal from '@mui/material/Modal'
 
 const Main = () => {
   const [mode, setMode] = useState(true)
@@ -22,12 +23,23 @@ const Main = () => {
   const [chatContent, setChatContent] = useState('')
   const [ttsLoad, setTTSLoad] = useState(false)
   const navigate = useNavigate()
+  const [toggable, setToggable] = useState(true)
+  const [imageOpen, setImageOpen] = useState(false)
+  const [imageUrl, setImageUrl] = useState(null)
+
   // audioUrl 초기화
   // useCallback으로 부모 컴포넌트에서 함수 정의 후 자식으로 전달
   // https://stackoverflow.com/questions/62464488/how-to-use-a-prop-function-inside-of-useeffect
   const initAudioUrls = useCallback(() => {
     setAudioUrls([])
   }, [])
+
+  const handleImageOpen = () => {
+    setImageOpen(true)
+  }
+  const handleImageClose = () => {
+    setImageOpen(false)
+  }
 
   const handleAddChat = async function (data) {
     setTTSLoad(true)
@@ -56,6 +68,12 @@ const Main = () => {
           key: sessionStorage.getItem('key'),
         })
         setTTSLoad(false)
+
+        if (sessionStorage.getItem('mode') === 'painter') {
+          handleImageOpen()
+          setImageUrl(context.data.message)
+        }
+
         setChatList(prev => [
           ...prev.filter(elem => elem.id !== 'loading'),
           {
@@ -79,8 +97,19 @@ const Main = () => {
     checkNotKey(() => navigate('/'))
   })
 
+  const ImageModal = () => {
+    return (
+      <Modal open={imageOpen} onClose={handleImageClose}>
+        <Box sx={style}>
+          <img src={imageUrl} alt="씨피가그린그림" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </Box>
+      </Modal>
+    )
+  }
+
   return (
     <div style={{ height: '100%' }}>
+      <ImageModal></ImageModal>
       <Box
         sx={{
           margin: 'auto',
@@ -93,7 +122,7 @@ const Main = () => {
       >
         <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>SSIFI</Typography>
         <Typography sx={{ margin: '0 10px', color: 'gray' }}>{mode ? 'Voice Mode' : 'Chat Mode'}</Typography>
-        <IconButton variant="outlined" onClick={() => setMode(!mode)}>
+        <IconButton disabled={!toggable} variant="outlined" onClick={() => setMode(!mode)}>
           {mode ? (
             <ToggleOffRoundedIcon sx={{ fontSize: '50px', color: 'white' }} />
           ) : (
@@ -111,6 +140,7 @@ const Main = () => {
           audioUrls={audioUrls}
           initAudioUrls={initAudioUrls}
           ttsLoad={ttsLoad}
+          setToggable={setToggable}
         />
       ) : (
         <ChatMode
@@ -125,3 +155,15 @@ const Main = () => {
 }
 
 export default Main
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+}

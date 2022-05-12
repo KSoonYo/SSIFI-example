@@ -14,7 +14,8 @@
   background: linear-gradient(to bottom right, #3c1053, #851f5d, #c1445a);
 }
 
-.ssifiChat {
+.ssifiChat,
+.loading {
   background: linear-gradient(to bottom right, #c18dd9, #fa8dc7, #ff97a7);
 }
 
@@ -25,28 +26,23 @@
 }
 
 .myChat,
-.ssifiChat {
-  position: relative;
-  padding: 10px 10px 10px 10px;
-  margin-top: 20px;
-  border-radius: 15px;
-}
-
+.ssifiChat,
 .loading {
   position: relative;
   padding: 10px 10px 10px 10px;
-  max-width: 70%;
   margin-top: 20px;
-
   border-radius: 15px;
-  background: linear-gradient(to bottom right, #c18dd9, #fa8dc7, #ff97a7);
 }
 
-.chatContent {
+.chat-content {
   margin: 0px;
   white-space: normal;
   word-break: normal;
   word-wrap: break-word;
+}
+
+.chat-image-content {
+  max-height: 40%;
 }
 
 .ssifi-content {
