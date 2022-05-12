@@ -26,17 +26,17 @@ RUN python3 save_model.py
 WORKDIR /server
 
 # 미리 학습된 모델들 옮기기
-RUN mv ai_files/checkpoint models/wellnessbot/
+RUN mv ai_files/checkpoint ./NLP/models/wellnessbot/
 
-RUN mv ai_files/comedy_model models/writerbot
-RUN mv ai_files/drama_model models/writerbot
-RUN mv ai_files/news_model models/writerbot
+RUN mv ai_files/comedy_model ./NLP/models/writerbot
+RUN mv ai_files/drama_model ./NLP/models/writerbot
+RUN mv ai_files/news_model ./NLP/models/writerbot
 
-RUN mv ai_files/beauty_model models/reporterbot
-RUN mv ai_files/economy_model models/reporterbot
-RUN mv ai_files/entertainments_model models/reporterbot
-RUN mv ai_files/IT_model models/reporterbot
-RUN mv ai_files/society_model models/reporterbot
+RUN mv ai_files/beauty_model ./NLP/models/reporterbot
+RUN mv ai_files/economy_model ./NLP/models/reporterbot
+RUN mv ai_files/entertainments_model ./NLP/models/reporterbot
+RUN mv ai_files/IT_model ./NLP/models/reporterbot
+RUN mv ai_files/society_model ./NLP/models/reporterbot
 
 # celery 실행
 RUN celery -A backend worker --pool=threads --loglevel=info
