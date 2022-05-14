@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import Moon from './../components/Moon.jsx'
@@ -10,22 +10,31 @@ const Intro = () => {
   const navigate = useNavigate()
 
   const [open, setOpen] = useState(false)
+  const [touched, setTouched] = useState(false)
 
   const handleClose = () => {
     setOpen(false)
   }
 
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        height: '100%',
-      }}
-    >
-      <Moon></Moon>
+  useEffect(() => {
+    if (touched) {
+      const audio = new Audio('')
+      audio.play()
+    }
+  }, [touched])
+
+  const WaitingPhrase = () => {
+    return (
+      <div>
+        <p className="intro-script-wait">
+          <span> 아무 곳이나 클릭 해보세요.</span>
+        </p>
+      </div>
+    )
+  }
+
+  const IntroPhrase = () => {
+    return (
       <h1 style={{ color: 'white', padding: '0 20px' }}>
         <p className="intro-script">
           <span>안녕하세요</span>
@@ -34,6 +43,11 @@ const Intro = () => {
           <span>저는 SSIFI 입니다.</span>
         </p>
       </h1>
+    )
+  }
+
+  const IntroButtonWrapper = () => {
+    return (
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <Button
           className="intro-button"
@@ -52,6 +66,25 @@ const Intro = () => {
           대화하기
         </Button>
       </div>
+    )
+  }
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        height: '100%',
+      }}
+      onClick={() => {
+        setTouched(true)
+      }}
+    >
+      <Moon></Moon>
+      {touched ? <IntroPhrase></IntroPhrase> : <WaitingPhrase></WaitingPhrase>}
+      {touched ? <IntroButtonWrapper></IntroButtonWrapper> : <></>}
       <InfoDialog open={open} handleClose={handleClose} navigate={navigate}></InfoDialog>
     </div>
   )
