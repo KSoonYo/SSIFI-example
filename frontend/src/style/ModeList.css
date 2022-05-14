@@ -12,3 +12,7 @@
 .mode-list::-webkit-scrollbar {
   display: none;
 }
+
+.mode-btn-selected {
+  background-color: black !important;
+}
