@@ -1,14 +1,16 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
-import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded'
-import ToggleOnIcon from '@mui/icons-material/ToggleOn'
+import { faPhoneVolume, faComments } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import { postRequest } from '../api/requests.js'
 import { Typography } from '../../node_modules/@mui/material/index'
 import { useNavigate } from '../../node_modules/react-router-dom/index'
 import checkNotKey from '../functions/CheckNotKey'
 import Modal from '@mui/material/Modal'
+import '../style/Main.css'
 
 const Main = () => {
   const [mode, setMode] = useState(true)
@@ -25,8 +27,24 @@ const Main = () => {
   const navigate = useNavigate()
   const [toggable, setToggable] = useState(true)
   const [imageOpen, setImageOpen] = useState(false)
+  const [toastOpen, setToastOpen] = useState(false)
   const [imageUrl, setImageUrl] = useState(null)
   const [aiMode, setAiMode] = useState('wellness')
+
+  const modeList = [
+    { name: '소설', mode: 'novel' },
+    { name: '심리상담', mode: 'wellness' },
+    { name: '화가', mode: 'painter' },
+    { name: '뷰티기사', mode: 'beauty' },
+    { name: '경제기사', mode: 'economy' },
+    { name: '연예기사', mode: 'entertainments' },
+    { name: 'IT기사', mode: 'IT' },
+    { name: '사회기사', mode: 'society' },
+    { name: '작가', mode: 'writer' },
+    { name: '코미디', mode: 'comedy' },
+    { name: '드라마', mode: 'drama' },
+    { name: '뉴스', mode: 'news' },
+  ]
 
   // audioUrl 초기화
   // useCallback으로 부모 컴포넌트에서 함수 정의 후 자식으로 전달
@@ -96,9 +114,32 @@ const Main = () => {
     }, 1000)
   }
 
+  const handleToastBoxOpen = () => setToastOpen(true)
+  const handleToastBoxClose = () => setToastOpen(false)
+
+  const mounted = useRef(false)
+  useEffect(() => {
+    if (!mounted.current) {
+      setTimeout(() => {
+        handleToastBoxOpen()
+        setTimeout(handleToastBoxClose, 3000)
+      }, 850)
+    }
+  }, [aiMode])
+
   useEffect(() => {
     checkNotKey(() => navigate('/'))
   })
+
+  const ToastBox = () => {
+    return (
+      <div className={`toast-message-box ${toastOpen ? 'show' : ''}`}>
+        <p className="toast-message-content">
+          <span> {modeList.find(modeObj => modeObj.mode === aiMode).name}(이)가 선택되었습니다. </span>
+        </p>
+      </div>
+    )
+  }
 
   const ImageModal = () => {
     return (
@@ -117,6 +158,7 @@ const Main = () => {
   return (
     <div style={{ height: '100%' }}>
       <ImageModal></ImageModal>
+      <ToastBox></ToastBox>
       <Box
         sx={{
           margin: 'auto',
@@ -132,11 +174,16 @@ const Main = () => {
           {aiMode.charAt(0).toUpperCase() + aiMode.slice(1)}
           {mode ? ' Voice' : ' Chat'}
         </Typography>
-        <IconButton disabled={!toggable} variant="outlined" onClick={() => setMode(!mode)}>
+        <IconButton
+          disabled={!toggable}
+          variant="outlined"
+          style={{ border: '1px solid white', borderRadius: '10px' }}
+          onClick={() => setMode(!mode)}
+        >
           {mode ? (
-            <ToggleOffRoundedIcon sx={{ fontSize: '50px', color: 'white' }} />
+            <FontAwesomeIcon icon={faComments} style={{ fontSize: '1.3rem', color: 'white' }}></FontAwesomeIcon>
           ) : (
-            <ToggleOnIcon sx={{ fontSize: '50px', color: 'white' }} />
+            <FontAwesomeIcon icon={faPhoneVolume} style={{ fontSize: '1.3rem', color: 'white' }}></FontAwesomeIcon>
           )}
         </IconButton>
       </Box>
@@ -152,6 +199,7 @@ const Main = () => {
           ttsLoad={ttsLoad}
           setToggable={setToggable}
           changeAiMode={changeAiMode}
+          modeList={modeList}
         />
       ) : (
         <ChatMode
@@ -160,6 +208,7 @@ const Main = () => {
           setChatContent={setChatContent}
           handleAddChat={handleAddChat}
           changeAiMode={changeAiMode}
+          modeList={modeList}
         />
       )}
     </div>

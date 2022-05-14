@@ -47,7 +47,7 @@ const ChatList = props => {
 
   const AudioBox = ({ index }) => {
     return (
-      <div>
+      <div style={{ paddingLeft: '10px' }}>
         <FontAwesomeIcon
           className="play"
           onClick={() => {
@@ -102,6 +102,11 @@ const ChatList = props => {
             }
           >
             <div className="message-box">
+              <div style={{ color: 'white', fontFamily: 'SpoqaHanSansNeo Regular', paddingLeft: '6px' }}>
+                {props.modeList.find(modeObject => modeObject.mode === chatItem.mode)
+                  ? props.modeList.find(modeObject => modeObject.mode === chatItem.mode).name
+                  : ''}
+              </div>
               <div className={chatItem.id === 'me' ? 'myChat' : chatItem.id === 'loading' ? 'loading' : 'ssifiChat'}>
                 <ContentBox chatItem={chatItem} />
               </div>
