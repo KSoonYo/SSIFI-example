@@ -2,8 +2,9 @@ import React, { useState, useCallback, useEffect } from 'react'
 import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
-import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded'
-import ToggleOnIcon from '@mui/icons-material/ToggleOn'
+import { faPhoneVolume, faComments } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import { postRequest } from '../api/requests.js'
 import { Typography } from '../../node_modules/@mui/material/index'
 import { useNavigate } from '../../node_modules/react-router-dom/index'
@@ -124,11 +125,16 @@ const Main = () => {
       >
         <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>SSIFI</Typography>
         <Typography sx={{ margin: '0 10px', color: 'gray' }}>{mode ? 'Voice Mode' : 'Chat Mode'}</Typography>
-        <IconButton disabled={!toggable} variant="outlined" onClick={() => setMode(!mode)}>
+        <IconButton
+          disabled={!toggable}
+          variant="outlined"
+          style={{ border: '1px solid white', borderRadius: '10px' }}
+          onClick={() => setMode(!mode)}
+        >
           {mode ? (
-            <ToggleOffRoundedIcon sx={{ fontSize: '50px', color: 'white' }} />
+            <FontAwesomeIcon icon={faComments} style={{ fontSize: '1.3rem', color: 'white' }}></FontAwesomeIcon>
           ) : (
-            <ToggleOnIcon sx={{ fontSize: '50px', color: 'white' }} />
+            <FontAwesomeIcon icon={faPhoneVolume} style={{ fontSize: '1.3rem', color: 'white' }}></FontAwesomeIcon>
           )}
         </IconButton>
       </Box>
