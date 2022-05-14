@@ -16,12 +16,14 @@
 
 .ssifiChat,
 .loading {
-  background: linear-gradient(to bottom right, #c18dd9, #fa8dc7, #ff97a7);
+  margin-top: 5px;
+  background: linear-gradient(to bottom right, #c18dd9, #fa8dc7);
 }
 
 .message-box {
   position: relative;
   max-width: 70%;
+  margin-top: 10px;
   animation: speech 0.7s linear 1;
 }
 
@@ -30,7 +32,6 @@
 .loading {
   position: relative;
   padding: 10px 10px 10px 10px;
-  margin-top: 20px;
   border-radius: 15px;
 }
 
