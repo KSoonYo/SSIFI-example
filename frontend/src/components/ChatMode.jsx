@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import '../style/ChatMode.css'
 import ModeList from './ModeList'
 
-const ChatMode = ({ chatList, handleAddChat, chatContent, setChatContent }) => {
+const ChatMode = ({ chatList, handleAddChat, chatContent, setChatContent, changeAiMode }) => {
   const onKeyPress = e => {
     if (e.key === 'Enter' && chatContent !== '') {
       handleAddChat(chatContent)
@@ -15,7 +15,7 @@ const ChatMode = ({ chatList, handleAddChat, chatContent, setChatContent }) => {
   return (
     <div className="chatWrapper">
       <ChatList style={{ height: '80vh' }} chatList={chatList} />
-      <ModeList />
+      <ModeList changeAiMode={changeAiMode} />
       <div className="chatArea" style={{ width: '100%' }}>
         <input
           type="text"
