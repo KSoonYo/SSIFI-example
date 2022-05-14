@@ -27,6 +27,7 @@ const VoiceMode = ({
   ttsLoad,
   setToggable,
   changeAiMode,
+  modeList,
 }) => {
   const [open, setOpen] = useState(false)
   const [onRec, setOnRec] = useState(false)
@@ -145,8 +146,8 @@ const VoiceMode = ({
       <IconButton sx={{ width: '100%' }} onClick={handleClose}>
         <ExpandMoreRoundedIcon style={{ color: 'white' }} />
       </IconButton>
-      <ModeList changeAiMode={changeAiMode} />
-      <ChatList chatList={chatList} />
+      <ModeList changeAiMode={changeAiMode} modeList={modeList} />
+      <ChatList chatList={chatList} modeList={modeList} />
     </Box>
   )
 
