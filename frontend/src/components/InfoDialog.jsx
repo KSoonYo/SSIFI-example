@@ -12,7 +12,6 @@ import { postRequest } from '../api/requests'
 const InfoDialog = ({ open, handleClose, navigate }) => {
   const isSaved = status => {
     sessionStorage.setItem('isSaved', status)
-    sessionStorage.setItem('mode', 'wellness')
     getKey()
   }
 

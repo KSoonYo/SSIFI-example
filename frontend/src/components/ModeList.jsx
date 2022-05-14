@@ -3,7 +3,7 @@ import { Box, Button } from '../../node_modules/@mui/material/index'
 
 import '../style/ModeList.css'
 
-const ModeList = () => {
+const ModeList = ({ changeAiMode }) => {
   const modeList = [
     { name: '소설', mode: 'novel' },
     { name: '심리상담', mode: 'wellness' },
@@ -19,19 +19,13 @@ const ModeList = () => {
     { name: '뉴스', mode: 'news' },
   ]
 
-  const onSetMode = mode => {
-    sessionStorage.setItem('mode', mode)
-  }
-
   return (
     <Box className="mode-list">
       {modeList.map(list => (
         <Button
           className="mode-btn"
           key={list.name}
-          onClick={() => {
-            onSetMode(list.mode)
-          }}
+          onClick={() => changeAiMode(list.mode)}
           sx={{
             color: 'white',
             borderRadius: '10px',
