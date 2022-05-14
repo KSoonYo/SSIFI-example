@@ -128,6 +128,7 @@ const VoiceMode = ({
       handleTextBox()
       if (err.response.status === 401) {
         alert('세션이 만료되었습니다.')
+        sessionStorage.removeItem('key')
         navigate('/')
       }
     }
