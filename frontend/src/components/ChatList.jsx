@@ -79,7 +79,7 @@ const ChatList = props => {
       )
     }
     return (
-      <Typography className="chat-content" style={{ color: 'white' }}>
+      <Typography className="chat-content" style={{ color: 'white', fontFamily: 'SpoqaHanSansNeo Regular' }}>
         {chatItem.chat}
       </Typography>
     )

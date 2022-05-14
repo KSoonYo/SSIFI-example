@@ -63,7 +63,6 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
             }, 1000)
           }}
           color="primary"
-          autoFocus
         >
           동의함
         </Button>

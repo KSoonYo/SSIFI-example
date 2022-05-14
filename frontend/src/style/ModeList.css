@@ -9,6 +9,15 @@
   white-space: nowrap;
 }
 
+.mode-btn {
+  height: 80%;
+}
+
+.mode-btn:hover {
+  font-weight: bolder;
+  box-shadow: 3px 1.5px 0px rgba(255, 255, 255, 0.5), 6px 2px 5px rgba(255, 255, 255, 0.5);
+}
+
 .mode-list::-webkit-scrollbar {
   display: none;
 }

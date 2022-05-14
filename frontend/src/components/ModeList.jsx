@@ -25,10 +25,10 @@ const ModeList = () => {
 
   return (
     <Box className="mode-list">
-      {modeList.map(list => (
+      {modeList.map((list, index) => (
         <Button
           className="mode-btn"
-          key={list.name}
+          key={index}
           onClick={() => {
             onSetMode(list.mode)
           }}
@@ -36,8 +36,8 @@ const ModeList = () => {
             color: 'white',
             borderRadius: '10px',
             border: '1px solid white',
-            mr: '5px',
-            fontFamily: 'SpoqaHanSansNeo Medium',
+            mr: '10px',
+            fontFamily: 'SpoqaHanSansNeo Regular',
           }}
         >
           {list.name}
