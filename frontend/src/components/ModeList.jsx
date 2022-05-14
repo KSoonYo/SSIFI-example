@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Button } from '../../node_modules/@mui/material/index'
 
 import '../style/ModeList.css'
@@ -26,7 +26,7 @@ const ModeList = ({ changeAiMode }) => {
       {modeList.map((list, index) => (
         <Button
           className={index === btnIdx ? 'mode-btn-selected' : 'mode-btn'}
-          key={list.name}
+          key={index}
           onClick={() => {
             setBtnIdx(index)
             changeAiMode(list.mode)
@@ -35,8 +35,8 @@ const ModeList = ({ changeAiMode }) => {
             color: 'white',
             borderRadius: '10px',
             border: '1px solid white',
-            mr: '5px',
-            fontFamily: 'SpoqaHanSansNeo Medium',
+            mr: '10px',
+            fontFamily: 'SpoqaHanSansNeo Regular',
           }}
         >
           {list.name}

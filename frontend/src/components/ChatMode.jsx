@@ -16,7 +16,7 @@ const ChatMode = ({ chatList, handleAddChat, chatContent, setChatContent, change
     <div className="chatWrapper">
       <ChatList style={{ height: '80vh' }} chatList={chatList} />
       <ModeList changeAiMode={changeAiMode} />
-      <div className="chatArea" style={{ width: '100%', paddingTop: '20px' }}>
+      <div className="chatArea" style={{ width: '100%' }}>
         <input
           type="text"
           style={{ width: '90%', marginRight: '2%' }}
