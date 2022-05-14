@@ -15,7 +15,6 @@ import numpy as np
 from . import hparams as hp
 import os
 import platform
-import uuid
 
 if platform.system() == "Windows":
     base_path = str(os.path.abspath(__file__)).split('\\')
@@ -62,8 +61,8 @@ def get_FastSpeech2(num):
     return model
 
 
-def synthesize(results_path, model, vocoder, text, sentence):
-    sentence = sentence[:10]  # long filename will result in OS Error
+def synthesize(file_name, results_path, model, vocoder, text):
+    # sentence = sentence[:10]  # long filename will result in OS Error
 
     mean_mel, std_mel = torch.tensor(np.load(os.path.join(
         hp.preprocessed_path, "mel_stat.npy")), dtype=torch.float).to(device)
@@ -99,13 +98,12 @@ def synthesize(results_path, model, vocoder, text, sentence):
     #     if hp.vocoder.lower() == "vocgan":
     #         utils.vocgan_infer(mel_postnet_torch, vocoder, path=os.path.join(
     #             results_path, '{}_{}.wav'.format(hp.vocoder, sentence)))
-    temp_name = uuid.uuid1()
+
     utils.vocgan_infer(mel_postnet_torch, vocoder, path=os.path.join(
-        results_path, '{}.wav'.format(temp_name)))
-    return '{}.wav'.format(temp_name)
+        results_path, '{}.wav'.format(file_name)))
 
 
-def make_sound(sentence, results_path, step=350000):
+def make_sound(file_name, sentence, results_path, step=350000):
     # parser = argparse.ArgumentParser()
     # parser.add_argument('--step', type=int, default=350000)
     # args = parser.parse_args()
@@ -115,5 +113,4 @@ def make_sound(sentence, results_path, step=350000):
     vocoder = utils.get_vocgan(ckpt_path=hp.vocoder_pretrained_model_path)
 
     text = kor_preprocess(sentence)
-    result = synthesize(results_path, model, vocoder, text, sentence)
-    return result
+    synthesize(file_name, results_path, model, vocoder, text)
