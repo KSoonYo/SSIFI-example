@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
 import Moon from './../components/Moon.jsx'
 import InfoDialog from './../components/InfoDialog'
 
@@ -37,20 +35,22 @@ const Intro = () => {
         </p>
       </h1>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-        <IconButton
+        <Button
           className="intro-button"
           color="secondary"
           sx={{
-            bgcolor: 'white',
-            width: '80px',
-            height: '80px',
+            border: '1px solid white',
+            fontSize: '1.5rem',
+            borderRadius: '10px',
+            color: 'white',
+            fontFamily: 'SpoqaHanSansNeo Regular',
           }}
           onClick={() => {
             setOpen(true)
           }}
         >
-          <FontAwesomeIcon icon={faAngleRight} size="2x" style={{ color: 'white' }} />
-        </IconButton>
+          대화하기
+        </Button>
       </div>
       <InfoDialog open={open} handleClose={handleClose} navigate={navigate}></InfoDialog>
     </div>
