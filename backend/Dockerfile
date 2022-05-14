@@ -43,4 +43,5 @@ RUN celery -A backend worker --pool=threads --loglevel=info
 
 # 서버 내부 8000번 포트 개방
 EXPOSE 8000
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "backend.wsgi:application", "--timeout=240"]
+CMD ["gunicorn", "--config", "gunicorn-cfg.py", "backend.wsgi:application", "--reload", "--timeout=240"]
+# CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "backend.wsgi:application", "--timeout=240"]

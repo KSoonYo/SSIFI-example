@@ -1,0 +1,39 @@
+version: "1"
+
+services:
+  be:
+    container_name: be
+    image: be
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+
+    volumes:
+      - ./backend/:/server/
+    working_dir: /server/
+
+    command: >
+      bash -c "gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "backend.wsgi:application", "--timeout=240"
+    
+    ports:
+      - "8001:8000"
+  
+  celery:
+    container_name: celery
+    image: be
+    volumes:
+      - ./:/server/
+
+    working_dir: /server/
+    command: >
+      bash -c "celery -A tasks worker --loglevel=info"
+    depends_on:
+      - be
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      "6379:6379"
+    depends_on:
+      - celery
