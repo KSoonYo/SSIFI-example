@@ -27,6 +27,7 @@ const Main = () => {
   const [toggable, setToggable] = useState(true)
   const [imageOpen, setImageOpen] = useState(false)
   const [imageUrl, setImageUrl] = useState(null)
+  const [aiMode, setAiMode] = useState('wellness')
 
   // audioUrl 초기화
   // useCallback으로 부모 컴포넌트에서 함수 정의 후 자식으로 전달
@@ -62,16 +63,16 @@ const Main = () => {
         },
       ])
       try {
-        let mode = sessionStorage.getItem('mode')
         const context = await postRequest('api/channel/tts/', {
-          mode: mode,
+          mode: aiMode,
           message: data,
           isSaved: sessionStorage.getItem('isSaved'),
           key: sessionStorage.getItem('key'),
         })
         setTTSLoad(false)
 
-        if (sessionStorage.getItem('mode') === 'painter') {
+        if (aiMode === 'painter') {
+          console.log(true)
           handleImageOpen()
           setImageUrl(context.data.message)
         }
@@ -83,7 +84,7 @@ const Main = () => {
             chat: context.data.message,
             info: false,
             url: context.data.url,
-            mode: mode,
+            mode: aiMode,
           },
         ])
         setAudioUrls(context.data.url)
@@ -110,6 +111,10 @@ const Main = () => {
     )
   }
 
+  const changeAiMode = aimode => {
+    setAiMode(aimode)
+  }
+
   return (
     <div style={{ height: '100%' }}>
       <ImageModal></ImageModal>
@@ -124,7 +129,10 @@ const Main = () => {
         }}
       >
         <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>SSIFI</Typography>
-        <Typography sx={{ margin: '0 10px', color: 'gray' }}>{mode ? 'Voice Mode' : 'Chat Mode'}</Typography>
+        <Typography sx={{ margin: '0 10px', color: 'gray' }}>
+          {aiMode.charAt(0).toUpperCase() + aiMode.slice(1)}
+          {mode ? ' Voice' : ' Chat'}
+        </Typography>
         <IconButton
           disabled={!toggable}
           variant="outlined"
@@ -149,6 +157,7 @@ const Main = () => {
           initAudioUrls={initAudioUrls}
           ttsLoad={ttsLoad}
           setToggable={setToggable}
+          changeAiMode={changeAiMode}
         />
       ) : (
         <ChatMode
@@ -156,6 +165,7 @@ const Main = () => {
           chatContent={chatContent}
           setChatContent={setChatContent}
           handleAddChat={handleAddChat}
+          changeAiMode={changeAiMode}
         />
       )}
     </div>
