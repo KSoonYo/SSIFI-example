@@ -1,39 +1,65 @@
+---
 version: "1"
 
 services:
+  fe:
+    container_name:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    workdir: ./app
+    restart: always
+    command: >
+      sh -c "npm start"
+    ports:
+      "3000:3000"
+
   be:
     container_name: be
-    image: be
     build:
       context: ./backend
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
 
     volumes:
-      - ./backend/:/server/
-    working_dir: /server/
+      - ./NLP:/server/NLP
+      - ./STT:/server/STT
+      - ./TTS:/server/TTS
 
+    working_dir: ./server
+    restart: always
     command: >
       bash -c "gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "backend.wsgi:application", "--timeout=240"
     
     ports:
       - "8001:8000"
-  
-  celery:
-    container_name: celery
-    image: be
-    volumes:
-      - ./:/server/
 
-    working_dir: /server/
-    command: >
-      bash -c "celery -A tasks worker --loglevel=info"
-    depends_on:
-      - be
-
+  # redis: celery broker
   redis:
     container_name: redis
-    image: redis
+    # docker-hub에 있는 image 사용시 작성하는 옵션
+    image: "redis:4-alpine"
+    restart: always
+    command: "redis-server --require ssifi!203"
     ports:
       "6379:6379"
+
+
+  # be 비동기 작업 서버
+  celery:
+    container_name: celery
+    # build:
+    #   context: ./backend
+    #   dockerfile: ./Dockerfile_celery
+    image: "be"
+    volumes:
+      - ./NLP:/server/NLP
+      - ./STT:/server/STT
+      - ./TTS:/server/TTS
+
+    working_dir: /server/
+    restart: always
+    command: >
+      bash -c "celery -A backend worker --pool=threads --loglevel=info"
     depends_on:
-      - celery
+      - be
+...
