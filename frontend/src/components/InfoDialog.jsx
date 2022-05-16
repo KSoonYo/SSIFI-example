@@ -12,7 +12,6 @@ import { postRequest } from '../api/requests'
 const InfoDialog = ({ open, handleClose, navigate }) => {
   const isSaved = status => {
     sessionStorage.setItem('isSaved', status)
-    sessionStorage.setItem('mode', 'wellness')
     getKey()
   }
 
@@ -45,9 +44,9 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
         <Button
           onClick={() => {
             isSaved(false)
-            handleClose()
             setTimeout(() => {
               navigate('/main')
+              handleClose()
             }, 1000)
           }}
           color="primary"
@@ -57,13 +56,12 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
         <Button
           onClick={() => {
             isSaved(true)
-            handleClose()
             setTimeout(() => {
               navigate('/main')
+              handleClose()
             }, 1000)
           }}
           color="primary"
-          autoFocus
         >
           동의함
         </Button>
