@@ -54,8 +54,10 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
+    'http://k6s203.p.ssafy.io',
+    'http://k6s203.p.ssafy.io:3000'
     'https://k6s203.p.ssafy.io',
-    'https://k6s203.p.ssafy.io:3000'        
+    'https://k6s203.p.ssafy.io:3000'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -133,13 +135,3 @@ MEDIA_URL = '/api/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CELERY_TIMEZONE = "Asia/Seoul"
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_BEAT_SCHEDULE = {
-    "scheduled_task": {
-        "task": "channel.tasks.delete_tts_file",
-        "schedule": crontab(minute=0, hour=0),
-    },
-}

@@ -15,12 +15,5 @@ RUN . venv/bin/activate
 RUN pip install -r all_requirements.txt
 RUN pip install numba
 
-# django서버 선언
-RUN python3 manage.py makemigrations
-RUN python3 manage.py migrate
-RUN python3 manage.py collectstatic
-
-
-# 서버 내부 8000번 포트 개방
-EXPOSE 8000
-CMD ["gunicorn", "--config", "gunicorn-cfg.py", "backend.wsgi:application", "--reload", "--timeout=240"]
+# celery 실행
+CMD ["celry", "-A", "backend", "worker", "--pool=threads", "--loglevel-info"]

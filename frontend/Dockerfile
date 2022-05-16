@@ -1,14 +1,13 @@
-FROM node:16.13.1-alpine
+FROM node:alpine
+ENV PATH /app/node_modules/.bin:$PATH
+# node 환경
 
 WORKDIR /app
-
-ENV PATH /app/node_modules/.bin:$PATH
-
 COPY package.json ./
 COPY package-lock.json ./
 
+# npm 패키지 설치
 RUN npm install
 
-COPY /. ./
-
+# 서버 구동
 CMD ["npm", "start"]
