@@ -1,0 +1,14 @@
+.mode-list {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  max-height: 80px;
+  margin: 0 auto;
+  overflow: auto;
+  padding: 3px 3px;
+  white-space: nowrap;
+}
+
+.mode-list::-webkit-scrollbar {
+  display: none;
+}

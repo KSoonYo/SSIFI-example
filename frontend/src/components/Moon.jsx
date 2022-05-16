@@ -1,10 +1,10 @@
 import React from 'react'
 import '../style/Moon.css'
 
-const Moon = () => {
+const Moon = ({ ssifiTalk = false }) => {
   return (
     <div className="center">
-      <div className="moon"></div>
+      <div className={ssifiTalk ? 'moon-active' : 'moon'}></div>
     </div>
   )
 }
