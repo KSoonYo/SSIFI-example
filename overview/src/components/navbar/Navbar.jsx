@@ -30,7 +30,9 @@ const Navbar = () => {
         </div>
       </div>
       <div className="navbar-start">
-        <button type="button">Get Started</button>
+        <button type="button" onClick={() => (window.location.href = 'https://ssifi-ai.com')}>
+          Get Started
+        </button>
       </div>
       <div className="navbar-menu">
         {toggleMenu ? (

@@ -56,6 +56,7 @@
   background: #ad67eb;
   border-radius: 10px;
   border: 1px solid white;
+  cursor: pointer;
 }
 
 .navbar-menu-container-links-start {
@@ -74,8 +75,8 @@
   justify-content: flex-end;
   align-items: flex-end;
   flex-direction: column;
-  text-align: end;
-  background: var(--color-main);
+  text-align: start;
+  background: #4b4453;
   padding: 2rem;
   position: absolute;
   right: 0;
