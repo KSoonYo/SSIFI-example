@@ -12,7 +12,9 @@ import { postRequest } from '../api/requests'
 const InfoDialog = ({ open, handleClose, navigate }) => {
   const isSaved = status => {
     sessionStorage.setItem('isSaved', status)
-    getKey()
+    if (sessionStorage.getItem('key') === null) {
+      getKey()
+    }
   }
 
   const getKey = async () => {
@@ -37,7 +39,8 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
           동의함을 누르시면 SSIFI는 더 나은 학습을 위해 <br></br>
           사용자의 대화 내용을 보관 및 활용할 수 있습니다. <br></br>
           동의하지 않으시면 DB에 채팅 내용이 저장되지 않습니다. <br></br>
-          *동의 여부와 상관없이 서비스를 이용하실 수 있습니다.
+          *동의 여부와 상관없이 서비스를 이용하실 수 있습니다. <br></br>
+          여러분의 채팅 내용은 DB에 암호화되어 안전하게 저장됩니다
         </DialogContentText>
       </DialogContent>
       <DialogActions>

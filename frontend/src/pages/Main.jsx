@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
@@ -97,9 +97,11 @@ const Main = () => {
     }, 1000)
   }
 
-  useEffect(() => {
-    checkNotKey(() => navigate('/'))
-  })
+  // useEffect(() => {
+  //   if (sessionStorage.getItem('key') === null) {
+  //     checkNotKey(() => navigate('/'))
+  //   }
+  // })
 
   const ImageModal = () => {
     return (
