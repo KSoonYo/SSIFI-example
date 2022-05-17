@@ -1,4 +1,4 @@
-## Install Dependencies
+# Install Dependencies
 
 <br/>
 
@@ -26,9 +26,13 @@ pip install -r requirements.txt
 
 <br/>
 
-**[WARNING]**
+## [WARNING]
+
+<br/>
 
 **1. Window에서는 g2pk의 dependency인 python-mecab-ko 설치문제가 발생하며, Window 버전을 설치 하더라도 g2pk 설치시 에러가 발생할 수 있기 때문에 linux 환경을 권장드립니다.**
+
+<br/>
 
 **2. Anaconda 가상환경을 사용하시는 것을 권장드립니다.**
 
