@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from .models import Message
+from .models import Message, Client
 import os, re, hashlib, time
 from threading import Timer
 from datetime import datetime
@@ -13,12 +13,14 @@ from STT import STT
 from NLP import Novelbot, Wellnessbot, Painterbot, Reporterbot, Writerbot
 from TTS import synthesize
 
-key_set = set()
-
 
 def key_del(key):
-    key_set.remove(key)
-    print(str(datetime.now()) + f' 클라이언트 {key} 삭제')
+    if Client.objects.filter(client_key=key).exists():
+        client = Client.objects.get(client_key=key)
+        client.delete()
+        print(str(datetime.now()) + f' 클라이언트 {key} 삭제')
+    else:
+        print(str(datetime.now()) + f'{key} 클라이언트가 없습니다.')
 
 
 def delete_file(path, file_name):
@@ -36,7 +38,7 @@ def stt(request):
     음성파일(.wav)를 입력받아 해당 음성의 한국어 text를 반환
     '''
     key = request.POST.get('key')
-    if key not in key_set:
+    if not Client.objects.filter(client_key=key).exists():
         return JsonResponse({'detail': '인증에 실패하였습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
 
     fs = FileSystemStorage()
@@ -76,7 +78,7 @@ def tts(request):
         return JsonResponse({'detail': '지원되지 않는 미디어 형태입니다. '}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     key = req.get('key')
-    if key not in key_set:
+    if not Client.objects.filter(client_key=key).exists():
         return JsonResponse({'detail': '인증에 실패하였습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
     
     if not req.get('message'):
@@ -88,7 +90,7 @@ def tts(request):
     modes = {'novel', 'wellness', 'painter', 'beauty', 'economy', 'entertainments', 'IT', 'society', 'comedy', 'drama', 'news'}
     mode = req['mode']
     user_message = req['message']
-    base_url = 'http://localhost:8000'
+    base_url = 'https://k6s203.p.ssafy.io:8000'
 
     if mode not in modes:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -104,7 +106,7 @@ def tts(request):
         # TODO: 번역 api 최대 횟수 지정 필요
         if not os.path.isdir(os.path.join(settings.MEDIA_ROOT, 'painter')):
             os.mkdir(os.path.join(settings.MEDIA_ROOT, 'painter'))
-        painter_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}.jpeg'
+        painter_name = key + '_' + ''.join(str(time.time()).split('.')) + '.jpeg'
         painter_path = os.path.join(settings.MEDIA_ROOT, 'painter', painter_name)
         Painterbot.painterbot(user_message, painter_path)
         Timer(3600, delete_file, ['painter', painter_name]).start()
@@ -155,7 +157,8 @@ def make_client_key(request):
     key = hashlib.new('sha256')
     key.update(encode_key)
     
-    key_set.add(key.hexdigest())
+    client = Client(client_key=key.hexdigest())
+    client.save()
     print(str(datetime.now()) + f' 클라이언트 {key.hexdigest()} 추가')
     Timer(3600, key_del, [key.hexdigest()]).start()
     response = {'key': key.hexdigest()}

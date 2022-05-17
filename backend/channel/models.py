@@ -22,3 +22,7 @@ class Message(models.Model):
 
     def __str__(self):
         return self.user_message
+
+
+class Client(models.Model):
+    client_key = models.TextField()
