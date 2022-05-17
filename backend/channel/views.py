@@ -11,8 +11,8 @@ from datetime import datetime
 
 from STT import STT
 from NLP import (
-    novelbot,
-    wellnessbot,
+    Novelbot,
+    Wellnessbot,
     Painterbot,
     Reporterbot,
     Writerbot
@@ -102,10 +102,10 @@ def tts(request):
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if mode == 'novel':
-        ssifi_response = novelbot.novelbot(user_message, 100)
+        ssifi_response = Novelbot.novelbot(user_message, 100)
 
     elif mode == 'wellness':
-        ssifi_response = wellnessbot.wellnessbot(user_message, 50)
+        ssifi_response = Wellnessbot.wellnessbot(user_message, 50)
 
     elif mode == 'painter':
         # TODO: 현재 메모리 초과, AWS 상황에서 확인 필요
