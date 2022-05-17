@@ -47,9 +47,9 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
         <Button
           onClick={() => {
             isSaved(false)
-            handleClose()
             setTimeout(() => {
               navigate('/main')
+              handleClose()
             }, 1000)
           }}
           color="primary"
@@ -59,9 +59,9 @@ const InfoDialog = ({ open, handleClose, navigate }) => {
         <Button
           onClick={() => {
             isSaved(true)
-            handleClose()
             setTimeout(() => {
               navigate('/main')
+              handleClose()
             }, 1000)
           }}
           color="primary"
