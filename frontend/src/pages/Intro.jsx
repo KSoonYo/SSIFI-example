@@ -18,7 +18,7 @@ const Intro = () => {
 
   useEffect(() => {
     if (touched) {
-      const audio = new Audio('')
+      const audio = new Audio('assets/intro.wav')
       audio.play()
     }
   }, [touched])
@@ -82,9 +82,9 @@ const Intro = () => {
         setTouched(true)
       }}
     >
-      <Moon></Moon>
-      {touched ? <IntroPhrase></IntroPhrase> : <WaitingPhrase></WaitingPhrase>}
-      {touched ? <IntroButtonWrapper></IntroButtonWrapper> : <></>}
+      <Moon />
+      {touched ? <IntroPhrase /> : <WaitingPhrase />}
+      {touched && <IntroButtonWrapper />}
       <InfoDialog open={open} handleClose={handleClose} navigate={navigate}></InfoDialog>
     </div>
   )
