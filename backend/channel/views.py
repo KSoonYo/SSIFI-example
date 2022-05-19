@@ -96,7 +96,7 @@ def tts(request):
     modes = {'novel', 'wellness', 'painter', 'beauty', 'economy', 'entertainments', 'IT', 'society', 'comedy', 'drama', 'news'}
     mode = req['mode']
     user_message = req['message']
-    base_url = 'https://k6s203.p.ssafy.io:8000'
+    base_url = 'https://ssifi-ai.com:8000'
 
     if mode not in modes:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
