@@ -22,7 +22,7 @@
 
 > **`SSIFI` 오픈소스를 활용한 시연 서비스 개발**
 
-[Docs](https://ssifi-ai.com:4001/ms)|[Demo](https://ssifi-ai.com/)
+[Docs](https://ssifi-ai.com:4001/ms) | [Demo](https://ssifi-ai.com/) |
 
 
 
@@ -37,10 +37,10 @@
 
 # :cowboy_hat_face: 팀 소개 및 역할
 
-|                            김순요                            |                            김치우                            |                            박창현                            |                            이상백                            |                            이재만                            |                            홍석준                            |
-| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img style="width:150px; height: 150px;"   src="./README.assets/KS.jpg" /> | <img style="width:150px; height: 150px;"   src="./README.assets/KU.jpg" /> | <img style="width:150px; height: 150px;"   src="./README.assets/PC.jpg" /> | <img style="width:150px; height:150px;"   src="./README.assets/LS.jpg" /> | <img style="width: 150px; height: 150px;"   src="./README.assets/LM.jpg" /> | <img style="width: 150px; height: 150px;"   src="./README.assets/HS.jpg" /> |
-|                    **Frontend<br />팀장**                    |                            **AI**                            |                         **Frontend**                         |                            **AI**                            |                         **Backend**                          |                     **CI/CD<br />Infra**                     |
+|                        김순요                        |                        김치우                        |                        박창현                        |                        이상백                        |                        이재만                        |                        홍석준                        |
+| :--------------------------------------------------: | :--------------------------------------------------: | :--------------------------------------------------: | :--------------------------------------------------: | :--------------------------------------------------: | :--------------------------------------------------: |
+| <img width="150px"   src="./README.assets/KS.jpg" /> | <img width="150px"   src="./README.assets/KU.jpg" /> | <img width="150px"   src="./README.assets/PC.jpg" /> | <img width="150px"   src="./README.assets/LS.jpg" /> | <img width="150px"   src="./README.assets/LM.jpg" /> | <img width="150px"   src="./README.assets/HS.jpg" /> |
+|                **Frontend<br />팀장**                |                        **AI**                        |                     **Frontend**                     |                        **AI**                        |                     **Backend**                      |                 **CI/CD<br />Infra**                 |
 
 ![팀_단체사진](README.assets/팀_단체사진.JPG)
 
@@ -48,33 +48,33 @@
 
 ## :sunny: FrontEnd
 
-|                                    HTML                                    |                                    CSS                                    |                                    JS                                     |                                    React                                    |                                    MUI                                    |
-| :------------------------------------------------------------------------: | :-----------------------------------------------------------------------: | :-----------------------------------------------------------------------: | :-------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
-| <img style="width: 50px; height: 50px;" src="./README.assets/html.png"  /> | <img style="width: 50px; height: 50px;" src="./README.assets/css.png"  /> | <img style="width: 50px; height: 50px;" src="./README.assets/js.jpeg"  /> | <img style="width: 50px; height: 50px;" src="./README.assets/react.png"  /> | <img style="width: 50px; height: 50px;" src="./README.assets/mui.png"  /> |
+|                         HTML                         |                         CSS                         |                         JS                          |                         React                         |                         MUI                         |
+| :--------------------------------------------------: | :-------------------------------------------------: | :-------------------------------------------------: | :---------------------------------------------------: | :-------------------------------------------------: |
+| <img width="50px" src="./README.assets/html.png"  /> | <img width="50px" src="./README.assets/css.png"  /> | <img width="50px" src="./README.assets/js.jpeg"  /> | <img width="50px" src="./README.assets/react.png"  /> | <img width="50px" src="./README.assets/mui.png"  /> |
 
 ## :moon: BackEnd
 
-|                                    django                                    |                                    mongoDB                                    |
-| :--------------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
-| <img style="width: 50px; height: 50px;" src="./README.assets/django.png"  /> | <img style="width: 50px; height: 50px;" src="./README.assets/mongodb.png"  /> |
+|                         django                         |                         mongoDB                         |
+| :----------------------------------------------------: | :-----------------------------------------------------: |
+| <img width="50px" src="./README.assets/django.png"  /> | <img width="50px" src="./README.assets/mongodb.png"  /> |
 
 ## :star: Infra
 
-|                                    nginx                                    |                                    ubuntu                                    |                                    AWS EC2                                    |                                    docker                                    |                                   Jenkins                                    |
-| :-------------------------------------------------------------------------: | :--------------------------------------------------------------------------: | :---------------------------------------------------------------------------: | :--------------------------------------------------------------------------: | :--------------------------------------------------------------------------: |
-| <img style="width: 50px; height: 50px;" src="./README.assets/nginx.png"  /> | <img style="width: 50px; height: 50px;" src="./README.assets/ubuntu.jpg"  /> | <img style="width: 50px; height: 50px;" src="./README.assets/AWS ec2.png"  /> | <img style="width: 50px; height: 50px;" src="./README.assets/docker.png"  /> | <img style="width: 50px; height: 50px;" src="./README.assets/jenkins.png" /> |
+|                         nginx                         |                         ubuntu                         |                         AWS EC2                         |                         docker                         |                        Jenkins                         |
+| :---------------------------------------------------: | :----------------------------------------------------: | :-----------------------------------------------------: | :----------------------------------------------------: | :----------------------------------------------------: |
+| <img width="50px" src="./README.assets/nginx.png"  /> | <img width="50px" src="./README.assets/ubuntu.jpg"  /> | <img width="50px" src="./README.assets/AWS ec2.png"  /> | <img width="50px" src="./README.assets/docker.png"  /> | <img width="50px" src="./README.assets/jenkins.png" /> |
 
 ## :satellite: AI
 
-|                                    PyTorch                                    |
-| :---------------------------------------------------------------------------: |
-| <img style="width: 50px; height: 50px;" src="./README.assets/pytorch.jpg"  /> |
+|                         PyTorch                         |
+| :-----------------------------------------------------: |
+| <img width="50px" src="./README.assets/pytorch.jpg"  /> |
 
 # :artificial_satellite: 협업 도구
 
-|                                    notion                                    |                                    mattermost                                    |                                    jira                                    |                                    git                                    |
-| :--------------------------------------------------------------------------: | :------------------------------------------------------------------------------: | :------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
-| <img style="width: 50px; height: 50px;" src="./README.assets/notion.jpg"  /> | <img style="width: 40px; height: 40px;" src="./README.assets/mattermost.jpg"  /> | <img style="width: 40px; height: 40px;" src="./README.assets/jira.jpg"  /> | <img style="width: 40px; height: 40px;" src="./README.assets/GIT.png"  /> |
+|                         notion                         |                         mattermost                         |                         jira                         |                         git                         |
+| :----------------------------------------------------: | :--------------------------------------------------------: | :--------------------------------------------------: | :-------------------------------------------------: |
+| <img width="50px" src="./README.assets/notion.jpg"  /> | <img width="50px" src="./README.assets/mattermost.jpg"  /> | <img width="50px" src="./README.assets/jira.jpg"  /> | <img width="50px" src="./README.assets/GIT.png"  /> |
 
 # :memo: 서비스 아키텍처
 
