@@ -1,14 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
-import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded'
-import ToggleOnIcon from '@mui/icons-material/ToggleOn'
+import { faMicrophone, faCommentDots } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import { postRequest } from '../api/requests.js'
 import { Typography } from '../../node_modules/@mui/material/index'
 import { useNavigate } from '../../node_modules/react-router-dom/index'
 import checkNotKey from '../functions/CheckNotKey'
 import Modal from '@mui/material/Modal'
+import '../style/Main.css'
+import Switch from '../components/Switch'
 
 const Main = () => {
   const [mode, setMode] = useState(true)
@@ -25,7 +28,24 @@ const Main = () => {
   const navigate = useNavigate()
   const [toggable, setToggable] = useState(true)
   const [imageOpen, setImageOpen] = useState(false)
+  const [toastOpen, setToastOpen] = useState(false)
   const [imageUrl, setImageUrl] = useState(null)
+  const [aiMode, setAiMode] = useState('wellness')
+
+  const modeList = [
+    { name: '소설', mode: 'novel' },
+    { name: '심리상담', mode: 'wellness' },
+    { name: '화가', mode: 'painter' },
+    { name: '뷰티기사', mode: 'beauty' },
+    { name: '경제기사', mode: 'economy' },
+    { name: '연예기사', mode: 'entertainments' },
+    { name: 'IT기사', mode: 'IT' },
+    { name: '사회기사', mode: 'society' },
+    { name: '작가', mode: 'writer' },
+    { name: '코미디', mode: 'comedy' },
+    { name: '드라마', mode: 'drama' },
+    { name: '뉴스', mode: 'news' },
+  ]
 
   // audioUrl 초기화
   // useCallback으로 부모 컴포넌트에서 함수 정의 후 자식으로 전달
@@ -61,16 +81,16 @@ const Main = () => {
         },
       ])
       try {
-        let mode = sessionStorage.getItem('mode')
         const context = await postRequest('api/channel/tts/', {
-          mode: mode,
+          mode: aiMode,
           message: data,
           isSaved: sessionStorage.getItem('isSaved'),
           key: sessionStorage.getItem('key'),
         })
         setTTSLoad(false)
 
-        if (sessionStorage.getItem('mode') === 'painter') {
+        if (aiMode === 'painter') {
+          console.log(true)
           handleImageOpen()
           setImageUrl(context.data.message)
         }
@@ -82,22 +102,42 @@ const Main = () => {
             chat: context.data.message,
             info: false,
             url: context.data.url,
-            mode: mode,
+            mode: aiMode,
           },
         ])
         setAudioUrls(context.data.url)
       } catch (err) {
         if (err.response.status === 401) {
           alert('세션이 만료되었습니다.')
+          sessionStorage.removeItem('key')
           navigate('/')
         }
       }
     }, 1000)
   }
 
+  const handleToastBoxOpen = () => setToastOpen(true)
+  const handleToastBoxClose = () => setToastOpen(false)
+
+  const mounted = useRef(false)
   useEffect(() => {
-    checkNotKey(() => navigate('/'))
-  })
+    if (!mounted.current) {
+      setTimeout(() => {
+        handleToastBoxOpen()
+        setTimeout(handleToastBoxClose, 3000)
+      }, 850)
+    }
+  }, [aiMode])
+
+  const ToastBox = () => {
+    return (
+      <div className={`toast-message-box ${toastOpen ? 'show' : ''}`}>
+        <p className="toast-message-content">
+          <span> {modeList.find(modeObj => modeObj.mode === aiMode).name}(이)가 선택되었습니다. </span>
+        </p>
+      </div>
+    )
+  }
 
   const ImageModal = () => {
     return (
@@ -109,9 +149,18 @@ const Main = () => {
     )
   }
 
+  const changeAiMode = aimode => {
+    setAiMode(aimode)
+  }
+
+  useEffect(() => {
+    checkNotKey(() => navigate('/'))
+  })
+
   return (
     <div style={{ height: '100%' }}>
-      <ImageModal></ImageModal>
+      <ImageModal />
+      <ToastBox />
       <Box
         sx={{
           margin: 'auto',
@@ -122,14 +171,26 @@ const Main = () => {
           height: '7%',
         }}
       >
-        <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>SSIFI</Typography>
-        <Typography sx={{ margin: '0 10px', color: 'gray' }}>{mode ? 'Voice Mode' : 'Chat Mode'}</Typography>
-        <IconButton disabled={!toggable} variant="outlined" onClick={() => setMode(!mode)}>
-          {mode ? (
-            <ToggleOffRoundedIcon sx={{ fontSize: '50px', color: 'white' }} />
-          ) : (
-            <ToggleOnIcon sx={{ fontSize: '50px', color: 'white' }} />
-          )}
+        <Typography
+          sx={{ margin: '0 10px', color: 'white', fontSize: '30px', cursor: 'pointer' }}
+          onClick={() => navigate('/')}
+        >
+          SSIFI
+        </Typography>
+        <Typography sx={{ margin: '0 10px', color: 'gray', textAlign: 'center' }}>
+          {aiMode.charAt(0).toUpperCase() + aiMode.slice(1)}
+          {mode ? ' Voice' : ' Chat'}
+        </Typography>
+        <IconButton disabled={!toggable} variant="outlined">
+          <FontAwesomeIcon
+            icon={faMicrophone}
+            style={{ fontSize: '1rem', color: 'white', cursor: 'default' }}
+          ></FontAwesomeIcon>
+          <Switch mode={mode} setMode={setMode} />
+          <FontAwesomeIcon
+            icon={faCommentDots}
+            style={{ fontSize: '1rem', color: 'white', cursor: 'default' }}
+          ></FontAwesomeIcon>
         </IconButton>
       </Box>
       {mode ? (
@@ -143,6 +204,8 @@ const Main = () => {
           initAudioUrls={initAudioUrls}
           ttsLoad={ttsLoad}
           setToggable={setToggable}
+          changeAiMode={changeAiMode}
+          modeList={modeList}
         />
       ) : (
         <ChatMode
@@ -150,6 +213,8 @@ const Main = () => {
           chatContent={chatContent}
           setChatContent={setChatContent}
           handleAddChat={handleAddChat}
+          changeAiMode={changeAiMode}
+          modeList={modeList}
         />
       )}
     </div>

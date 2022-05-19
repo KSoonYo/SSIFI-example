@@ -47,7 +47,7 @@ const ChatList = props => {
 
   const AudioBox = ({ index }) => {
     return (
-      <div>
+      <div style={{ paddingLeft: '10px' }}>
         <FontAwesomeIcon
           className="play"
           onClick={() => {
@@ -79,7 +79,7 @@ const ChatList = props => {
       )
     }
     return (
-      <Typography className="chat-content" style={{ color: 'white' }}>
+      <Typography className="chat-content" style={{ color: 'white', fontFamily: 'SpoqaHanSansNeo Regular' }}>
         {chatItem.chat}
       </Typography>
     )
@@ -102,11 +102,20 @@ const ChatList = props => {
             }
           >
             <div className="message-box">
+              <div style={{ color: 'white', fontFamily: 'SpoqaHanSansNeo Regular', paddingLeft: '6px' }}>
+                {props.modeList.find(modeObject => modeObject.mode === chatItem.mode)
+                  ? props.modeList.find(modeObject => modeObject.mode === chatItem.mode).name
+                  : ''}
+              </div>
               <div className={chatItem.id === 'me' ? 'myChat' : chatItem.id === 'loading' ? 'loading' : 'ssifiChat'}>
                 <ContentBox chatItem={chatItem} />
               </div>
               <audio ref={audioRef} style={{ display: 'none' }}></audio>
-              {chatItem.id === 'ssifi' && !chatItem.info ? <AudioBox index={index}></AudioBox> : <></>}
+              {chatItem.id === 'ssifi' && !chatItem.info ? (
+                chatItem.mode === 'wellness' && <AudioBox index={index} />
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         )
