@@ -20,7 +20,7 @@ base_path = '/'.join(base_path[:-1])
 
 model_path = base_path + '/models/painterbot/model'
 diffusion_path = base_path + '/models/painterbot/diffusion'
-save_image_path = base_path + '/models/painterbot/images/temp.jpeg'
+save_image_path = base_path + '/temp.jpeg'
 
 has_cuda = torch.cuda.is_available()
 device = torch.device('cpu' if not has_cuda else 'cuda')
@@ -33,7 +33,7 @@ def save_images(batch: torch.Tensor):
 	output_image.save(save_image_path)
 	return Image.fromarray(reshaped.numpy())
 
-def painterbot(prompt, path='') :
+def painterbot(prompt, path='', chpt_path='') :
 	global save_image_path
 
 	if path:
@@ -47,13 +47,23 @@ def painterbot(prompt, path='') :
 	batch_size = 1
 	guidance_scale = 3.0
 
+	options = model_and_diffusion_defaults()
+	options['use_fp16'] = has_cuda
+	options['timestep_respacing'] = '100' 	# use 27 diffusion steps for very fast sampling
+	
 	model= torch.load(model_path)
 	model.eval()
+	if has_cuda:
+		model.convert_to_fp16()
+
+	model.to(device)
+	# checkpoint 존재시 load
+	if chpt_path:
+		checkpoint = th.load(ckpt_path, map_location=device)
+		model.load_state_dict(checkpoint, strict=False)
 	tokenizer = model.tokenizer
 	diffusion = torch.load(diffusion_path)
-	options = model_and_diffusion_defaults_upsampler()
-	options['use_fp16'] = has_cuda
-	options['timestep_respacing'] = 'fast27' 	# use 27 diffusion steps for very fast sampling
+	print('total base parameters', sum(x.numel() for x in model.parameters()))
 
 	# Create a classifier-free guidance sampling function
 	def model_fn(x_t, ts, **kwargs):
@@ -101,6 +111,6 @@ def painterbot(prompt, path='') :
 		model_kwargs=model_kwargs,
 		cond_fn=None,
 	)[:batch_size]
-	model_temp.del_cache()
+	model.del_cache()
 
 	return save_images(output)
