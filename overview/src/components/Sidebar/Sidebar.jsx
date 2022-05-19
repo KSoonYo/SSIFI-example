@@ -20,7 +20,7 @@ const Menu = styled.div`
 
 const Title = styled.h1`
   font-family: var(--font-family);
-  font-size: 20px;
+  font-size: 1.2rem;
   margin-bottom: 10px;
 `
 
