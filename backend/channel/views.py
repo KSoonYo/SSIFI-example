@@ -4,13 +4,32 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from .models import Message
-from .tasks import delete_tts_file, make_key, is_valid_key, delete_painter_file
+from .models import Message, Client
 import os, re, hashlib, time
+from threading import Timer
+from datetime import datetime
 
 from STT import STT
 from NLP import Novelbot, Wellnessbot, Painterbot, Reporterbot, Writerbot
 from TTS import synthesize
+
+
+def key_del(key):
+    if Client.objects.filter(client_key=key).exists():
+        client = Client.objects.get(client_key=key)
+        client.delete()
+        print(str(datetime.now()) + f' 클라이언트 {key} 삭제')
+    else:
+        print(str(datetime.now()) + f'{key} 클라이언트가 없습니다.')
+
+
+def delete_file(path, file_name):
+    if os.path.isfile(f'media/{path}/{file_name}'):
+        os.remove(f'media/{path}/{file_name}')
+        print(str(datetime.now()) + f' {file_name} 삭제')
+
+    else:
+        print(str(datetime.now()) + f' {file_name}이 없습니다.')
 
 
 @api_view(['POST'])
@@ -19,7 +38,7 @@ def stt(request):
     음성파일(.wav)를 입력받아 해당 음성의 한국어 text를 반환
     '''
     key = request.POST.get('key')
-    if not is_valid_key.delay(key).get():
+    if not Client.objects.filter(client_key=key).exists():
         return JsonResponse({'detail': '인증에 실패하였습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
 
     fs = FileSystemStorage()
@@ -59,7 +78,7 @@ def tts(request):
         return JsonResponse({'detail': '지원되지 않는 미디어 형태입니다. '}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     key = req.get('key')
-    if not is_valid_key.delay(key).get():
+    if not Client.objects.filter(client_key=key).exists():
         return JsonResponse({'detail': '인증에 실패하였습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
     
     if not req.get('message'):
@@ -71,7 +90,7 @@ def tts(request):
     modes = {'novel', 'wellness', 'painter', 'beauty', 'economy', 'entertainments', 'IT', 'society', 'comedy', 'drama', 'news'}
     mode = req['mode']
     user_message = req['message']
-    base_url = 'http://localhost:8000'
+    base_url = 'https://k6s203.p.ssafy.io:8000'
 
     if mode not in modes:
         return JsonResponse({'detail': '지원하지 않는 mode입니다.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -85,10 +104,12 @@ def tts(request):
     elif mode == 'painter':
         # TODO: 현재 메모리 초과, AWS 상황에서 확인 필요
         # TODO: 번역 api 최대 횟수 지정 필요
-        painter_name = key + '_' + ''.join(str(time.time()).split('.')) + f'_{i}.jpeg'
+        if not os.path.isdir(os.path.join(settings.MEDIA_ROOT, 'painter')):
+            os.mkdir(os.path.join(settings.MEDIA_ROOT, 'painter'))
+        painter_name = key + '_' + ''.join(str(time.time()).split('.')) + '.jpeg'
         painter_path = os.path.join(settings.MEDIA_ROOT, 'painter', painter_name)
         Painterbot.painterbot(user_message, painter_path)
-        delete_painter_file.delay(painter_name)
+        Timer(3600, delete_file, ['painter', painter_name]).start()
         ssifi_response = base_url + settings.MEDIA_URL + 'painter/' + painter_name
 
     elif mode in {'beauty', 'economy', 'entertainments', 'IT', 'society'}:
@@ -115,7 +136,7 @@ def tts(request):
             synthesize.make_sound(file_name, sentences[i], result_path)
             url = base_url + settings.MEDIA_URL + 'tts/' + file_name + '.wav'
             urls.append(url)
-            delete_tts_file.delay(file_name + '.wav')
+            Timer(3600, delete_file, ['tts', file_name + '.wav']).start()
 
     response = {'message': ssifi_response, 'url': urls}
     return JsonResponse(response)
@@ -136,6 +157,9 @@ def make_client_key(request):
     key = hashlib.new('sha256')
     key.update(encode_key)
     
-    make_key.delay(key.hexdigest())
+    client = Client(client_key=key.hexdigest())
+    client.save()
+    print(str(datetime.now()) + f' 클라이언트 {key.hexdigest()} 추가')
+    Timer(3600, key_del, [key.hexdigest()]).start()
     response = {'key': key.hexdigest()}
     return JsonResponse(response)

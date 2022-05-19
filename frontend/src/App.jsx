@@ -8,6 +8,11 @@ import Particles from 'react-tsparticles'
 import { loadFull } from 'tsparticles'
 
 function App() {
+  if (process.env.NODE_ENV === 'production') {
+    console.log = function no_console() {}
+    console.warn = function no_console() {}
+  }
+
   const particlesInit = async main => {
     await loadFull(main)
   }
