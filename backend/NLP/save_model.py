@@ -1,3 +1,4 @@
+import os
 import torch
 from transformers import AutoTokenizer, AutoModelWithLMHead, AutoModelForCausalLM, PreTrainedTokenizerFast, GPT2LMHeadModel
 
@@ -68,38 +69,38 @@ tokenizer.save_pretrained(save_dir_tokenizer_writerbot)
 # PAINTER BOT
 # Painter bot 은 model 안에 tokenizer 포함
 # Create and Save model.
-save_dir_diffusion = './models/painterbot/diffusion'
-save_dir_model = './models/painterbot/model'
-options = model_and_diffusion_defaults()
-options['use_fp16'] = has_cuda
-options['timestep_respacing'] = '100' # use 100 diffusion steps for fast sampling
-model, diffusion = create_model_and_diffusion(**options)
-model.eval()
-if has_cuda:
-    model.convert_to_fp16()
-model.to(device)
-model.load_state_dict(load_checkpoint('base', device))
+# save_dir_diffusion = './models/painterbot/diffusion'
+# save_dir_model = './models/painterbot/model'
+# options = model_and_diffusion_defaults()
+# options['use_fp16'] = has_cuda
+# options['timestep_respacing'] = '100' # use 100 diffusion steps for fast sampling
+# model, diffusion = create_model_and_diffusion(**options)
+# model.eval()
+# if has_cuda:
+#     model.convert_to_fp16()
+# model.to(device)
+# model.load_state_dict(load_checkpoint('base', device))
 
-os.makedirs('./models/painterbot', exist_ok=True)
+# os.makedirs('./models/painterbot', exist_ok=True)
 
-torch.save(model, save_dir_model)
-torch.save(diffusion, save_dir_diffusion)
-print('total upsampler parameters', sum(x.numel() for x in model.parameters()))
+# torch.save(model, save_dir_model)
+# torch.save(diffusion, save_dir_diffusion)
+# print('total upsampler parameters', sum(x.numel() for x in model.parameters()))
 
 # kogpt - kakaobrain
-save_dir_tokenizer = './models/kogpt_kakao/tokenizer'
-save_dir_model = './models/kogpt_kakao/model'
-tokenizer = AutoTokenizer.from_pretrained(
-    'kakaobrain/kogpt', revision = 'KoGPT6B-ryan1.5b-float16',
-    bos_token='[BOS]', eos_token='[EOS]', unk_token='[UNK]', pad_token='[PAD]', mask_token='[MASK]'
-)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print('Current device:', device)
-model = AutoModelForCausalLM.from_pretrained(
-    'kakaobrain/kogpt', revision = 'KoGPT6B-ryan1.5b-float16',
-    pad_token_id=tokenizer.eos_token_id,
-    torch_dtype=torch.float16, low_cpu_mem_usage=True
-    ).to(device=device, non_blocking=True)
-_=model.eval()
-tokenizer.save_pretrained(save_dir_tokenizer)
-model.save_pretrained(save_dir_model)
+# save_dir_tokenizer = './models/kogpt_kakao/tokenizer'
+# save_dir_model = './models/kogpt_kakao/model'
+# tokenizer = AutoTokenizer.from_pretrained(
+#     'kakaobrain/kogpt', revision = 'KoGPT6B-ryan1.5b-float16',
+#     bos_token='[BOS]', eos_token='[EOS]', unk_token='[UNK]', pad_token='[PAD]', mask_token='[MASK]'
+# )
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# print('Current device:', device)
+# model = AutoModelForCausalLM.from_pretrained(
+#     'kakaobrain/kogpt', revision = 'KoGPT6B-ryan1.5b-float16',
+#     pad_token_id=tokenizer.eos_token_id,
+#     torch_dtype=torch.float16, low_cpu_mem_usage=True
+#     ).to(device=device, non_blocking=True)
+# _=model.eval()
+# tokenizer.save_pretrained(save_dir_tokenizer)
+# model.save_pretrained(save_dir_model)
