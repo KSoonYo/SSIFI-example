@@ -111,7 +111,11 @@ const ChatList = props => {
                 <ContentBox chatItem={chatItem} />
               </div>
               <audio ref={audioRef} style={{ display: 'none' }}></audio>
-              {chatItem.id === 'ssifi' && !chatItem.info ? <AudioBox index={index}></AudioBox> : <></>}
+              {chatItem.id === 'ssifi' && !chatItem.info ? (
+                chatItem.mode === 'wellness' && <AudioBox index={index} />
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         )
