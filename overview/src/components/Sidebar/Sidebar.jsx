@@ -42,7 +42,10 @@ const Sidebar = () => {
     { name: 'TTS', path: '/ms/tts' },
   ]
 
-  const ref = [{ name: 'References', path: '/ms/references' }]
+  const ref = [
+    { name: 'References', path: '/ms/references' },
+    { name: 'License', path: '/ms/license' },
+  ]
   return (
     <Side>
       <Title>Getting Started</Title>
@@ -75,7 +78,7 @@ const Sidebar = () => {
           )
         })}
       </Menu>
-      <Title>REF</Title>
+      <Title>Resources</Title>
       <Menu>
         {ref.map((menu, index) => {
           return (

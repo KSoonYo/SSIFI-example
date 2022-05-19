@@ -11,6 +11,7 @@ import TTS from './pages/Docs/TTS'
 import STT from './pages/Docs/STT'
 import References from './pages/Docs/References'
 import { Footer } from './containers'
+import License from './pages/Docs/License'
 
 const Center = styled.div`
   height: 92vh;
@@ -21,7 +22,7 @@ const Center = styled.div`
 const Pages = styled.div`
   padding: 64px 16px;
   margin: 0px 238px;
-  width: 1236px;
+  width: 100%;
   overflow-y: auto;
   &::-webkit-scrollbar {
     display: none;
@@ -44,6 +45,7 @@ const App = () => {
             <Route path="/ms/stt" element={<STT />} />
             <Route path="/ms/tts" element={<TTS />} />
             <Route path="ms/references" element={<References />} />
+            <Route path="ms/license" element={<License />} />
           </Routes>
           <Footer />
         </Pages>

@@ -143,12 +143,26 @@ const VoiceMode = ({
   }
 
   const chatBox = (
-    <Box sx={styles.chatBox} className="chat-box">
+    <Box sx={{ p: 4 }} className="chat-box">
       <IconButton sx={{ width: '100%' }} onClick={handleClose}>
         <ExpandMoreRoundedIcon style={{ color: 'white' }} />
       </IconButton>
       <ModeList changeAiMode={changeAiMode} modeList={modeList} />
       <ChatList chatList={chatList} modeList={modeList} />
+    </Box>
+  )
+
+  const ttsLoadingPage = (
+    <Box className="tts-loader">
+      <div className="main_box">
+        <div className="dot" />
+        <div className="parent">
+          <div className="child">
+            <div className="subchild" />
+          </div>
+        </div>
+      </div>
+      <Typography sx={{ color: 'white' }}>음성을 우주로 보내고 있어요.</Typography>
     </Box>
   )
 
@@ -221,19 +235,7 @@ const VoiceMode = ({
           <ExpandLessRoundedIcon style={{ display: open ? 'none' : undefined, color: 'white' }} />
         </IconButton>
       </Box>
-      {ttsLoad && (
-        <Box sx={styles.ttsLoader}>
-          <div className="main_box">
-            <div className="dot"></div>
-            <div className="parent">
-              <div className="child">
-                <div className="subchild"></div>
-              </div>
-            </div>
-          </div>
-          <Typography sx={{ color: 'white' }}>음성을 우주로 보내고 있어요.</Typography>
-        </Box>
-      )}
+      {ttsLoad && ttsLoadingPage}
       <Slide direction="up" in={open} mountOnEnter>
         {chatBox}
       </Slide>
@@ -242,41 +244,3 @@ const VoiceMode = ({
 }
 
 export default VoiceMode
-
-// style
-const styles = {
-  soundWave: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100px',
-  },
-  chatBox: {
-    position: 'absolute',
-    height: '50vh',
-    bottom: '0',
-    transform: 'translate(-50%, -50%)',
-    width: '87%',
-    margin: '0 auto',
-    bgcolor: 'rgba(0, 0, 0, 0.5)',
-    border: '1px solid white',
-    boxShadow: 24,
-    overflowY: 'auto',
-    p: 4,
-  },
-  chatOpenBtn: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ttsLoader: {
-    width: '100%',
-    height: '110%',
-    bgcolor: 'rgba(0, 0, 0, 0.7)',
-    position: 'absolute',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-  },
-}

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri'
 import './navbar.css'
 import logo from '../../assets/logo_white_background.jpg'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const Menu = () => (
   <>
@@ -12,18 +12,17 @@ const Menu = () => (
     <p>
       <a href="https://lab.ssafy.com/kcw0360/ssifi">GitHub</a>
     </p>
-    <p>
-      <Link to="/ms/intro">Docs</Link>
-    </p>
   </>
 )
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false)
+  const navigate = useNavigate()
+
   return (
     <div className="navbar">
       <div className="navbar-links">
         <div className="navbar-links_logo">
-          <img src={logo} alt="logo" />
+          <img src={logo} alt="logo" onClick={() => navigate('/ms/intro')} style={{ cursor: 'pointer' }} />
         </div>
         <div className="navbar-links_container">
           <Menu />

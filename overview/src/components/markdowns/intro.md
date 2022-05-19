@@ -1,4 +1,4 @@
-# 나만의 인공지능, 나만의 SSIFI
+<h1 style="font-size:50px;">나만의 인공지능, 나만의 SSIFI</h1>
 
 <br/>
 
@@ -20,7 +20,7 @@
 
 ## Demo
 
-<img src="../../assets/demo.png" width="200px">
+<img src="../../assets/service.png" width="800px">
 
 [SSIFI Demo](https://ssifi-ai.com) 버전은 SSIFI 모델을 사용하여 간단한 기능을 구현한 참고 예제입니다.
 
@@ -48,12 +48,12 @@ SSIFI의 대답을 응답으로 받게 됩니다.
 
 <br/>
 
-## SSIFI Lib
+## Used Package
 
-### "react-markdown": "^8.0.3"
+### react-markdown: 8.0.3
 
-### "react-syntax-highlighter": "^15.5.0"
+### react-syntax-highlighter: 15.5.0
 
-### "rehype-raw": "^6.1.1"
+### rehype-raw: 6.1.1
 
-### "remark-gfm": "^3.0.1",
+### remark-gfm: 3.0.1

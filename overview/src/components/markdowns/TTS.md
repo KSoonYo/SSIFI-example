@@ -1,4 +1,4 @@
-# TTS(Text To Speech) - FastSpeech 2 Korean
+<h1 style="font-size:50px;">TTS(Text To Speech) - FastSpeech 2 Korean</h1>
 
 <br/>
 
@@ -104,7 +104,9 @@ pretrained model(checkpoint)을 [다운로드](https://drive.google.com/file/d/1
 
 학습된 파라미터를 기반으로 음성을 생성하기 위해서는 ssifi.py에서 make_sound함수를 통해 생성하실 수 있습니다.
 
-`make_sound(file_name, sentence, results_path, step=350000)`
+```python
+python make_sound(file_name, sentence, results_path, step=350000)
+```
 
 - file_name: 생성되는 음성 파일의 이름
 

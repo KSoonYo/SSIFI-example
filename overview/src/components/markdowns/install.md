@@ -1,4 +1,4 @@
-# Install Dependencies
+<h1 style="font-size:50px;">Install Dependencies</h1>
 
 <br/>
 
