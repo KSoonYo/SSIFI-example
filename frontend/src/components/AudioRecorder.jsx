@@ -133,7 +133,7 @@ export default class AudioReactRecorder extends React.Component {
         self.stream.getTracks().forEach(function (track) {
           track.stop()
         })
-        self.context.close()
+        // self.context.close()
       }
       if (!self.recording) return
       let left = e.inputBuffer.getChannelData(0)

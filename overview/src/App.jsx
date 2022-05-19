@@ -1,5 +1,5 @@
 import { Navbar } from './components'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
 import Install from './pages/Docs/Install'
 
@@ -39,6 +39,7 @@ const App = () => {
         <Sidebar />
         <Pages>
           <Routes>
+            <Route path="/ms" element={<Navigate to="/ms/intro" />} />
             <Route path="/ms/intro" element={<Intro />} />
             <Route path="/ms/install" element={<Install />} />
             <Route path="/ms/nlp" element={<NLP />} />
