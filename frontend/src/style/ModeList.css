@@ -1,0 +1,29 @@
+.mode-list {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  max-height: 80px;
+  margin: 0 auto;
+  overflow: auto;
+  padding: 3px 3px;
+  white-space: nowrap;
+}
+
+.mode-list::-webkit-scrollbar {
+  display: none;
+}
+
+.mode-btn {
+  height: 80%;
+}
+
+.mode-btn:hover {
+  font-weight: bolder;
+  box-shadow: 3px 1.5px 0px rgba(255, 255, 255, 0.5), 6px 2px 5px rgba(255, 255, 255, 0.5);
+}
+
+.mode-btn-selected {
+  background-color: rgba(94, 79, 79, 0.5);
+  height: 80%;
+  box-shadow: 3px 1.5px 0px rgba(255, 255, 255, 0.5), 6px 2px 5px rgba(255, 255, 255, 0.5);
+}

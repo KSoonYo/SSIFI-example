@@ -11,15 +11,29 @@ export const RecordState = Object.freeze({
 })
 
 export default class AudioReactRecorder extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.canvasRef = React.createRef()
+  }
+
   static propTypes = {
     state: PropTypes.string,
     type: PropTypes.string.isRequired,
+    backgroundColor: PropTypes.string,
+    foregroundColor: PropTypes.string,
+    canvasWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    canvasHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     onStop: PropTypes.func,
   }
   static defaultProps = {
     state: RecordState.NONE,
     type: 'audio/wav',
+    backgroundColor: 'rgb(200, 200, 200)',
+    foregroundColor: 'rgb(0, 0, 0)',
+    canvasWidth: 300,
+    canvasHeight: 300,
   }
 
   componentDidMount() {
@@ -71,10 +85,18 @@ export default class AudioReactRecorder extends React.Component {
     this.AudioContext = window.AudioContext || window.webkitAudioContext
     this.context = null
     this.analyser = null
+    this.canvas = this.canvasRef.current
+    this.canvasCtx = this.canvas.getContext('2d')
     this.stream = null
     this.tested = false
 
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
+
+    this.canvasCtx.lineWidth = 2
+    this.canvasCtx.strokeStyle = 'rgb(255, 255, 255)'
+    this.canvasCtx.moveTo(0, 300 / 2)
+    this.canvasCtx.lineTo(300, 300 / 2)
+    this.canvasCtx.stroke()
   }
 
   getStream = constraints => {
@@ -106,13 +128,12 @@ export default class AudioReactRecorder extends React.Component {
 
     const self = this
     this.recorder.onaudioprocess = function (e) {
-      // recording time 20sec limit
-      if (e.playbackTime > 2) {
+      if (e.playbackTime > 5) {
         self.stop()
         self.stream.getTracks().forEach(function (track) {
           track.stop()
         })
-        self.context.close()
+        // self.context.close()
       }
       if (!self.recording) return
       let left = e.inputBuffer.getChannelData(0)
@@ -132,6 +153,7 @@ export default class AudioReactRecorder extends React.Component {
       self.rightchannel.push(new Float32Array(right))
       self.recordingLength += bufferSize
     }
+    this.visualize()
   }
 
   mergeBuffers = (channelBuffer, recordingLength) => {
@@ -167,6 +189,58 @@ export default class AudioReactRecorder extends React.Component {
     }
   }
 
+  visualize = () => {
+    this.WIDTH = this.canvas.width
+    this.HEIGHT = this.canvas.height
+    this.CENTERX = this.canvas.width / 2
+    this.CENTERY = this.canvas.height / 2
+
+    if (!this.analyser) return
+
+    this.analyser.fftSize = 2048
+    const bufferLength = this.analyser.fftSize
+    const dataArray = new Uint8Array(bufferLength)
+
+    this.canvasCtx.clearRect(0, 0, this.WIDTH, this.HEIGHT)
+
+    let self = this
+    const draw = function () {
+      self.drawVisual = requestAnimationFrame(draw)
+
+      self.analyser.getByteTimeDomainData(dataArray)
+
+      self.canvasCtx.fillStyle = 'rgb(0, 0, 0)'
+
+      self.canvasCtx.fillRect(0, 0, self.WIDTH, self.HEIGHT)
+
+      self.canvasCtx.lineWidth = 2
+      self.canvasCtx.strokeStyle = 'rgb(255, 255, 255)'
+
+      self.canvasCtx.beginPath()
+
+      var sliceWidth = (self.WIDTH * 1.0) / bufferLength
+      var x = 0
+
+      for (var i = 0; i < bufferLength; i++) {
+        self.canvasCtx.clearRect(0, 0, self.WIDTH, self.HEIGHT)
+        var v = dataArray[i] / 128.0
+        var y = (v * self.HEIGHT) / 2
+
+        if (i === 0) {
+          self.canvasCtx.moveTo(x, y)
+        } else {
+          self.canvasCtx.lineTo(x, y)
+        }
+
+        x += sliceWidth
+      }
+
+      self.canvasCtx.lineTo(self.canvas.width, self.canvas.height / 2)
+      self.canvasCtx.stroke()
+    }
+    draw()
+  }
+
   setupMic = async () => {
     try {
       window.stream = this.stream = await this.getStream()
@@ -187,6 +261,7 @@ export default class AudioReactRecorder extends React.Component {
 
   stop = () => {
     const { onStop, type } = this.props
+
     this.recording = false
     this.closeMic()
 
@@ -250,6 +325,12 @@ export default class AudioReactRecorder extends React.Component {
   }
 
   render() {
-    return <></>
+    const { canvasWidth, canvasHeight } = this.props
+
+    return (
+      <div style={{ margin: '0 50px' }}>
+        <canvas ref={this.canvasRef} width={canvasWidth} height={canvasHeight}></canvas>
+      </div>
+    )
   }
 }

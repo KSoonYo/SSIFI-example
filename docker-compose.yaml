@@ -1,0 +1,30 @@
+---
+version: "1"
+
+services:
+  fe:
+    container_name:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    workdir: ./app
+    restart: always
+    ports:
+      "3000:3000"
+
+  be:
+    container_name: be
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    volumes:
+      - NLP:/server/NLP
+      - STT:/server/STT
+      - TTS:/server/TTS
+
+    working_dir: ./server
+    restart: always
+    ports:
+      - "8001:8000"
+...

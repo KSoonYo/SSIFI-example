@@ -1,7 +1,7 @@
 .intro-script {
   display: flex;
   justify-content: center;
-  animation: type 4s steps(50);
+  animation: appear 2s;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -10,17 +10,34 @@
   display: inline-block;
 }
 
-.intro-button {
-  border-radius: 50%;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.5), 0 0 45px rgba(255, 255, 255, 0.5),
-    0 0 60px rgba(255, 255, 255, 0.5);
+.intro-script-wait {
+  font-size: 1.5rem;
+  color: white;
+  font-family: 'SpoqaHanSansNeo Regular';
+  cursor: pointer;
+  animation: blink 3s infinite;
 }
 
-@keyframes type {
-  0% {
-    width: 0ch;
+.intro-button {
+  animation: appear 2s;
+}
+
+.intro-button:hover {
+  font-weight: bolder;
+  box-shadow: 3px 3px 0px rgba(255, 255, 255, 0.5), 8px 8px 10px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
-  100% {
-    width: 22ch;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
