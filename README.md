@@ -18,14 +18,22 @@
 
 ![Logo_흰바탕](README.assets/Logo_흰바탕.PNG)
 
-# :scroll: 서비스 소개
+# :scroll: 서비스 소개 
 
 > **`SSIFI` 오픈소스를 활용한 시연 서비스 개발**
+
+[Docs](https://ssifi-ai.com:4001/ms)|[Demo](https://ssifi-ai.com/)
+
+
 
 :black_large_square: **목표**
 
 1. SSIFI 오픈소스 활용도 테스트 및 피드백
 2. 입력 데이터와 출력 데이터 확인
+
+
+
+
 
 # :cowboy_hat_face: 팀 소개 및 역할
 
