@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react'
 import ChatMode from './../components/ChatMode'
 import VoiceMode from './../components/VoiceMode'
 import { Box, IconButton } from '@mui/material'
-import { faPhoneVolume, faComments } from '@fortawesome/free-solid-svg-icons'
+import { faMicrophone, faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { postRequest } from '../api/requests.js'
@@ -11,6 +11,7 @@ import { useNavigate } from '../../node_modules/react-router-dom/index'
 import checkNotKey from '../functions/CheckNotKey'
 import Modal from '@mui/material/Modal'
 import '../style/Main.css'
+import Switch from '../components/Switch'
 
 const Main = () => {
   const [mode, setMode] = useState(true)
@@ -152,10 +153,14 @@ const Main = () => {
     setAiMode(aimode)
   }
 
+  useEffect(() => {
+    checkNotKey(() => navigate('/'))
+  })
+
   return (
     <div style={{ height: '100%' }}>
-      <ImageModal></ImageModal>
-      <ToastBox></ToastBox>
+      <ImageModal />
+      <ToastBox />
       <Box
         sx={{
           margin: 'auto',
@@ -166,22 +171,26 @@ const Main = () => {
           height: '7%',
         }}
       >
-        <Typography sx={{ margin: '0 10px', color: 'white', fontSize: '30px' }}>SSIFI</Typography>
-        <Typography sx={{ margin: '0 10px', color: 'gray' }}>
+        <Typography
+          sx={{ margin: '0 10px', color: 'white', fontSize: '30px', cursor: 'pointer' }}
+          onClick={() => navigate('/')}
+        >
+          SSIFI
+        </Typography>
+        <Typography sx={{ margin: '0 10px', color: 'gray', textAlign: 'center' }}>
           {aiMode.charAt(0).toUpperCase() + aiMode.slice(1)}
           {mode ? ' Voice' : ' Chat'}
         </Typography>
-        <IconButton
-          disabled={!toggable}
-          variant="outlined"
-          style={{ border: '1px solid white', borderRadius: '10px' }}
-          onClick={() => setMode(!mode)}
-        >
-          {mode ? (
-            <FontAwesomeIcon icon={faComments} style={{ fontSize: '1.3rem', color: 'white' }}></FontAwesomeIcon>
-          ) : (
-            <FontAwesomeIcon icon={faPhoneVolume} style={{ fontSize: '1.3rem', color: 'white' }}></FontAwesomeIcon>
-          )}
+        <IconButton disabled={!toggable} variant="outlined">
+          <FontAwesomeIcon
+            icon={faMicrophone}
+            style={{ fontSize: '1rem', color: 'white', cursor: 'default' }}
+          ></FontAwesomeIcon>
+          <Switch mode={mode} setMode={setMode} />
+          <FontAwesomeIcon
+            icon={faCommentDots}
+            style={{ fontSize: '1rem', color: 'white', cursor: 'default' }}
+          ></FontAwesomeIcon>
         </IconButton>
       </Box>
       {mode ? (
