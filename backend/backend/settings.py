@@ -50,6 +50,9 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_WHITELIST = [
     'http://localhost',
     'http://127.0.0.1',
+    'http://k6s203.p.ssafy.io',
+    'https://k6s203.p.ssafy.io',
+    'http://ssifi-ai.com',
     'https://ssifi-ai.com',
 ]
 
