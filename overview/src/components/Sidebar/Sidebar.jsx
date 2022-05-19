@@ -9,6 +9,7 @@ const Side = styled.div`
   flex-direction: column;
   align-items: center;
   width: 15%;
+  text-align: center;
 `
 
 const Menu = styled.div`
