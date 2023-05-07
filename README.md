@@ -22,7 +22,7 @@
 
 > **`SSIFI` 오픈소스를 활용한 시연 서비스 개발**
 
-[Docs](https://ssifi-ai.com:4001/ms) | [Demo](https://ssifi-ai.com/) |
+~~[Docs](https://ssifi-ai.com:4001/ms) | [Demo](https://ssifi-ai.com/) |~~ (현재 미지원)
 
 
 
